@@ -78,7 +78,7 @@ const Chat = () => {
                 <Divider />
                 <Text color="#808680">Sponsored by</Text>
                 {sponsors.map((p) => (
-                  <Flex align="center" gap={2} mt={5}>
+                  <Flex align="center" key={p.name} gap={2} mt={5}>
                     <Image
                       src={p.img}
                       alt={p.name}
