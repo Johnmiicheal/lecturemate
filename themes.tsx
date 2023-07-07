@@ -1,11 +1,11 @@
 import { extendTheme } from '@chakra-ui/react';
-import "@fontsource/nunito";
+import "@fontsource/mulish";
 
 // Create a theme instance.
 const theme = extendTheme({
   fonts: {
-    heading: 'Nunito',
-    body: 'Nunito',       
+    heading: 'Mulish',
+    body: 'Mulish',       
 },
 components: {
   Button: { baseStyle: {_focus: { boxShadow: 'none'}}},
