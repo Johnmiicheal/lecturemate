@@ -24,6 +24,7 @@ import {
   IconButton,
   Icon,
   AlertDialogFooter,
+  Divider,
 } from "@chakra-ui/react";
 import React from "react";
 import { useRouter } from "next/router";
@@ -98,7 +99,7 @@ const Header = () => {
           color="#008F06"
           _hover={{ color: "#005103", fontWeight: 500 }}
           role="group"
-          onClick={() => router.push('https://t.me/NEARCommunity')}
+          onClick={() => router.push("https://t.me/NEARCommunity")}
         >
           <Icon
             as={FaTelegramPlane}
@@ -109,7 +110,6 @@ const Header = () => {
             borderRadius="full"
             w="7"
             h="7"
-            
           />
           <Text>Join our Community</Text>
         </Flex>
@@ -138,13 +138,18 @@ const Header = () => {
         />
       </Flex>
 
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose} size={{ base: "sm", lg: "lg" }}>
         <ModalOverlay />
-        <ModalContent minW="33rem" minH="20rem" borderColor="white" borderRadius="10px">
+        <ModalContent
+          minW={{ base: "10rem", lg: "33rem" }}
+          minH="20rem"
+          borderColor="white"
+          borderRadius="10px"
+        >
           <ModalHeader
             borderRadius="10px 10px 0 0 "
             // bgGradient="linear(to-l, #00F0FF, #53AF28)"
-            bgColor= "#53AF28"
+            bgColor="#53AF28"
           >
             Lecture Mate - Waitlist
           </ModalHeader>
@@ -169,7 +174,8 @@ const Header = () => {
                 it🚀
                 <br />
                 <br />
-                In the mean time, why not click on the button to join the Waitlist
+                In the mean time, why not click on the button to join the
+                Waitlist
               </AlertDescription>
               <AlertDialogFooter>
                 <Button
@@ -178,12 +184,16 @@ const Header = () => {
                   px={4}
                   color="white"
                   bg="#202020"
-                  _hover={{  bgGradient: "linear(to-l, #00F0FF, #53AF28)" }}
+                  _hover={{ bgGradient: "linear(to-l, #00F0FF, #53AF28)" }}
                   rightIcon={<IoChevronForward />}
                   onClick={onOpen}
                   fontWeight={500}
                   fontSize={14}
-                  onClickCapture={() => router.push('https://docs.google.com/forms/d/e/1FAIpQLSd0z5h-9jIpsp4jP3gaXEsiaJDy0A-gFjmGYjS3DuL_Do2cEA/viewform')}
+                  onClickCapture={() =>
+                    router.push(
+                      "https://docs.google.com/forms/d/e/1FAIpQLSd0z5h-9jIpsp4jP3gaXEsiaJDy0A-gFjmGYjS3DuL_Do2cEA/viewform"
+                    )
+                  }
                 >
                   Join Waitlist
                 </Button>
@@ -200,27 +210,55 @@ const Header = () => {
           <DrawerHeader>Menu</DrawerHeader>
 
           <DrawerBody>
-            <Flex direction="column" textAlign="start" align="start" gap={5}>
+            {/* <Flex direction="column" textAlign="start" align="start" gap={5}>
               {links.map((link) => (
-                <Button variant="link" key={link.path} color="#F4B95F">
+                <Button variant="link" key={link.path} color="#008F06">
                   {link.text}
                 </Button>
               ))}
+            </Flex> */}
+            {/* <Divider mt={10} /> */}
+            <Flex mt="2" justify="start" gap={10} direction="column-reverse">
+              <Flex
+                align="center"
+                gap="1"
+                cursor="pointer"
+                color="#008F06"
+                _hover={{ color: "#005103", fontWeight: 500 }}
+                role="group"
+                onClick={() => router.push("https://t.me/NEARCommunity")}
+              >
+                <Icon
+                  as={FaTelegramPlane}
+                  bgColor="#008F06"
+                  color="#FFF"
+                  _groupHover={{ bg: "#005103" }}
+                  p={1}
+                  borderRadius="full"
+                  w="7"
+                  h="7"
+                />
+                <Text>Join our Community</Text>
+              </Flex>
+              <Button
+                variant="solid"
+                borderRadius="full"
+                px={4}
+                color="white"
+                bg="#202020"
+                _hover={{ bg: "#303030" }}
+                rightIcon={<IoChevronForward />}
+                onClick={onOpen}
+                fontWeight={500}
+                fontSize={14}
+              >
+                Use Demo
+              </Button>
             </Flex>
           </DrawerBody>
 
           <DrawerFooter>
-            <Button
-              variant="outline"
-              colorScheme="yellow"
-              mr={3}
-              onClick={onDrawerClose}
-            >
-              Cancel
-            </Button>
-            <Button color="white" bg="#F4B95F">
-              Dashboard
-            </Button>
+           
           </DrawerFooter>
         </DrawerContent>
       </Drawer>

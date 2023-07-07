@@ -6,7 +6,12 @@ import Footer from "../src/components/Web/Footer";
 export default function Home() {
   return (
     <Flex direction="column">
-      <Flex direction="column" px={40} bg="white" border="2px solid #DBDBDB">
+      <Flex
+        direction="column"
+        px={{ base: 2, lg: 20 }}
+        bg="white"
+        border="2px solid #DBDBDB"
+      >
         <Header />
       </Flex>
       <Flex
@@ -19,19 +24,56 @@ export default function Home() {
         h="80vh"
         overflow="hidden"
       >
-        <Flex mt={20} direction="column" align="center">
-          <Text textAlign="center" fontWeight={500} fontSize={40} w="45rem">
-              Unlock <Image src="/study.png" mb={-3} pointerEvents="none" alt="unlock" display="inline" maxH="50px"/> the Power of
-              Knowledge with <Text fontWeight={700} display="inline">Lecture Mate</Text> 
-              <Image src="/mate.png" pointerEvents="none" mb={-3} ml={3} mr={2} alt="mate" display="inline" maxH="50px" />
-              Your AI-Powered Study Companion!
+        <Flex mt={{ base: 10, lg: 20 }} direction="column" align="center">
+          <Text
+            textAlign="center"
+            fontWeight={600}
+            fontSize={{ base: 20, md: 40 }}
+            minW={{ base: "10rem", lg: "45rem" }}
+            maxW={{ md: "45rem", lg: "45rem" }}
+          >
+            Unlock{" "}
+            <Image
+              src="/study.png"
+              mb={{ base: -2, lg: -3 }}
+              pointerEvents="none"
+              alt="unlock"
+              display="inline"
+              maxH={{ base: "30px", md: "50px" }}
+            />{" "}
+            the Power of Knowledge with{" "}
+            <Text
+             bgGradient= "linear(to-r, #00F0FF, #53AF28)"
+              bgClip="text"
+              fontSize={{ base: 'xl', md: '5xl', lg: "5xl" }}
+              fontWeight="extrabold"
+              display="inline"
+            >
+              Lecture Mate
+            </Text>
+            <Image
+              src="/mate.png"
+              pointerEvents="none"
+              mb={{ base: -2, lg: -3 }}
+              ml={3}
+              mr={2}
+              alt="mate"
+              display="inline"
+              maxH={{ base: "30px", md: "50px" }}
+            />
+            Your AI-Powered Study Companion!
           </Text>
           <Box>
-            <Image src="/mock.png" pointerEvents="none" w="900px" alt="mock of lecture mate" />
+            <Image
+              src="/mock.png"
+              pointerEvents="none"
+              w="900px"
+              alt="mock of lecture mate"
+            />
           </Box>
         </Flex>
       </Flex>
-      <Footer/>
+      <Footer />
     </Flex>
   );
 }
