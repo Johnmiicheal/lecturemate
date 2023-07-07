@@ -71,7 +71,7 @@ const Header = () => {
             Lecture Mate
           </Text>
         </Flex>
-        {links.map((link) => (
+        {/* {links.map((link) => (
           <Button
             display={{ base: "none", md: "flex" }}
             variant="link"
@@ -83,7 +83,7 @@ const Header = () => {
           >
             {link.text}
           </Button>
-        ))}
+        ))} */}
       </Flex>
       <Flex
         justify="end"
@@ -98,6 +98,7 @@ const Header = () => {
           color="#008F06"
           _hover={{ color: "#005103", fontWeight: 500 }}
           role="group"
+          onClick={() => router.push('https://t.me/NEARCommunity')}
         >
           <Icon
             as={FaTelegramPlane}
@@ -108,6 +109,7 @@ const Header = () => {
             borderRadius="full"
             w="7"
             h="7"
+            
           />
           <Text>Join our Community</Text>
         </Flex>
@@ -138,9 +140,9 @@ const Header = () => {
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent minW="33rem" minH="20rem">
+        <ModalContent minW="33rem" minH="20rem" borderColor="white" borderRadius="10px">
           <ModalHeader
-            borderRadius="6px 6px 0 0 "
+            borderRadius="10px 10px 0 0 "
             // bgGradient="linear(to-l, #00F0FF, #53AF28)"
             bgColor= "#53AF28"
           >
@@ -155,9 +157,8 @@ const Header = () => {
               alignItems="center"
               justifyContent="center"
               textAlign="center"
-            //   height="200px"
-              colorScheme="green"
               bg="white"
+              border="white"
             >
               <AlertTitle mb={1} fontSize="lg">
                 Hi there👋
@@ -168,7 +169,7 @@ const Header = () => {
                 it🚀
                 <br />
                 <br />
-                In the mean time, why not click on the link to join the Waitlist
+                In the mean time, why not click on the button to join the Waitlist
               </AlertDescription>
               <AlertDialogFooter>
                 <Button
@@ -182,6 +183,7 @@ const Header = () => {
                   onClick={onOpen}
                   fontWeight={500}
                   fontSize={14}
+                  onClickCapture={() => router.push('https://docs.google.com/forms/d/e/1FAIpQLSd0z5h-9jIpsp4jP3gaXEsiaJDy0A-gFjmGYjS3DuL_Do2cEA/viewform')}
                 >
                   Join Waitlist
                 </Button>
