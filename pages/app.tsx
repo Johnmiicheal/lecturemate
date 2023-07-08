@@ -4,8 +4,6 @@ import Layout from "../src/components/App/Layout";
 import { IoPaperPlane, IoPaperPlaneOutline } from "react-icons/io5";
 import { useRouter } from "next/router";
 import { motion } from 'framer-motion';
-import styled from "styled-components";
-import { keyframes } from "styled-components";
 
 const App = () => {
     const router = useRouter();
