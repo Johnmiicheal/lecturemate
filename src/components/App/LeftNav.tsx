@@ -21,11 +21,10 @@ const LeftNav = () => {
       direction="column"
       bg="#EBEBEB"
       minH="full"
-      w="130px"
+      w={{ base: "70px",md: "130px"}}
       pos="fixed"
       mx="auto"
-      px={5}
-      // py={4}
+      px={{ base: 0, md: 5 }}
       pt={10}
       align="center"
       justify="start"

@@ -2,6 +2,7 @@ import React, { Box } from "@chakra-ui/react";
 import { Flex, Center, Text, Image } from "@chakra-ui/react";
 import Header from "../src/components/Web/Header";
 import Footer from "../src/components/Web/Footer";
+import { motion } from 'framer-motion';
 
 export default function Home() {
   return (
@@ -25,6 +26,11 @@ export default function Home() {
         overflow="hidden"
       >
         <Flex mt={{ base: 10, lg: 20 }} direction="column" align="center">
+         <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+      >
           <Text
             textAlign="center"
             fontWeight={600}
@@ -40,7 +46,8 @@ export default function Home() {
               alt="unlock"
               display="inline"
               maxH={{ base: "30px", md: "50px" }}
-            />{" "}
+            />
+           {" "}
             the Power of Knowledge with{" "}
             <Text
              bgGradient= "linear(to-r, #00F0FF, #53AF28)"
@@ -63,14 +70,27 @@ export default function Home() {
             />
             Your AI-Powered Study Companion!
           </Text>
+          </motion.div>
+          <motion.div
+        initial={{ opacity: 0, y: 100 }}
+        animate={{ opacity: 1, y: -20 }}
+        transition={{ duration: 1, delay: 0.4 }}
+      >
           <Box>
-            <Image
-              src="/mock.png"
-              pointerEvents="none"
-              w="900px"
-              alt="mock of lecture mate"
-            />
-          </Box>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 2 }}
+      >
+        <Image
+          src="/mock.png"
+          pointerEvents="none"
+          w="900px"
+          alt="mock of lecture mate"
+        />
+      </motion.div>
+    </Box>
+    </motion.div>
         </Flex>
       </Flex>
       <Footer />

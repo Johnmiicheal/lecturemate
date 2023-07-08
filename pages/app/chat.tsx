@@ -54,6 +54,7 @@ const Chat = () => {
               mr="auto"
               px={5}
               justify="space-between"
+              display={{ base: "none", lg: "block" }}
             >
               <Flex
                 w="full"
@@ -74,8 +75,8 @@ const Chat = () => {
                 Upload Note
               </Flex>
 
-              <Flex direction="column" align="center" mb={10}>
-                <Divider />
+              <Flex direction="column" justify="center" mb={10} bottom={10} pos="fixed">
+                <Divider w="260px" />
                 <Text color="#808680">Sponsored by</Text>
                 {sponsors.map((p) => (
                   <Flex align="center" key={p.name} gap={2} mt={5}>
@@ -99,6 +100,7 @@ const Chat = () => {
               pos="fixed"
               bottom="10"
               align="center"
+              ml={{ base: "130px", lg: "320px" }}
             >
               <Formik
                 initialValues={{ message: "", token: "" }}
@@ -119,7 +121,7 @@ const Chat = () => {
                               bg="#E2F0E2"
                               {...field}
                               h="60px"
-                              w="600px"
+                              w={{base: "300px",md: "600px", lg: "800px"}}
                               borderRadius="md"
                               placeholder="What would you like to ask?"
                               focusBorderColor="#005103"
