@@ -33,7 +33,7 @@ const LeftNav = () => {
 
       {links.map((link) => (
         <Flex
-          key={link.path}
+          key={link.text}
           direction="column"
           mt={7}
           w="full"
