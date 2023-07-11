@@ -1,9 +1,9 @@
-import { serialize, CookieSerializeOptions } from 'cookie';
+import { serialize } from 'cookie';
 
 /**
  * This sets `cookie` using the `res` object
  */
-export const setCookie = (res: any, name: string, value: any, options: CookieSerializeOptions = {}) => {
+export const setCookie = (res: any, name: string, value: any, options: any = {}) => {
   const stringValue =
     typeof value === 'object' ? 'j:' + JSON.stringify(value) : String(value);
 

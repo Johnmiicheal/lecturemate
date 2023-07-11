@@ -23,7 +23,7 @@ import {
   Divider,
   Box,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useState, useEffect, ReactNode, useRef } from "react";
 import axios from "axios";
 import Layout from "../../src/components/App/Layout";
 import { IoAdd, IoPaperPlaneOutline } from "react-icons/io5";
@@ -31,14 +31,66 @@ import { useRouter } from "next/router";
 import { Field, Form, Formik } from "formik";
 import FileUpload from "../../src/components/App/FileUpload";
 
+interface RequestData {
+    requestData: string;
+  }
+  
+  interface ResponseData {
+    responseData: string;
+  }
 const Chat = () => {
   const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [showInput, setShowInput] = useState(false);
+  const [showChat, setShowChat] = useState(false);
+  const [query, setQuery] = useState("");
+  const [result, setResult] = useState("");
+  const [tokenKey, setTokenKey] = useState("");
+  const [requests, setRequests] = useState<String[]>([]);
+  const [responses, setResponses] = useState<ReactNode[]>([]);
+
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [responses]);
+
+  useEffect(() => {
+    // Load stored requests and responses from localStorage
+    const storedRequests = localStorage.getItem("requests");
+    const storedResponses = localStorage.getItem("responses");
+
+    if (storedRequests) {
+      setRequests(JSON.parse(storedRequests));
+    }
+
+    if (storedResponses) {
+      setResponses(JSON.parse(storedResponses));
+    }
+  }, []);
+
+  const handleStoreRequest = (values: string) => {
+    setRequests((prevRequests) => [...prevRequests, values]);
+    localStorage.setItem(
+      "requests",
+      JSON.stringify([...requests, values])
+    );
+  };
+
+  const handleStoreResponse = (response: ReactNode) => {
+    setResponses((prevResponses) => [...prevResponses, response]);
+    localStorage.setItem(
+      "responses",
+      JSON.stringify([...responses, response])
+    );
+  };
 
   const handleClick = () => {
     setShowInput(!showInput);
   };
+
   const sponsors = [
     { name: "Sky Waiters", img: "/skywaiter.png", role: "Investor", link: "#" },
   ];
@@ -104,86 +156,172 @@ const Chat = () => {
                 ))}
               </Flex>
             </Flex>
+
             <Flex
               direction="column"
-              //   w="1200px"
-              pos="fixed"
-              bottom="10"
               align="center"
               ml={{ base: "130px", lg: "320px" }}
             >
-              <Formik
-                initialValues={{ query: "", token: "" }}
-                onSubmit={ async (values, actions) => {
+              <Flex direction="column" gap="20" top={20} pos="fixed">
+                {showChat && (
+                  <Flex
+                    direction="column"
+                    w="700px"
+                    maxH="700px"
+                    overflowY="scroll"
+                    mb={3}
+                    boxSizing="content-box"
+                    ref={chatContainerRef}
+                    css={{
+                      "&:: -webkit-scrollbar": {
+                        display: "none",
+                      },
+                      "&:: -ms-overflow-style": "none",
+                      "&:: scrollbar-width": "none",
+                    }}
+                  >  {requests.map((request, index) => (
+                    <>
+                    <Box
+                      bg="green.100"
+                      minW="150px"
+                      maxW="450px"
+                      maxH="full"
+                      py={2}
+                      px={4}
+                      borderRadius="20px 20px 0 20px "
+                      ml="auto"
+                      mb={2}
+                    >
+                      <Flex direction="column" justify="space-between">
+                        {/* <Text>{query}</Text> */}
+                      <Text key={index}>{(request)}</Text>
+                        <Text fontSize={11} mt={3} ml='auto' fontWeight="bold">
+                          Me
+                        </Text>
+                      </Flex>
+                    </Box>
+                    <Box
+                      bg="white"
+                      minW="100px"
+                      h="full"
+                      maxW="450px"
+                      py={2}
+                      px={4}
+                      mr="auto"
+                      mb={2}
+                      borderRadius="20px 20px 0 20px "
+                    >
+                        <Flex direction="column" justify="space-between">
+                            <Text key={index}>{(responses[index])}</Text>
+                            <Text fontSize={11} mt={3} fontWeight="bold">Lecture Mate</Text>
+                        </Flex>
+                      {/* <Text> {result} </Text> */}
+                    </Box>
+                    </>
+                  ))}
+                  </Flex>
+                )}
+              </Flex>
+              <Flex pos="fixed" bottom="10">
+                <Formik
+                  initialValues={{ query: "", token: tokenKey }}
+                  onSubmit={async (values, actions) => {
                     if (values) {
-                        try {
-                          const response = await axios.post("http://localhost:3000/api/api", values);
-                          console.log("Upload successful:", response.data);
-                        } catch (error) {
-                          console.error("Upload error:", error);
+                      try {
+                        const response = await fetch("/api/api", {
+                          method: "POST",
+                          headers: {
+                            "Content-Type": "application/json",
+                          },
+                          body: JSON.stringify(values),
+                        });
+                        const data = await response.json();
+                        setTokenKey(values.token);
+                        console.log(tokenKey);
+                        if (response.status !== 200) {
+                          throw (
+                            data.error ||
+                            new Error(
+                              `Request failed with status ${response.status}`
+                            )
+                          );
                         }
+                        handleStoreRequest(values.query);
+                        handleStoreResponse(data.result);
+                        setResult(data.result);
+                      } catch (error) {
+                        console.error("Upload error:", error);
                       }
-                  setTimeout(() => {
-                    alert(JSON.stringify(values, null, 2));
-                    actions.setSubmitting(false);
-                  }, 1000);
-                }}
-              >
-                {(props) => (
-                  <Form>
-                    <Field name="query">
-                      {({ field, form }: any) => (
-                        <FormControl>
-                          <InputGroup>
-                            <Input
-                              bg="#E2F0E2"
-                              {...field}
-                              h="60px"
-                              w={{ base: "300px", md: "600px", lg: "800px" }}
-                              borderRadius="md"
-                              placeholder="What would you like to ask?"
-                              focusBorderColor="#005103"
-                            />
-                            <InputRightElement>
-                              <IconButton
-                                icon={<IoPaperPlaneOutline />}
-                                variant="ghost"
-                                aria-label="send message"
-                                w="6"
-                                h="6"
-                                mt={5}
-                                mr={7}
-                                type="submit"
-                                isLoading={props.isSubmitting}
-                                color="#808680"
-                              />
-                            </InputRightElement>
-                          </InputGroup>
-                        </FormControl>
-                      )}
-                    </Field>
-                    <Flex>
-                      <Button onClick={handleClick} mt={2} mr={2}>
-                        {showInput ? "Hide Token" : "Show Token"}
-                      </Button>
-                      <Field name="token">
+                    }
+                    setTimeout(() => {
+                        setQuery(values.query);
+                        setShowChat(true);
+                        actions.resetForm({
+                            values: {
+                                ...values,
+                                query: "",
+                            },
+                        });
+                        actions.setSubmitting(false);
+                    }, 1000);
+                  }}
+                >
+                  {(props) => (
+                    <Form>
+                      <Field name="query">
                         {({ field, form }: any) => (
                           <FormControl>
-                            {showInput && (
+                            <InputGroup>
                               <Input
-                                mt={2}
+                                bg="#E2F0E2"
                                 {...field}
+                                h="60px"
+                                w={{ base: "300px", md: "600px", lg: "800px" }}
+                                borderRadius="md"
+                                placeholder="What would you like to ask?"
                                 focusBorderColor="#005103"
-                                placeholder="Input Token here"
                               />
-                            )}
+                              <InputRightElement>
+                                <IconButton
+                                  icon={<IoPaperPlaneOutline />}
+                                  variant="ghost"
+                                  aria-label="send message"
+                                  w="6"
+                                  h="6"
+                                  mt={5}
+                                  mr={7}
+                                  type="submit"
+                                  isLoading={props.isSubmitting}
+                                  color="#808680"
+                                />
+                              </InputRightElement>
+                            </InputGroup>
                           </FormControl>
                         )}
                       </Field>
-                    </Flex>
-                  </Form>
-                )}
-              </Formik>
+                      <Flex>
+                        <Button onClick={handleClick} mt={2} mr={2}>
+                          {showInput ? "Hide Token" : "Show Token"}
+                        </Button>
+                        <Field name="token">
+                          {({ field, form }: any) => (
+                            <FormControl>
+                              {showInput && (
+                                <Input
+                                  mt={2}
+                                  {...field}
+                                  focusBorderColor="#005103"
+                                  placeholder="Input Token here"
+                                />
+                              )}
+                            </FormControl>
+                          )}
+                        </Field>
+                      </Flex>
+                    </Form>
+                  )}
+                </Formik>
+              </Flex>
             </Flex>
           </Flex>
         </Flex>
@@ -212,7 +350,7 @@ const Chat = () => {
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody mb={7}>
-            <FileUpload  />
+            <FileUpload />
           </ModalBody>
         </ModalContent>
       </Modal>

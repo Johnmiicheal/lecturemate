@@ -1,6 +1,7 @@
 import { Configuration, OpenAIApi } from "openai";
 import { PineconeClient } from "@pinecone-database/pinecone";
 import { setCookie } from "../../utils/cookies";
+import type { NextApiRequest, NextApiResponse } from 'next'
 
 // Initialize Openai
 const configuration = new Configuration({
@@ -19,9 +20,9 @@ if (!configuration.apiKey) {
 const COMPLETIONS_MODEL = "text-davinci-003";
 const EMBEDDING_MODEL = "text-embedding-ada-002";
 
-export default async function api({ req, res }: any) {
-  const { tokenKey } = req.body;
-  setCookie(res, "token", tokenKey, { path: "/", maxAge: 2592000 });
+export default async function api(req: NextApiRequest, res: any) {
+  const { token } = req.body;
+  setCookie(res, "token", token, { path: "/app/chat", maxAge: 2592000 });
   const setTokenKey = res.getHeader("Set-Cookie")[0];
   const regex = /token=([^;]+)/;
   const match = setTokenKey.match(regex);
@@ -38,7 +39,7 @@ export default async function api({ req, res }: any) {
     return;
   }
 
-  const question = req.body.question || "";
+  const question = req.body.query || "";
   console.log(question);
 
   if (question.trim().length === 0) {
@@ -98,7 +99,7 @@ console.log("Query Info:", info);
     const completion: string | undefined = response.data.choices[0].text;
   
     console.log(completion);
-    res.status(200).send({ result: completion });
+    res.status(200).send({ query, result: completion });
   } catch (error: any) {
     if (error.response) {
       console.error(error.response.status, error.response.data);

@@ -32,6 +32,7 @@ const FileUpload = () => {
           if (response.status === 200) {
             toast({
               title: "Notes Uploaded",
+              position: "top-right",
               description: "We've successfully uploaded your notes",
               status: "success",
               variant: "left-accent",
@@ -42,18 +43,30 @@ const FileUpload = () => {
           } else {
             toast({
                 title: "Upload Error",
+                position: "top",
                 description: "We were unable to upload your note",
                 status: "error",
                 variant: "left-accent",
                 duration: 5000,
                 isClosable: true,
               });
-              setTimeout(() => {
-                router.reload();
-              }, 1000);
+            //   setTimeout(() => {
+            //     router.reload();
+            //   }, 1000);
           }
           console.log("Upload successful:", response.data);
         } catch (error) {
+            if(error){
+                toast({
+                    title: "Upload Error",
+                    position: "top-right",
+                    description: "We were unable to upload your note",
+                    status: "error",
+                    variant: "left-accent",
+                    duration: 5000,
+                    isClosable: true,
+                  });
+            }
           console.error("Upload error:", error);
         }
       }
