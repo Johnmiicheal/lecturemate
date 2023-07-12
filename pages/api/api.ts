@@ -86,7 +86,7 @@ if (queryRes && queryRes.matches && queryRes.matches.length > 0) {
 console.log("Query Info:", info);
   const finalPrompt = `
       Info: ${info}
-      Question: ${query}.
+      Question: ${query}. 
       Answer:
     `;
   try {

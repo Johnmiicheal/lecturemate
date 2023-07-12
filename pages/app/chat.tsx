@@ -202,14 +202,14 @@ const Chat = () => {
                     </Box>
                     <Box
                       bg="white"
-                      minW="100px"
+                      minW="150px"
                       h="full"
                       maxW="450px"
                       py={2}
                       px={4}
                       mr="auto"
                       mb={2}
-                      borderRadius="20px 20px 0 20px "
+                      borderRadius="20px 20px 20px 0 "
                     >
                         <Flex direction="column" justify="space-between">
                             <Text key={index}>{(responses[index])}</Text>
