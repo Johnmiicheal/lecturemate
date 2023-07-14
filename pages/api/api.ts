@@ -1,7 +1,6 @@
 import { Configuration, OpenAIApi } from "openai";
 import { PineconeClient } from "@pinecone-database/pinecone";
 import { setCookie } from "../../utils/cookies";
-require("dotenv").config()
 // import type { NextApiRequest, NextApiResponse } from 'next'
 
 // Initialize Openai
