@@ -22,9 +22,9 @@ const EMBEDDING_MODEL = "text-embedding-ada-002";
 
 export default async function api(req: any, res: any) {
   const { token } = req.body;
-  console.log("Log Token", token);
   setCookie(res, "token", token, { path: "/app/chat", maxAge: 2592000 });
   const setTokenKey = res.getHeader("Set-Cookie")[0];
+  console.log("Log Token", token);
   const regex = /token=([^;]+)/;
   const match = setTokenKey.match(regex);
   // Extract the token value from the match
@@ -51,7 +51,6 @@ export default async function api(req: any, res: any) {
     });
     return;
   }
-  // const query = question;
 
   // Initialize pinecone
   const pinecone = new PineconeClient();
