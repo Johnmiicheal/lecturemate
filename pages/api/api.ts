@@ -51,6 +51,12 @@ export default async function api(req: any, res: any) {
     return;
   }
 
+  const queryEmbedding = await openai.createEmbedding({
+    model: EMBEDDING_MODEL,
+    input: query,
+  });
+  console.log("openai point:", query);
+
   // Initialize pinecone
   const pinecone = new PineconeClient();
   await pinecone.init({
@@ -59,11 +65,7 @@ export default async function api(req: any, res: any) {
   });
   console.log('pinecone point:', query)
 
-  const queryEmbedding = await openai.createEmbedding({
-    model: EMBEDDING_MODEL,
-    input: query,
-  });
-  console.log("openai point:", query);
+
 
   const xq = queryEmbedding.data.data[0].embedding;
 
