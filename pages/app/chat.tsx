@@ -233,7 +233,7 @@ const Chat = () => {
                           headers: {
                             "Content-Type": "application/json",
                           },
-                          body: JSON.stringify(values),
+                          body: values,
                         });
                         // const response = await axios.post('/api/api', values)
                         handleStoreRequest(values.query);
