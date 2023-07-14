@@ -22,6 +22,7 @@ const EMBEDDING_MODEL = "text-embedding-ada-002";
 
 export default async function api(req: any, res: any) {
   const { token } = req.body;
+  console.log("Log Token", token);
   setCookie(res, "token", token, { path: "/app/chat", maxAge: 2592000 });
   const setTokenKey = res.getHeader("Set-Cookie")[0];
   const regex = /token=([^;]+)/;
@@ -39,10 +40,10 @@ export default async function api(req: any, res: any) {
     return;
   }
 
-  const question = req.body.query || "";
-  console.log(question);
+  const query = req.body.query || "";
+  console.log(query);
 
-  if (question.trim().length === 0) {
+  if (query.trim().length === 0) {
     res.status(400).json({
       error: {
         message: "Please enter a question",
@@ -50,7 +51,7 @@ export default async function api(req: any, res: any) {
     });
     return;
   }
-  const query = JSON.stringify(question);
+  // const query = question;
 
   // Initialize pinecone
   const pinecone = new PineconeClient();
