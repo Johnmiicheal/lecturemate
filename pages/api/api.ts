@@ -97,7 +97,6 @@ console.log("Query Info:", info);
     });
   
     const completion: string | undefined = response.data.choices[0].text;
-  
     console.log(completion);
     res.status(200).send({ query, result: completion });
   } catch (error: any) {

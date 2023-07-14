@@ -25,7 +25,7 @@ const FileUpload = () => {
         formData.append("file", values.file);
         try {
           const response = await axios.post(
-            "https://api.greynote.app/lecture/api/upload",
+            "https://api.greynote.app/lecture",
             formData
           );
           console.log("Id: ", response.data.uniqueId);

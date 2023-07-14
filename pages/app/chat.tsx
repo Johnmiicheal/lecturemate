@@ -193,13 +193,13 @@ const Chat = () => {
                     >
                       <Flex direction="column" justify="space-between">
                         {/* <Text>{query}</Text> */}
-                      <Text key={index}>{(request)}</Text>
+                      <Text key={index}>{request}</Text>
                         <Text fontSize={11} mt={3} ml='auto' fontWeight="bold">
                           Me
                         </Text>
                       </Flex>
                     </Box>
-                      {showChat && (
+                      
                     <Box
                       bg="white"
                       minW="150px"
@@ -210,6 +210,7 @@ const Chat = () => {
                       mr="auto"
                       mb={2}
                       borderRadius="20px 20px 20px 0 "
+                      display={ responses.length <= 0 ? 'none' : 'block' }
                     >
                         <Flex direction="column" justify="space-between">
                             <Text key={index}>{(responses[index])}</Text>
@@ -217,7 +218,6 @@ const Chat = () => {
                         </Flex>
                       {/* <Text> {result} </Text> */}
                     </Box>
-                    )}
                     </Flex>
                   ))}
                   </Flex>
@@ -228,16 +228,17 @@ const Chat = () => {
                   onSubmit={async (values, actions) => {
                     if (values) {
                       try {
-                        const response = await fetch("/api/api", {
-                          method: "POST",
-                          headers: {
-                            "Content-Type": "application/json",
-                          },
-                          body: JSON.stringify(values),
-                        });
-                        const data = await response.json();
+                        // const response = await fetch("/api/api", {
+                        //   method: "POST",
+                        //   headers: {
+                        //     "Content-Type": "application/json",
+                        //   },
+                        //   body: JSON.stringify(values),
+                        // });
+                        const response = await axios.post('/api/api', values)
+                        handleStoreRequest(values.query);
+                        const data = await response.data;
                         setTokenKey(values.token);
-                        console.log(tokenKey);
                         if (response.status !== 200) {
                           throw (
                             data.error ||
@@ -246,7 +247,6 @@ const Chat = () => {
                             )
                           );
                         }
-                        handleStoreRequest(values.query);
                         handleStoreResponse(data.result);
                       } catch (error) {
                         console.error("Chat error:", error);
