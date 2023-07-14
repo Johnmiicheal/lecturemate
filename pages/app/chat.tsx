@@ -228,16 +228,16 @@ const Chat = () => {
                   onSubmit={async (values, actions) => {
                     if (values) {
                       try {
-                        // const response = await fetch("/api/api", {
-                        //   method: "POST",
-                        //   headers: {
-                        //     "Content-Type": "application/json",
-                        //   },
-                        //   body: JSON.stringify(values),
-                        // });
-                        const response = await axios.post('/api/api', values)
+                        const response = await fetch("/api/api", {
+                          method: "POST",
+                          headers: {
+                            "Content-Type": "application/json",
+                          },
+                          body: JSON.stringify(values),
+                        });
+                        // const response = await axios.post('/api/api', values)
                         handleStoreRequest(values.query);
-                        const data = await response.data;
+                        const data = await response.json();
                         setTokenKey(values.token);
                         if (response.status !== 200) {
                           throw (
