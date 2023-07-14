@@ -228,7 +228,7 @@ const Chat = () => {
                   onSubmit={async (values, actions) => {
                     if (values) {
                       try {
-                        const response = await fetch("https://lecturemate.vercel.app/api/api", {
+                        const response = await fetch("https://lecturemate.vercel.app/api/api/", {
                           method: "POST",
                           headers: {
                             "Content-Type": "application/json",
