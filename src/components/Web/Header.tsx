@@ -121,7 +121,7 @@ const Header = () => {
           bg="#202020"
           _hover={{ bg: "#303030" }}
           rightIcon={<IoChevronForward />}
-          onClick={onOpen}
+          onClick={() => router.push('/app')}
           fontWeight={500}
           fontSize={14}
         >
