@@ -41,7 +41,6 @@ export default async function api(req: any, res: any) {
   }
 
   const query = req.body.query || "";
-  console.log(query);
 
   if (query.trim().length === 0) {
     res.status(400).json({
@@ -58,11 +57,13 @@ export default async function api(req: any, res: any) {
     environment: "us-central1-gcp",
     apiKey: "05cb4d94-686d-4d1b-b412-fb561175026b",
   });
+  console.log('pinecone point:', query)
 
   const queryEmbedding = await openai.createEmbedding({
     model: EMBEDDING_MODEL,
     input: query,
   });
+  console.log("openai point:", query);
 
   const xq = queryEmbedding.data.data[0].embedding;
 
