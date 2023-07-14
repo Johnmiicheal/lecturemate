@@ -1,7 +1,8 @@
 import { Configuration, OpenAIApi } from "openai";
 import { PineconeClient } from "@pinecone-database/pinecone";
 import { setCookie } from "../../utils/cookies";
-import type { NextApiRequest, NextApiResponse } from 'next'
+require("dotenv").config()
+// import type { NextApiRequest, NextApiResponse } from 'next'
 
 // Initialize Openai
 const configuration = new Configuration({
@@ -51,21 +52,19 @@ export default async function api(req: any, res: any) {
     return;
   }
 
+  // Initialize pinecone
+  const pinecone = new PineconeClient();
+  await pinecone.init({
+    environment: "us-central1-gcp",
+    apiKey: process.env.PINECONE_KEY!,
+  });
+  console.log('pinecone point:', query)
+
   const queryEmbedding = await openai.createEmbedding({
     model: EMBEDDING_MODEL,
     input: query,
   });
   console.log("openai point:", query);
-
-  // Initialize pinecone
-  const pinecone = new PineconeClient();
-  await pinecone.init({
-    environment: "us-central1-gcp",
-    apiKey: "05cb4d94-686d-4d1b-b412-fb561175026b",
-  });
-  console.log('pinecone point:', query)
-
-
 
   const xq = queryEmbedding.data.data[0].embedding;
 
