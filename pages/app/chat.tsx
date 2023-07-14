@@ -227,13 +227,17 @@ const Chat = () => {
                   initialValues={{ query: "", token: tokenKey }}
                   onSubmit={async (values, actions) => {
                     if (values) {
+
                       try {
-                        const response = await fetch("https://lecturemate.vercel.app/api/api/", {
+                        const response = await fetch("/api/api/", {
                           method: "POST",
                           headers: {
                             "Content-Type": "application/json",
                           },
-                          body: JSON.stringify(values),
+                          body: JSON.stringify({
+                            query: values.query,
+                            token: values.token,
+                          }),
                         });
                         // const response = await axios.post('/api/api', values)
                         handleStoreRequest(values.query);
