@@ -43,8 +43,8 @@ const Chat = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [showInput, setShowInput] = useState(false);
   const [showChat, setShowChat] = useState(false);
-  const [query, setQuery] = useState("");
-  const [result, setResult] = useState("");
+//   const [query, setQuery] = useState("");
+//   const [result, setResult] = useState("");
   const [tokenKey, setTokenKey] = useState("");
   const [requests, setRequests] = useState<String[]>([]);
   const [responses, setResponses] = useState<ReactNode[]>([]);
@@ -163,7 +163,6 @@ const Chat = () => {
               ml={{ base: "130px", lg: "320px" }}
             >
               <Flex direction="column" gap="20" top={20} pos="fixed">
-                {showChat && (
                   <Flex
                     direction="column"
                     w="700px"
@@ -173,11 +172,11 @@ const Chat = () => {
                     boxSizing="content-box"
                     ref={chatContainerRef}
                     css={{
-                      "&:: -webkit-scrollbar": {
-                        display: "none",
-                      },
-                      "&:: -ms-overflow-style": "none",
-                      "&:: scrollbar-width": "none",
+                        "&:: -webkit-scrollbar": {
+                            display: "none",
+                        },
+                        "&:: -ms-overflow-style": "none",
+                        "&:: scrollbar-width": "none",
                     }}
                   >  {requests.map((request, index) => (
                     <>
@@ -200,6 +199,7 @@ const Chat = () => {
                         </Text>
                       </Flex>
                     </Box>
+                      {showChat && (
                     <Box
                       bg="white"
                       minW="150px"
@@ -217,10 +217,10 @@ const Chat = () => {
                         </Flex>
                       {/* <Text> {result} </Text> */}
                     </Box>
+                    )}
                     </>
                   ))}
                   </Flex>
-                )}
               </Flex>
               <Flex pos="fixed" bottom="10">
                 <Formik
@@ -248,13 +248,11 @@ const Chat = () => {
                         }
                         handleStoreRequest(values.query);
                         handleStoreResponse(data.result);
-                        setResult(data.result);
                       } catch (error) {
                         console.error("Upload error:", error);
                       }
                     }
                     setTimeout(() => {
-                        setQuery(values.query);
                         setShowChat(true);
                         actions.resetForm({
                             values: {
@@ -263,7 +261,7 @@ const Chat = () => {
                             },
                         });
                         actions.setSubmitting(false);
-                    }, 1000);
+                    }, 300);
                   }}
                 >
                   {(props) => (

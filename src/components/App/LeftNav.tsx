@@ -11,9 +11,9 @@ const LeftNav = () => {
   const links = [
     { path: "/app", iconActive: AiFillHome, iconInactive: AiOutlineHome, text: "Home" },
     { path: "/app/chat", iconActive: IoChatbubbleEllipses, iconInactive: IoChatbubbleEllipsesOutline, text: "Chat" },
-    { path: "#", iconActive: IoFolder, iconInactive: IoFolderOutline, text: "My Folders", isDisabled: true },
-    { path: "#", iconActive: IoTrendingUp, iconInactive: IoTrendingUp, text: "My Stats", isDisabled: true },
-    { path: "#", iconActive: BsBoxArrowUpRight, iconInactive: BsBoxArrowUpRight, text: "Guidelines", isDisabled: true },
+    // { path: "#", iconActive: IoFolder, iconInactive: IoFolderOutline, text: "My Folders", isDisabled: true },
+    // { path: "#", iconActive: IoTrendingUp, iconInactive: IoTrendingUp, text: "My Stats", isDisabled: true },
+    // { path: "#", iconActive: BsBoxArrowUpRight, iconInactive: BsBoxArrowUpRight, text: "Guidelines", isDisabled: true },
   ];
 
   return (
@@ -55,7 +55,7 @@ const LeftNav = () => {
         </Flex>
       ))}
 
-      <Flex direction="column" w='full' bottom={0}>
+      {/* <Flex direction="column" w='full' bottom={0}>
       <Flex
           direction="column"
           mt={10}
@@ -76,7 +76,7 @@ const LeftNav = () => {
             Settings
           </Text>
         </Flex>
-      </Flex>
+      </Flex> */}
 
 
     </Flex>
