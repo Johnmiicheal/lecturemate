@@ -179,7 +179,7 @@ const Chat = () => {
                         "&:: scrollbar-width": "none",
                     }}
                   >  {requests.map((request, index) => (
-                    <>
+                    <Flex direction="column" key={index}>
                     <Box
                       bg="green.100"
                       minW="150px"
@@ -218,7 +218,7 @@ const Chat = () => {
                       {/* <Text> {result} </Text> */}
                     </Box>
                     )}
-                    </>
+                    </Flex>
                   ))}
                   </Flex>
               </Flex>
@@ -228,7 +228,7 @@ const Chat = () => {
                   onSubmit={async (values, actions) => {
                     if (values) {
                       try {
-                        const response = await fetch("https://lecturemate.vercel.app/api/api", {
+                        const response = await fetch("/api/api", {
                           method: "POST",
                           headers: {
                             "Content-Type": "application/json",
@@ -249,7 +249,16 @@ const Chat = () => {
                         handleStoreRequest(values.query);
                         handleStoreResponse(data.result);
                       } catch (error) {
-                        console.error("Upload error:", error);
+                        console.error("Chat error:", error);
+                        toast({
+                          title: "Server Error",
+                          position: "top-right",
+                          description: "We were unable to complete your request",
+                          status: "error",
+                          variant: "left-accent",
+                          duration: 5000,
+                          isClosable: true,
+                        });
                       }
                     }
                     setTimeout(() => {
