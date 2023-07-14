@@ -229,7 +229,7 @@ const Chat = () => {
                     if (values) {
 
                       try {
-                        const response = await fetch("/api/api/", {
+                        const response = await fetch("https://purple-chipmunk-tam.cyclic.app/api/api/", {
                           method: "POST",
                           headers: {
                             "Content-Type": "application/json",
