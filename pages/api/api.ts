@@ -20,7 +20,7 @@ if (!configuration.apiKey) {
 const COMPLETIONS_MODEL = "text-davinci-003";
 const EMBEDDING_MODEL = "text-embedding-ada-002";
 
-export default async function api(req: NextApiRequest, res: any) {
+export default async function api(req: any, res: any) {
   const { token } = req.body;
   setCookie(res, "token", token, { path: "/app/chat", maxAge: 2592000 });
   const setTokenKey = res.getHeader("Set-Cookie")[0];
