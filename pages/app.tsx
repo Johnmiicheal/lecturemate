@@ -8,7 +8,7 @@ import { motion } from 'framer-motion';
 const App = () => {
     const router = useRouter();
   return (
-    <Flex w="full" direction="column" justify="space-between">
+    <Flex w="full" direction="column" justify="space-between" overflowX="hidden">
       <Layout />
       <Flex direction="column" w="full" align="center">
       <Flex
@@ -146,6 +146,7 @@ const App = () => {
       <Flex
         w="800px"
         mt={28}
+        mb="14"
         boxShadow="md"
         justify="space-between"
         bg="#E2F0E2"

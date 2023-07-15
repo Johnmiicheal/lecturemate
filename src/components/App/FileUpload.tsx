@@ -4,17 +4,20 @@ import { useFormik } from "formik";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import { RxUpload, RxFile } from "react-icons/rx";
-import { useState } from "react";
+import React, { useState } from "react";
 import CopyBox from "./CopyBox";
 
 interface FormValues {
   file: File | null;
 }
 
+
 const FileUpload = () => {
   const toast = useToast();
   const router = useRouter();
   const [token, setToken] = useState('');
+  const [file, setFile] = React.useState('');
+  
   const formik = useFormik<FormValues>({
     initialValues: {
       file: null,
@@ -26,10 +29,13 @@ const FileUpload = () => {
         try {
           const response = await axios.post(
             "https://api.greynote.app/lecture",
+            // "http://127.0.0.1:4000/api/upload/",
             formData
           );
           console.log("Id: ", response.data.uniqueId);
           if (response.status === 200) {
+            // alert(values.file.name);
+            localStorage.setItem('file', values.file.name);
             toast({
               title: "Notes Uploaded",
               position: "top-right",
@@ -83,7 +89,7 @@ const FileUpload = () => {
     <Flex direction="column">
       <Box
         p={4}
-        h="15vh"
+        h="17vh"
         border="2px dotted"
         borderColor={isDragActive ? "green.500" : "gray.300"}
         borderRadius="md"
@@ -107,7 +113,7 @@ const FileUpload = () => {
           </Text>
         )}
         {formik.values.file && (
-          <Flex mt={10} align="center" gap={1}>
+          <Flex mt={7} align="center" gap={1}>
             <Icon as={RxFile} w="4" h="4" />
             <Text fontWeight="bold">
               Selected File: {formik.values.file.name}
@@ -117,6 +123,7 @@ const FileUpload = () => {
       </Box>
       <Button
         type="submit"
+        mt={4}
         onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
           event.preventDefault(); // Prevent the default form submission behavior
           formik.handleSubmit();
