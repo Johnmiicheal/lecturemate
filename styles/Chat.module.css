@@ -1,0 +1,12 @@
+.lottie{
+    width: 300px;
+    height: 300px;
+}
+
+
+@media (min-width: 320px) and (max-width: 520px) {
+    .lottie {
+     width: 200px;
+     height: 200px;
+    }
+}

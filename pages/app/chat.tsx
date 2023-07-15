@@ -24,7 +24,7 @@ import {
   Box,
 } from "@chakra-ui/react";
 import React, { useState, useEffect, ReactNode, useRef } from "react";
-import axios from "axios";
+import { Player } from "@lottiefiles/react-lottie-player";
 import Layout from "../../src/components/App/Layout";
 import {
   IoAdd,
@@ -34,6 +34,8 @@ import {
 import { useRouter } from "next/router";
 import { Field, Form, Formik } from "formik";
 import FileUpload from "../../src/components/App/FileUpload";
+import styles from "../../styles/Chat.module.css"
+
 
 interface RequestData {
   requestData: string;
@@ -143,7 +145,7 @@ const Chat = () => {
                   color="white"
                   w="full"
                   border="1px solid #53AF28"
-                  _hover={{ bg: "#53AF28", color: "white" }}
+                  _hover={{ color: "#005103", bg: "#90E768" }}
                   pl={3}
                   borderRadius="md"
                   cursor="pointer"
@@ -155,7 +157,6 @@ const Chat = () => {
                   </Text>
                 </Flex>
               )}
-
 
               <Flex
                 direction="column"
@@ -183,13 +184,56 @@ const Chat = () => {
               </Flex>
             </Flex>
 
+            {requests.length <= 0 && (
+              <Flex
+                direction="column"
+                justify="space-betweem"
+                align="center"
+                ml={{ base: "130px", lg: "320px" }}
+              >
+                <Flex
+                  direction="column"
+                  align="center"
+                  textAlign="center"
+                  gap="5"
+                  pos="fixed"
+                  top={20}
+                >
+                  <Player autoplay loop src="/dancingbook.json" className={styles.lottie} />
+                  <Text>
+                    Upload a note to get started or just ask any question <br />
+                    Don't forget to copy your token after uploading your note😊
+                  </Text>
+                  <Flex
+                    w="full"
+                    h="20px"
+                    mt={2}
+                    align="center"
+                    justify="center"
+                    bg="#53AF28"
+                    color="white"
+                    border="1px solid #53AF28"
+                    _hover={{ color: "#005103", bg: "#90E768" }}
+                    py={5}
+                    pl={3}
+                    borderRadius="md"
+                    cursor="pointer"
+                    onClick={onOpen}
+                  >
+                    <Icon as={IoAdd} w="5" h="5" />
+                    Upload Note
+                  </Flex>
+                </Flex>
+              </Flex>
+            )}
+
             <Flex
               direction="column"
               justify="space-betweem"
               align="center"
               ml={{ base: "130px", lg: "320px" }}
             >
-              <Flex direction="column" gap="20" pos="fixed"  top={20}>
+              <Flex direction="column" gap="20" pos="fixed" top={20}>
                 <Flex
                   direction="column"
                   w="700px"
@@ -228,7 +272,7 @@ const Chat = () => {
                             mt={2}
                             ml="auto"
                             fontWeight="bold"
-                            fontStyle='italic'
+                            fontStyle="italic"
                           >
                             Me
                           </Text>
@@ -251,7 +295,7 @@ const Chat = () => {
                       >
                         <Flex direction="column" justify="space-between">
                           <Text key={index}>{responses[index]}</Text>
-                          <Text fontSize={11}  mt={3} fontWeight="bold">
+                          <Text fontSize={11} mt={3} fontWeight="bold">
                             Lecture Mate
                           </Text>
                         </Flex>
@@ -262,7 +306,7 @@ const Chat = () => {
                 </Flex>
               </Flex>
 
-              <Flex pos="fixed" bottom="0"  bg="#F8FCF7" px='60' pb='10'>
+              <Flex pos="fixed" bottom="0" bg="#F8FCF7" px="60" pb="10">
                 <Formik
                   initialValues={{ query: "", token: tokenKey }}
                   onSubmit={async (values, actions) => {
@@ -353,7 +397,16 @@ const Chat = () => {
                         )}
                       </Field>
                       <Flex>
-                        <Button onClick={handleClick} mt={2} mr={2}>
+                        <Button
+                          onClick={handleClick}
+                          mt={2}
+                          mr={2}
+                          color="#53AF28"
+                          bg="#F8FCF7"
+                          fontWeight={500}
+                          border="1px solid #53AF28"
+                          _hover={{ bg: "#53AF28", color: "white" }}
+                        >
                           {showInput ? "Hide Token" : "Show Token"}
                         </Button>
                         <Field name="token">
