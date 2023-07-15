@@ -71,7 +71,7 @@ export default function UserProfile() {
         cursor="pointer"
         justify="center"
         align="center"
-        display={{ base: "none", lg: "block" }}
+        display={{ base: "none", lg: "flex" }}
         onClick={handleChat}
       >
         <Text fontWeight={600} fontSize="0.9em">

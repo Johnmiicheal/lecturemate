@@ -115,7 +115,7 @@ const Chat = () => {
       <Flex bg="#F8FCF7">
         <Flex w="full" direction="column" justify="space-between">
           <Layout />
-          <Flex direction="column" w="full" align="center">
+          <Flex direction="column" w="full" align={{base: "center", lg: "start"}}>
             <Flex
               direction="column"
               h="100vh"
@@ -125,7 +125,7 @@ const Chat = () => {
               px={5}
               zIndex={2}
               justify="space-between"
-              display={{ base: "none", lg: "block" }}
+              display={{ base: "none", lg: "flex" }}
             >
               <Flex
                 w="full"
@@ -199,10 +199,9 @@ const Chat = () => {
             {requests.length <= 0 && (
               <Flex
                 direction="column"
-                justify="space-betweem"
                 align="center"
-                ml={{ base: "0", lg: "320px" }}
-               
+                ml={{ base: "0", lg: "60%" }}
+              
               >
                 <Flex
                   direction="column"
@@ -244,7 +243,7 @@ const Chat = () => {
             <Flex
               direction="column"
               align="center"
-              ml={{ base: "0", lg: "320px" }}
+              ml={{ base: "0", lg: "200px" }}
               w="full"
             >
               <Flex direction="column" gap="20" pos="fixed" top={20}>
