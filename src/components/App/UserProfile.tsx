@@ -84,7 +84,7 @@ export default function UserProfile() {
       <Flex mr={{ base: -7, md: 0}} ml={{ base: 0, md: -10 }}>
         <Image src="/star.gif" w="100px" zIndex={-1} />
       </Flex>
-      <Flex justify="end" display={{ base: "flex", md: "none" }}>
+      <Flex justify="end" display={{ base: "flex", lg: "none" }}>
         <IconButton
           variant="ghost"
           aria-label="menu"
@@ -117,6 +117,8 @@ export default function UserProfile() {
                 _hover={{ color: "#005103", fontWeight: 500 }}
                 role="group"
                 onClick={() => router.push("https://t.me/NEARCommunity")}
+                pos="fixed"
+                bottom={10}
               >
                 <Icon
                   as={FaTelegramPlane}
