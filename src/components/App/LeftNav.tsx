@@ -67,13 +67,12 @@ const LeftNav = () => {
           _hover={{ color: "#005103", bg: "#90E768" }}
           borderRadius="md"
           cursor="pointer"
-          color={router.pathname === "/app/settings" ? "#FFFFFF": "#A5A5A5"}
-          bg={router.pathname === "/app/settings" ? "#53AF28": "none"}
+          color={router.pathname === "/app/feedback" ? "#53AF28": "#A5A5A5"}
           onClick={() => router.push('/app/feedback')}
           
         >
           <Icon as={BsEmojiHeartEyes} w={6} h={6} mb={2} />
-          <Text fontSize={12} fontWeight={router.pathname === "/app/settings" ? 500 : 400}>
+          <Text fontSize={12} fontWeight={router.pathname === "/app/feedback" ? 500 : 400}>
             Send Feedback
           </Text>
         </Flex>
