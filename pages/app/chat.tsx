@@ -124,7 +124,6 @@ const Chat = () => {
               ml="130px"
               px={5}
               zIndex={2}
-              justify="space-between"
               display={{ base: "none", lg: "flex" }}
             >
               <Flex
