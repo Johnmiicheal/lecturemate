@@ -19,8 +19,8 @@ export default function Layout() {
         top="0"
         bg="white"
         h={14}
-        pl={12}
-        pr={3}
+        pl={{ base: 2, md: 12 }}
+        pr={{ base:0 , md: 3 }}
         alignItems="center"
         justifyContent="space-between"
         w="full"
@@ -29,7 +29,7 @@ export default function Layout() {
         >
         <Flex justify="flex-start" align="center" gap={2}>
             <Image src="/logo.png" alt="grayaxis" w="40px" pointerEvents="none" />
-            <Text fontSize={18} fontWeight="700" color="#202020">
+            <Text fontSize={18} fontWeight="700" display={{ base: 'none', md: 'block'}} color="#202020">
             Lecture Mate
             </Text>
         </Flex>

@@ -18,6 +18,7 @@ const LeftNav = () => {
 
   return (
     <Flex
+      display={{ base: 'none', lg: 'block'}}
       direction="column"
       bg="#EBEBEB"
       minH="full"

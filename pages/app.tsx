@@ -8,14 +8,14 @@ import { motion } from 'framer-motion';
 const App = () => {
     const router = useRouter();
   return (
-    <Flex w="full" direction="column" justify="space-between" overflowX="hidden">
+    <Flex w="full" direction="column" justify="space-between" overflowX="hidden" >
       <Layout />
-      <Flex direction="column" w="full" align="center">
+      <Flex direction="column" w="full" align="center" px={2}>
       <Flex
       direction="column"
-      w="1200px"
+      w={{ base: "full", lg: "1200px"}}
       mt={28}
-      ml={{ base: "1000px", md: "600px", lg: "200px" }}
+      ml={{ base: "0", lg: "200px" }}
       align="center"
     >
       <motion.div
@@ -41,7 +41,7 @@ const App = () => {
         <Image src="/guides.png" w={{base: "800px", md: "800px", lg: "1000px"}} pointerEvents="none" />
       </motion.div>
       
-      <Flex gap={4} mt={5} textAlign="center">
+      <Flex gap={4} mt={5} textAlign="center" direction={{base: "column", lg: "row"}}>
             <Flex direction="column" w="300px" gap={5}>
               <Text fontSize={20} fontWeight={600}>
                 Usage
@@ -144,7 +144,7 @@ const App = () => {
           </Flex>
       
       <Flex
-        w="800px"
+        w={{base: "full", md: "800px"}}
         mt={28}
         mb="14"
         boxShadow="md"

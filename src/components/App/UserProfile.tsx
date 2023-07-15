@@ -52,8 +52,8 @@ export default function UserProfile() {
         color="red.500"
         borderColor="red.500"
         bg={{ base: "none", md: "none" }}
-        minW={{ base: 0, md: 40 }}
-        h={{ base: 0, md: 12 }}
+        minW={{ base: 20, md: 40 }}
+        h={{ base: 8, md: 12 }}
         cursor="pointer"
         justify="center"
         align="center"
@@ -63,10 +63,10 @@ export default function UserProfile() {
           Clear Chat
         </Text>
       </Flex>
-      <Text zIndex={2} ml={5}>
+      <Text zIndex={2} mr={{ base: -10, md: 0}} ml={5}>
         25
       </Text>
-      <Flex ml={-10}>
+      <Flex ml={{ base:0, md:-10}}>
         <Image src="/star.gif" w="100px" zIndex={-1} />
       </Flex>
     </HStack>

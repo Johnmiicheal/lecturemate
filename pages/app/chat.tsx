@@ -109,7 +109,6 @@ const Chat = () => {
               w="17em"
               bg="white"
               ml="130px"
-              mr="auto"
               px={5}
               zIndex={2}
               justify="space-between"
@@ -189,7 +188,8 @@ const Chat = () => {
                 direction="column"
                 justify="space-betweem"
                 align="center"
-                ml={{ base: "130px", lg: "320px" }}
+                ml={{ base: "0", lg: "320px" }}
+               
               >
                 <Flex
                   direction="column"
@@ -198,6 +198,7 @@ const Chat = () => {
                   gap="5"
                   pos="fixed"
                   top={20}
+                  px={{ base: 2, md: 0}}
                 >
                   <Player autoplay loop src="/dancingbook.json" className={styles.lottie} />
                   <Text>
@@ -229,15 +230,17 @@ const Chat = () => {
 
             <Flex
               direction="column"
-              justify="space-betweem"
               align="center"
-              ml={{ base: "130px", lg: "320px" }}
+              ml={{ base: "0", lg: "320px" }}
+              w="full"
             >
               <Flex direction="column" gap="20" pos="fixed" top={20}>
                 <Flex
                   direction="column"
-                  w="700px"
-                  maxH={{ md: "400px", lg: "68vh" }}
+                  w={{ lg: "700px"}}
+                  pr={{ lg: 10}}
+                  px={{ base: 4}}
+                  maxH="68vh"
                   overflowY="scroll"
                   mb={7}
                   boxSizing="content-box"
@@ -306,7 +309,7 @@ const Chat = () => {
                 </Flex>
               </Flex>
 
-              <Flex pos="fixed" bottom="0" bg="#F8FCF7" px="60" pb="10">
+              <Flex pos="fixed" bottom="0" bg="#F8FCF7"  px={{base: "2", lg: "60"}} pb="10">
                 <Formik
                   initialValues={{ query: "", token: tokenKey }}
                   onSubmit={async (values, actions) => {
@@ -373,7 +376,7 @@ const Chat = () => {
                                 bg="#E2F0E2"
                                 {...field}
                                 h="60px"
-                                w={{ base: "300px", md: "600px", lg: "720px" }}
+                                w={{ base: "300px", md: "500px", lg: "720px" }}
                                 borderRadius="md"
                                 placeholder="What would you like to ask?"
                                 focusBorderColor="#005103"
@@ -396,7 +399,7 @@ const Chat = () => {
                           </FormControl>
                         )}
                       </Field>
-                      <Flex>
+                      <Flex w="full">
                         <Button
                           onClick={handleClick}
                           mt={2}
@@ -415,6 +418,7 @@ const Chat = () => {
                               {showInput && (
                                 <Input
                                   mt={2}
+                                  px={2}
                                   {...field}
                                   focusBorderColor="#005103"
                                   placeholder="Input Token here"
