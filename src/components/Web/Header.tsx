@@ -37,7 +37,7 @@ import {
 import { FaTelegramPlane } from "react-icons/fa";
 
 const Header = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+
   const {
     isOpen: isDrawerOpen,
     onOpen: onDrawerOpen,
@@ -138,7 +138,7 @@ const Header = () => {
         />
       </Flex>
 
-      <Modal isOpen={isOpen} onClose={onClose} size={{ base: "sm", lg: "lg" }}>
+      {/* <Modal isOpen={isOpen} onClose={onClose} size={{ base: "sm", lg: "lg" }}>
         <ModalOverlay />
         <ModalContent
           minW={{ base: "10rem", lg: "33rem" }}
@@ -201,7 +201,7 @@ const Header = () => {
             </Alert>
           </ModalBody>
         </ModalContent>
-      </Modal>
+      </Modal> */}
 
       <Drawer isOpen={isDrawerOpen} placement="right" onClose={onDrawerClose}>
         <DrawerOverlay />
@@ -248,7 +248,7 @@ const Header = () => {
                 bg="#202020"
                 _hover={{ bg: "#303030" }}
                 rightIcon={<IoChevronForward />}
-                onClick={onOpen}
+                onClick={() => router.push('/app')}
                 fontWeight={500}
                 fontSize={14}
               >
@@ -262,6 +262,8 @@ const Header = () => {
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
+
+
     </Flex>
   );
 };

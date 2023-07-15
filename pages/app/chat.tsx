@@ -18,8 +18,13 @@ import {
   Image,
   IconButton,
   FormControl,
-  FormErrorMessage,
-  FormLabel,
+  Drawer,
+  DrawerBody,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
   Divider,
   Box,
 } from "@chakra-ui/react";
@@ -30,11 +35,13 @@ import {
   IoAdd,
   IoPaperPlaneOutline,
   IoChatbubbleEllipsesOutline,
+  IoChevronForward,
 } from "react-icons/io5";
 import { useRouter } from "next/router";
 import { Field, Form, Formik } from "formik";
 import FileUpload from "../../src/components/App/FileUpload";
 import styles from "../../styles/Chat.module.css"
+import { FaTelegramPlane } from "react-icons/fa";
 
 
 interface RequestData {
@@ -57,6 +64,12 @@ const Chat = () => {
   const fileName = localStorage.getItem("file");
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
+
+  const {
+    isOpen: isDrawerOpen,
+    onOpen: onDrawerOpen,
+    onClose: onDrawerClose,
+  } = useDisclosure();
 
   useEffect(() => {
     if (chatContainerRef.current) {
