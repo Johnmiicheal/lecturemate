@@ -2,7 +2,7 @@ import { Flex, Icon, Text, Image } from "@chakra-ui/react"
 import { AiFillHome, AiOutlineHome, AiOutlineProfile, AiFillProfile } from "react-icons/ai"
 import { RiContactsBookFill, RiContactsBookLine } from "react-icons/ri"
 import { IoChatbubbleEllipsesOutline, IoChatbubbleEllipses, IoFolderOutline, IoFolder, IoTrendingUp, IoSettings, IoSettingsOutline} from "react-icons/io5";
-import { BsBoxArrowUpRight } from "react-icons/bs";
+import { BsEmojiHeartEyes } from "react-icons/bs";
 import { useRouter } from "next/router"
 
 const LeftNav = () => {
@@ -55,12 +55,13 @@ const LeftNav = () => {
         </Flex>
       ))}
 
-      {/* <Flex direction="column" w='full' bottom={0}>
+      <Flex direction="column" pos="fixed" bottom={5}>
       <Flex
           direction="column"
           mt={10}
           w="full"
           py={2}
+          px={4}
           align="center"
           role="group"
           _hover={{ color: "#005103", bg: "#90E768" }}
@@ -68,15 +69,15 @@ const LeftNav = () => {
           cursor="pointer"
           color={router.pathname === "/app/settings" ? "#FFFFFF": "#A5A5A5"}
           bg={router.pathname === "/app/settings" ? "#53AF28": "none"}
-          onClick={() => router.push("/app/settings")}
+          onClick={() => router.push('/app/feedback')}
           
         >
-          <Icon as={IoSettingsOutline} w={6} h={6} mb={2} />
-          <Text fontSize={13} fontWeight={router.pathname === "/app/settings" ? 500 : 400}>
-            Settings
+          <Icon as={BsEmojiHeartEyes} w={6} h={6} mb={2} />
+          <Text fontSize={12} fontWeight={router.pathname === "/app/settings" ? 500 : 400}>
+            Send Feedback
           </Text>
         </Flex>
-      </Flex> */}
+      </Flex>
 
 
     </Flex>

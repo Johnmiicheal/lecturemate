@@ -103,11 +103,12 @@ const Chat = () => {
             <Flex
               direction="column"
               h="100vh"
-              w="300px"
+              w="17em"
               bg="white"
               ml="130px"
               mr="auto"
               px={5}
+              zIndex={2}
               justify="space-between"
               display={{ base: "none", lg: "block" }}
             >
@@ -185,13 +186,13 @@ const Chat = () => {
               align="center"
               ml={{ base: "130px", lg: "320px" }}
             >
-              <Flex direction="column" gap="20" pos="fixed" top={20}>
+              <Flex direction="column" gap="20" pos="fixed"  top={20}>
                 <Flex
                   direction="column"
                   w="700px"
                   maxH={{ md: "400px", lg: "68vh" }}
                   overflowY="scroll"
-                  mb={3}
+                  mb={7}
                   boxSizing="content-box"
                   ref={chatContainerRef}
                   css={{
@@ -239,7 +240,7 @@ const Chat = () => {
                         py={2}
                         px={4}
                         mr="auto"
-                        mb={2}
+                        mb={5}
                         borderRadius="30px 30px 30px 0 "
                         border="2px solid"
                         borderColor="gray.100"
@@ -258,7 +259,7 @@ const Chat = () => {
                 </Flex>
               </Flex>
 
-              <Flex pos="fixed" bottom="10">
+              <Flex pos="fixed" bottom="0"  bg="#F8FCF7" px='60' pb='10'>
                 <Formik
                   initialValues={{ query: "", token: tokenKey }}
                   onSubmit={async (values, actions) => {
