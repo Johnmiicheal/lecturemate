@@ -52,6 +52,7 @@ const Chat = () => {
   const [tokenKey, setTokenKey] = useState("");
   const [requests, setRequests] = useState<String[]>([]);
   const [responses, setResponses] = useState<ReactNode[]>([]);
+  const fileName = localStorage.getItem("file");
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
@@ -131,28 +132,30 @@ const Chat = () => {
                 Upload Note
               </Flex>
 
-              <Flex
-                h="50px"
-                mt={5}
-                gap={2}
-                justify="center"
-                align="center"
-                bg="#53AF28"
-                color="white"
-                w="full"
-                border="1px solid #53AF28"
-                _hover={{ bg: "#53AF28", color: "white" }}
-                pl={3}
-                borderRadius="md"
-                cursor="pointer"
-                onClick={onOpen}
-              >
-                <Icon as={IoChatbubbleEllipsesOutline} w="5" h="5" />
-                <Text noOfLines={1} textOverflow="ellipsis">
-                  {localStorage.getItem("file")}jijoiwhejfnj
-                  iuhfiwuehefiuhfejoiownuenfjwneiun
-                </Text>
-              </Flex>
+              {fileName && (
+                <Flex
+                  h="50px"
+                  mt={5}
+                  gap={2}
+                  justify="start"
+                  align="center"
+                  bg="#53AF28"
+                  color="white"
+                  w="full"
+                  border="1px solid #53AF28"
+                  _hover={{ bg: "#53AF28", color: "white" }}
+                  pl={3}
+                  borderRadius="md"
+                  cursor="pointer"
+                  onClick={onOpen}
+                >
+                  <Icon as={IoChatbubbleEllipsesOutline} w="5" h="5" />
+                  <Text noOfLines={1} textOverflow="ellipsis">
+                    {fileName}
+                  </Text>
+                </Flex>
+              )}
+
 
               <Flex
                 direction="column"
