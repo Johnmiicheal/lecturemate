@@ -4,7 +4,7 @@ import { useFormik } from "formik";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import { RxUpload, RxFile } from "react-icons/rx";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CopyBox from "./CopyBox";
 
 interface FormValues {
@@ -16,7 +16,23 @@ const FileUpload = () => {
   const toast = useToast();
   const router = useRouter();
   const [token, setToken] = useState('');
-  const [file, setFile] = React.useState('');
+  const [timer, setTimer] = useState(0);
+  const [textIndex, setTextIndex] = useState(0);
+  const texts = ['Uploading...', 'Please wait...', 'Almost there...', 'Any minute now...', 'Few seconds left...', 'Approaching light speed...', 'Initiating hyperdrive...', 'Processing...'];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimer((prevTimer) => prevTimer + 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (timer % 40 === 0) {
+      setTextIndex((prevIndex) => (prevIndex + 1) % texts.length);
+    }
+  }, [timer]);
   
   const formik = useFormik<FormValues>({
     initialValues: {
@@ -28,18 +44,20 @@ const FileUpload = () => {
         formData.append("file", values.file);
         try {
           const response = await axios.post(
-            "https://api.greynote.app/lecture",
-            // "http://127.0.0.1:4000/api/upload/",
+            // "https://api.greynote.app/lecture",
+            "http://127.0.0.1:4000/api/upload/",
             formData
           );
           console.log("Id: ", response.data.uniqueId);
           if (response.status === 200) {
             // alert(values.file.name);
+            setTimer(0);
+            setTextIndex(0);
             localStorage.setItem('file', values.file.name);
             toast({
               title: "Notes Uploaded",
               position: "top-right",
-              description: "We've successfully uploaded your notes",
+              description: "We've successfully uploaded your notes🎉🎉",
               status: "success",
               variant: "left-accent",
               duration: 5000,
@@ -50,7 +68,7 @@ const FileUpload = () => {
             toast({
                 title: "Upload Error",
                 position: "top",
-                description: "We were unable to upload your note",
+                description: "We could not upload your note😭",
                 status: "error",
                 variant: "left-accent",
                 duration: 5000,
@@ -63,10 +81,12 @@ const FileUpload = () => {
           console.log("Upload successful:", response.data);
         } catch (error) {
             if(error){
+              setTimer(0);
+            setTextIndex(0);
                 toast({
                     title: "Upload Error",
                     position: "top-right",
-                    description: "We were unable to upload your note",
+                    description: "We were unable to upload your note😞",
                     status: "error",
                     variant: "left-accent",
                     duration: 5000,
@@ -137,6 +157,11 @@ const FileUpload = () => {
       >
         Upload
       </Button>
+      {formik.isSubmitting && (
+        <Text fontSize="20" textAlign="center" mt={4}>
+          {texts[textIndex]}
+        </Text>
+      )}
       <Flex display={!formik.values.file ? 'none' : 'block'} mt={2}>
         <CopyBox content={token} height={10} />
       </Flex>

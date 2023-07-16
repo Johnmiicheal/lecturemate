@@ -125,7 +125,7 @@ const Header = () => {
           fontWeight={500}
           fontSize={14}
         >
-          Use Demo
+          Try it out
         </Button>
       </Flex>
 

@@ -137,8 +137,7 @@ const App = () => {
                 borderRadius="md"
                 color="#333333"
               >
-                File uploads are limited to one pdf per time, uploading a new
-                file clears the chat history{" "}
+                File uploads are limited to one pdf per time, uploading might take a while depending on the file size{" "}
               </Box>
             </Flex>
           </Flex>
@@ -157,7 +156,7 @@ const App = () => {
         cursor="pointer"
         onClick={() => router.push('/app/chat')}
       >
-        Start Chat
+        Start Chatting🚀
         <Icon as={IoPaperPlaneOutline} w="5" h="5" />
       </Flex>
     </Flex>

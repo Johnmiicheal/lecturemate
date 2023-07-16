@@ -421,7 +421,7 @@ const Chat = () => {
                           border="1px solid #53AF28"
                           _hover={{ bg: "#53AF28", color: "white" }}
                         >
-                          {showInput ? "Hide Token" : "Show Token"}
+                          {showInput ? "Hide Token" : "Add Token"}
                         </Button>
                         <Field name="token">
                           {({ field, form }: any) => (

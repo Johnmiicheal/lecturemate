@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Flex, Text, Image, Divider, Button } from "@chakra-ui/react";
+import { Box, Flex, Text, Image, Divider, Button, Link } from "@chakra-ui/react";
 import { IoLogoTwitter, IoLogoLinkedin, IoLogoFacebook } from "react-icons/io5";
 
 const Footer = () => {
@@ -36,7 +36,7 @@ const Footer = () => {
       py={10}
       overflow="hidden"
     >
-        <Text>Made with ❤ by Lecture Mate</Text>
+        <Text>Made with ❤ by <Link href="https://twitter.com/johnmiiicheal">Johnmiicheal</Link></Text>
       {/* <Flex
         justify={{ base: "center", md: "space-between" }}
         direction={{ base: "column", md: "row" }}
