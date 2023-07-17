@@ -403,6 +403,7 @@ const Chat = () => {
                                 bg="#E2F0E2"
                                 {...field}
                                 minH="60px"
+                                maxH="200px"
                                 justifyItems="center"
                                 pr="10"
                                 css={{
@@ -416,6 +417,48 @@ const Chat = () => {
                                 borderRadius="md"
                                 placeholder="What would you like to ask?"
                                 focusBorderColor="#005103"
+                                style={{
+                                  // height: textareaHeight,
+                                  // textAlign: 'center', // Align text vertically in the center
+                                  lineHeight: '2.5', // Set line height to control the vertical centering
+                                }}
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter") {
+                                    if (!e.shiftKey) {
+                                        e.preventDefault(); // Prevent the default behavior of Enter key (submit the form)
+                                        if (field.value.trim().length > 0) {
+                                          props.submitForm(); // Submit the form when Enter is pressed (without Shift key) and the field is not empty
+                                        }
+                                    } else {
+                                      // Add a new line by inserting a newline character
+                                      const currentValue = (
+                                        e.target as HTMLTextAreaElement
+                                      ).value;
+                                      const selectionStart = (
+                                        e.target as HTMLTextAreaElement
+                                      ).selectionStart;
+                                      const newValue =
+                                        currentValue.substring(
+                                          0,
+                                          selectionStart
+                                        ) +
+                                        "\n" +
+                                        currentValue.substring(
+                                          (e.target as HTMLTextAreaElement)
+                                            .selectionEnd
+                                        );
+                                      (e.target as HTMLTextAreaElement).value =
+                                        newValue;
+                                      // Trigger onChange event manually to update Formik state
+                                      (
+                                        e.target as HTMLTextAreaElement
+                                      ).dispatchEvent(
+                                        new Event("input", { bubbles: true })
+                                      );
+                                      e.preventDefault(); // Prevent the default behavior of Enter key (new line)
+                                    }
+                                  }
+                                }}
                               />
                               <InputRightElement>
                                 <IconButton
@@ -431,7 +474,11 @@ const Chat = () => {
                                   mt={5}
                                   mr={7}
                                   type="submit"
-                                  isDisabled={!props.isValid || !props.dirty ? true : false}
+                                  isDisabled={
+                                    !props.isValid || !props.dirty
+                                      ? true
+                                      : false
+                                  }
                                   isLoading={props.isSubmitting}
                                 />
                               </InputRightElement>
