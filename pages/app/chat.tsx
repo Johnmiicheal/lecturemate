@@ -27,6 +27,7 @@ import {
   DrawerCloseButton,
   Divider,
   Box,
+  Textarea,
 } from "@chakra-ui/react";
 import React, { useState, useEffect, ReactNode, useRef } from "react";
 import { Player } from "@lottiefiles/react-lottie-player";
@@ -36,13 +37,13 @@ import {
   IoPaperPlaneOutline,
   IoChatbubbleEllipsesOutline,
   IoChevronForward,
+  IoPaperPlane,
 } from "react-icons/io5";
 import { useRouter } from "next/router";
 import { Field, Form, Formik } from "formik";
 import FileUpload from "../../src/components/App/FileUpload";
-import styles from "../../styles/Chat.module.css"
+import styles from "../../styles/Chat.module.css";
 import { FaTelegramPlane } from "react-icons/fa";
-
 
 interface RequestData {
   requestData: string;
@@ -115,7 +116,11 @@ const Chat = () => {
       <Flex bg="#F8FCF7">
         <Flex w="full" direction="column" justify="space-between">
           <Layout />
-          <Flex direction="column" w="full" align={{base: "center", lg: "start"}}>
+          <Flex
+            direction="column"
+            w="full"
+            align={{ base: "center", lg: "start" }}
+          >
             <Flex
               direction="column"
               h="100vh"
@@ -200,7 +205,6 @@ const Chat = () => {
                 direction="column"
                 align="center"
                 ml={{ base: "0", lg: "60%" }}
-              
               >
                 <Flex
                   direction="column"
@@ -209,9 +213,14 @@ const Chat = () => {
                   gap="5"
                   pos="fixed"
                   top={20}
-                  px={{ base: 2, md: 0}}
+                  px={{ base: 2, md: 0 }}
                 >
-                  <Player autoplay loop src="/dancingbook.json" className={styles.lottie} />
+                  <Player
+                    autoplay
+                    loop
+                    src="/dancingbook.json"
+                    className={styles.lottie}
+                  />
                   <Text>
                     Upload a note to get started or just ask any question <br />
                     Don't forget to copy your token after uploading your note😊
@@ -248,9 +257,9 @@ const Chat = () => {
               <Flex direction="column" gap="20" pos="fixed" top={20}>
                 <Flex
                   direction="column"
-                  w={{ lg: "700px"}}
-                  pr={{ lg: 10}}
-                  px={{ base: 4}}
+                  w={{ lg: "700px" }}
+                  pr={{ lg: 10 }}
+                  px={{ base: 4 }}
                   maxH="68vh"
                   overflowY="scroll"
                   mb={7}
@@ -320,7 +329,13 @@ const Chat = () => {
                 </Flex>
               </Flex>
 
-              <Flex pos="fixed" bottom="0" bg="#F8FCF7"  px={{base: "2", lg: "60"}} pb="10">
+              <Flex
+                pos="fixed"
+                bottom="0"
+                bg="#F8FCF7"
+                px={{ base: "2", lg: "60" }}
+                pb="10"
+              >
                 <Formik
                   initialValues={{ query: "", token: tokenKey }}
                   onSubmit={async (values, actions) => {
@@ -383,10 +398,20 @@ const Chat = () => {
                         {({ field, form }: any) => (
                           <FormControl>
                             <InputGroup>
-                              <Input
+                              <Textarea
+                                resize="none"
                                 bg="#E2F0E2"
                                 {...field}
-                                h="60px"
+                                minH="60px"
+                                justifyItems="center"
+                                pr="10"
+                                css={{
+                                  "&:: -webkit-scrollbar": {
+                                    display: "none",
+                                  },
+                                  "&:: -ms-overflow-style": "none",
+                                  "&:: scrollbar-width": "none",
+                                }}
                                 w={{ base: "300px", md: "500px", lg: "720px" }}
                                 borderRadius="md"
                                 placeholder="What would you like to ask?"
@@ -394,16 +419,20 @@ const Chat = () => {
                               />
                               <InputRightElement>
                                 <IconButton
-                                  icon={<IoPaperPlaneOutline />}
-                                  variant="ghost"
+                                  icon={<IoPaperPlane />}
+                                  variant="solid"
+                                  bg={"#53AF28"}
+                                  color="#F8FCF7"
+                                  _hover={{ bg: "#005103", color: "white" }}
+                                  py={4}
                                   aria-label="send message"
                                   w="6"
                                   h="6"
                                   mt={5}
                                   mr={7}
                                   type="submit"
+                                  isDisabled={!props.isValid || !props.dirty ? true : false}
                                   isLoading={props.isSubmitting}
-                                  color="#808680"
                                 />
                               </InputRightElement>
                             </InputGroup>
