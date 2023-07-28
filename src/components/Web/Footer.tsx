@@ -36,7 +36,7 @@ const Footer = () => {
       py={10}
       overflow="hidden"
     >
-        <Text>Made with ❤ by <Link href="https://twitter.com/johnmiiicheal">Johnmiicheal</Link></Text>
+        <Text>Made with ❤ by <Link href="https://twitter.com/johnmiiiicheal">Johnmiicheal</Link></Text>
       {/* <Flex
         justify={{ base: "center", md: "space-between" }}
         direction={{ base: "column", md: "row" }}
