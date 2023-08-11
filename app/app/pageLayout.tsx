@@ -1,8 +1,10 @@
+'use client'
+
 import { Center, Flex, Text, Image, Box, Link, Icon } from "@chakra-ui/react";
 import React from "react";
-import Layout from "../src/components/App/Layout";
+import Layout from "../../src/components/App/Layout";
 import { IoPaperPlane, IoPaperPlaneOutline } from "react-icons/io5";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { motion } from 'framer-motion';
 
 const App = () => {
