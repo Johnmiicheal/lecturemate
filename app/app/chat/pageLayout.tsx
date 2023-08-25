@@ -366,7 +366,8 @@ const Chat = ({user2}: any) => {
                     if (values) {
                       try {
                         const response = await fetch(
-                          "https://purple-chipmunk-tam.cyclic.app/api/api/",
+                          // "https://purple-chipmunk-tam.cyclic.app/api/api",
+                          "http://localhost:3000/api",
                           {
                             method: "POST",
                             headers: {
@@ -510,7 +511,7 @@ const Chat = ({user2}: any) => {
                           </FormControl>
                         )}
                       </Field>
-                      <Flex w="full">
+                      {/* <Flex w="full">
                         <Button
                           onClick={handleClick}
                           mt={2}
@@ -538,7 +539,7 @@ const Chat = ({user2}: any) => {
                             </FormControl>
                           )}
                         </Field>
-                      </Flex>
+                      </Flex> */}
                     </Form>
                   )}
                 </Formik>
@@ -571,7 +572,7 @@ const Chat = ({user2}: any) => {
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody mb={7}>
-            <FileUpload />
+            <FileUpload user3 = {user2}/>
           </ModalBody>
         </ModalContent>
       </Modal>
