@@ -12,7 +12,7 @@ export default function Home() {
     <Flex direction="column">
       <Flex
         direction="column"
-        px={{ base: 2, lg: 20 }}
+        px={{ base: 2, lg: 32 }}
         bg="white"
         boxShadow="md"
         zIndex={2}
@@ -30,25 +30,30 @@ export default function Home() {
         overflow="hidden"
         gap={3}
       >
-        <Flex
-          mt={{ base: 10, lg: 20 }}
-          w="13rem"
-          h="20px"
-          gap={3}
-          align="center"
-          justify="center"
-          bg="green.100"
-          color="#53AF28"
-          border="1px solid #53AF28"
-          _hover={{ color: "#005103", bg: "#90E768" }}
-          py={5}
-          px={3}
-          borderRadius="full"
-          cursor="pointer"
-          onClick={() => router.push('https://github.com/johnmiicheal/lecturemate')}
-        >
-          Star us on Github
-          <Icon as={IoStar} w="5" h="5" />
+        <Flex gap="2" align="center">
+          <Flex
+            mt={{ base: 10, lg: 20 }}
+            w="13rem"
+            h="20px"
+            gap={3}
+            align="center"
+            justify="center"
+            bg="green.100"
+            color="#53AF28"
+            border="1px solid #53AF28"
+            _hover={{ color: "#005103", bg: "#90E768" }}
+            py={5}
+            px={3}
+            borderRadius="full"
+            cursor="pointer"
+            onClick={() =>
+              router.push("https://github.com/johnmiicheal/lecturemate")
+            }
+          >
+            Star us on Github
+            <Icon as={IoStar} w="5" h="5" />
+          </Flex>
+        
         </Flex>
         <Flex direction="column" align="center">
           <motion.div
