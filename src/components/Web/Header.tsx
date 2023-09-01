@@ -61,10 +61,10 @@ const Header = () => {
       h={12}
     >
       <Flex justify="start" gap={10}>
-        <Flex align="center" gap={2}>
+        <Flex align="center" gap={2} onClick={() => router.push('/')} cursor='pointer'>
           <Image
             src="/logo.png"
-            alt="Graybook Logo"
+            alt="Lecture Mate Logo"
             w="40px"
             pointerEvents="none"
           />

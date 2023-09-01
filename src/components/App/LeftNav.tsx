@@ -47,6 +47,7 @@ const LeftNav = () => {
           color={router.pathname === link.path ? "#FFFFFF": "#A5A5A5"}
           bg={router.pathname === link.path ? "#53AF28": "none"}
           onClick={() => router.push(link.path)}
+          display={link.text === 'Chat' ? 'none' : 'flex'}
           
         >
           <Icon as={router.pathname === link.path ? link.iconActive : link.iconInactive} w={6} h={6} mb={2} />

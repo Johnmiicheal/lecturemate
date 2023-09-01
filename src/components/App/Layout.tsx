@@ -27,7 +27,7 @@ export default function Layout() {
         overflow='hidden'
         boxShadow="md"
         >
-        <Flex justify="flex-start" align="center" gap={2}>
+        <Flex justify="flex-start" align="center" gap={2}  onClick={() => router.push('/')} cursor='pointer'>
             <Image src="/logo.png" alt="grayaxis" w="40px" pointerEvents="none" />
             <Text fontSize={18} fontWeight="700" display={{ base: 'none', md: 'block'}} color="#202020">
             Lecture Mate

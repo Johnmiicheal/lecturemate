@@ -1,5 +1,13 @@
 import React from "react";
-import { Box, Flex, Text, Image, Divider, Button, Link } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Text,
+  Image,
+  Divider,
+  Button,
+  Link,
+} from "@chakra-ui/react";
 import { IoLogoTwitter, IoLogoLinkedin, IoLogoFacebook } from "react-icons/io5";
 
 const Footer = () => {
@@ -36,7 +44,10 @@ const Footer = () => {
       py={10}
       overflow="hidden"
     >
-        <Text>Made with ❤ by <Link href="https://twitter.com/johnmiiicheal">Johnmiicheal</Link></Text>
+      <Text>
+        Made with ❤ by{" "}
+        <Link href="https://twitter.com/johnmiiicheal">Johnmiicheal</Link>
+      </Text>
       {/* <Flex
         justify={{ base: "center", md: "space-between" }}
         direction={{ base: "column", md: "row" }}
@@ -76,7 +87,7 @@ const Footer = () => {
           {/* {links.map((link) => (
                         <Button variant="link" key={link.path} color="#7A7A7A">{link.text}</Button>
                     ))} */}
-        {/* </Flex>
+      {/* </Flex>
       </Flex>
       <Box w="full" h="0.3" bgColor="gray.300" mt={6} />
       <Flex
@@ -102,7 +113,29 @@ const Footer = () => {
             {foots.text}
           </Button>
         ))}
-      </Flex> */} 
+      </Flex> */}
+      <Flex mt={{ base: 10, lg: 5 }} gap="2">
+        <a
+          href="https://theresanaiforthat.com/ai/lecture-mate/?ref=featured&v=402205"
+          target="_blank"
+        >
+          <Image
+            height={14}
+            src="https://media.theresanaiforthat.com/featured3.png"
+          />
+        </a>
+
+        <a
+          href="https://www.producthunt.com/posts/lecture-mate?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-lecture&#0045;mate"
+          target="_blank"
+        >
+          <Image
+            src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=404958&theme=neutral"
+            alt="Lecture&#0032;Mate - Unlocking&#0032;the&#0032;power&#0032;of&#0032;knowledge | Product Hunt"
+            height="14"
+          />
+        </a>
+      </Flex>
     </Flex>
   );
 };
