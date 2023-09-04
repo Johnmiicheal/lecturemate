@@ -1,3 +1,6 @@
+'use client'
+
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import {
   Text,
   Flex,
@@ -31,7 +34,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useState, useEffect, ReactNode, useRef } from "react";
 import { Player } from "@lottiefiles/react-lottie-player";
-import Layout from "../../src/components/App/Layout";
+import Layout from "../../../src/components/App/Layout";
 import {
   IoAdd,
   IoPaperPlaneOutline,
@@ -39,10 +42,10 @@ import {
   IoChevronForward,
   IoPaperPlane,
 } from "react-icons/io5";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { Field, Form, Formik } from "formik";
-import FileUpload from "../../src/components/App/FileUpload";
-import styles from "../../styles/Chat.module.css";
+import FileUpload from "../../../src/components/App/FileUpload";
+import styles from "../../../styles/Chat.module.css";
 import { FaTelegramPlane } from "react-icons/fa";
 
 interface RequestData {
@@ -52,8 +55,10 @@ interface RequestData {
 interface ResponseData {
   responseData: string;
 }
-const Chat = () => {
+const Chat = ({user2}: any) => {
+  console.log(JSON.stringify(user2));
   const router = useRouter();
+  const supabase = createClientComponentClient();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [showInput, setShowInput] = useState(false);
   const [showChat, setShowChat] = useState(false);
@@ -111,11 +116,30 @@ const Chat = () => {
     { name: "Sky Waiters", img: "/skywaiter.png", role: "Investor", link: "#" },
   ];
   const toast = useToast();
+
+  useEffect(() => {
+    if (!user2) {
+      router.push("/login");
+    }
+  }, []);
+
+  // const auth = async () => {
+  //   const { data: { user } } = await supabase.auth.getUser();
+
+    let username: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined;
+  
+    if(user2){
+      username = user2.user_metadata.username;
+      console.log(username);
+    }
+
+  // }
+
   return (
     <>
       <Flex bg="#F8FCF7">
         <Flex w="full" direction="column" justify="space-between">
-          <Layout />
+          <Layout user3 = {user2}/>
           <Flex
             direction="column"
             w="full"
@@ -297,7 +321,7 @@ const Chat = () => {
                             fontWeight="bold"
                             fontStyle="italic"
                           >
-                            Me
+                            {username}
                           </Text>
                         </Flex>
                       </Box>
@@ -342,7 +366,8 @@ const Chat = () => {
                     if (values) {
                       try {
                         const response = await fetch(
-                          "https://purple-chipmunk-tam.cyclic.app/api/api/",
+                          // "https://purple-chipmunk-tam.cyclic.app/api/api",
+                          "http://localhost:3000/api",
                           {
                             method: "POST",
                             headers: {
@@ -486,7 +511,7 @@ const Chat = () => {
                           </FormControl>
                         )}
                       </Field>
-                      <Flex w="full">
+                      {/* <Flex w="full">
                         <Button
                           onClick={handleClick}
                           mt={2}
@@ -514,7 +539,7 @@ const Chat = () => {
                             </FormControl>
                           )}
                         </Field>
-                      </Flex>
+                      </Flex> */}
                     </Form>
                   )}
                 </Formik>
@@ -547,7 +572,7 @@ const Chat = () => {
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody mb={7}>
-            <FileUpload />
+            <FileUpload user3 = {user2}/>
           </ModalBody>
         </ModalContent>
       </Modal>

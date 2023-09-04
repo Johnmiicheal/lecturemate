@@ -27,7 +27,7 @@ import {
   Divider,
 } from "@chakra-ui/react";
 import React from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import {
   IoChevronForward,
   IoFlash,
@@ -64,7 +64,7 @@ const Header = () => {
         <Flex align="center" gap={2}>
           <Image
             src="/logo.png"
-            alt="Graybook Logo"
+            alt="Lecture mate Logo"
             w="40px"
             pointerEvents="none"
           />
@@ -184,7 +184,7 @@ const Header = () => {
                   px={4}
                   color="white"
                   bg="#202020"
-                  _hover={{ bgGradient: "linear(to-l, #00F0FF, #53AF28)" }}
+                  // _hover={{ bgGradient: "linear(to-l, #00F0FF, #53AF28)" }}
                   rightIcon={<IoChevronForward />}
                   onClick={onOpen}
                   fontWeight={500}

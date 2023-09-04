@@ -1,6 +1,6 @@
 import { Center, Flex, Text, Image, Box, Link, Icon } from "@chakra-ui/react";
 import React from "react";
-import Layout from "../../src/components/App/Layout";
+import Layout from "../../../src/components/App/Layout";
 
 const Feedback = () => {
   return (

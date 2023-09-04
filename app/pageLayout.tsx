@@ -1,6 +1,8 @@
+'use client'
+
 import React, { Box } from "@chakra-ui/react";
-import { useRouter } from "next/router";
-import { Flex, Icon, Text, Image } from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
+import { Flex, Icon, Text, Image} from "@chakra-ui/react";
 import Header from "../src/components/Web/Header";
 import Footer from "../src/components/Web/Footer";
 import { motion } from "framer-motion";
@@ -74,7 +76,7 @@ export default function Home() {
               />{" "}
               the Power of Knowledge with{" "}
               <Text
-                bgGradient="linear(to-r, #00F0FF, #53AF28)"
+                // bgGradient="linear(to-r, #00F0FF, #53AF28)"
                 bgClip="text"
                 fontSize={{ base: "xl", md: "5xl", lg: "5xl" }}
                 fontWeight="extrabold"

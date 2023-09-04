@@ -1,5 +1,5 @@
 import { Box, Flex, Icon, Text, Button, useToast } from "@chakra-ui/react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useFormik } from "formik";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
@@ -12,7 +12,9 @@ interface FormValues {
 }
 
 
-const FileUpload = () => {
+const FileUpload = ({ user3 }: any) => {
+  console.log("file upload: " + user3.id)
+  const id = user3.id
   const toast = useToast();
   const router = useRouter();
   const [token, setToken] = useState('');
@@ -42,6 +44,7 @@ const FileUpload = () => {
       if (values.file) {
         const formData = new FormData();
         formData.append("file", values.file);
+        formData.append("userId", id)
         try {
           const response = await axios.post(
             "https://api.greynote.app/lecture",
@@ -163,7 +166,7 @@ const FileUpload = () => {
         </Text>
       )}
       <Flex display={!formik.values.file ? 'none' : 'block'} mt={2}>
-        <CopyBox content={token} height={10} />
+        {/* <CopyBox content={token} height={10} /> */}
       </Flex>
     </Flex>
   );
