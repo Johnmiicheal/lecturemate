@@ -4,63 +4,55 @@ import { BufferMemory } from "langchain/memory";
 import { ConversationChain } from "langchain/chains";
 import { PineconeClient } from "@pinecone-database/pinecone";
 import { setCookie } from "../../utils/cookies";
-import { cookies } from "next/headers";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { create } from "domain";
-import { NextRequest, NextResponse } from "next/server"
 // import type { NextApiRequest, NextApiResponse } from 'next'
 
 // Initialize Openai
-
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(configuration);
 
-// if (!configuration.apiKey) {
-//   const err = () => {
-//     return console.log("Error");
-//   }
-//   err()
-// } else {
-//   console.log("It's working");
-// }
+if (!configuration.apiKey) {
+  console.log("Error");
+  // return;
+} else {
+  console.log("It's working");
+}
 
 // Declare constants
 const COMPLETIONS_MODEL = "text-davinci-003";
 const EMBEDDING_MODEL = "text-embedding-ada-002";
-// api(req: any, res: any)
 
-export async function POST(request: Request) {
-  const json = await request.json()
-  
-  console.log("first json: " + JSON.stringify(json))
-  const supabase = createServerComponentClient({cookies})
-  
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  console.log("api: " + JSON.stringify(user))
-  const userId = user?.id
-
-
-  console.log(`lecture-mate-${userId}`);
+export default async function api(req: any, res: any) {
+  console.log(req.body)
+  const { token } = req.body;
+  setCookie(res, "token", token, { path: "/app/chat", maxAge: 2592000 });
+  const setTokenKey = res.getHeader("Set-Cookie")[0];
+  console.log("Log Token", token);
+  const regex = /token=([^;]+)/;
+  const match = setTokenKey.match(regex);
+  // Extract the token value from the match
+  const tokenValue = match ? match[1] : null;
+  console.log(`lecture-mate-${tokenValue}`);
 
   if (!configuration.apiKey) {
-    return new NextResponse("OpenAI API key not properly configured", {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    })    
+    res.status(500).json({
+      error: {
+        message: "OpenAI API key not properly configured",
+      },
+    });
+    return;
   }
 
-  const query = json.query || "";
+  const query = req.body.query || "";
 
   if (query.trim().length === 0) {
-    return new NextResponse("Please enter a question", {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    }) 
+    res.status(400).json({
+      error: {
+        message: "Please enter a question",
+      },
+    });
+    return;
   }
 
   // Initialize pinecone
@@ -83,7 +75,7 @@ export async function POST(request: Request) {
 
   const queryRes = await queryIndex.query({
     queryRequest: {
-      namespace: `lecture-mate-${userId}`,
+      namespace: `lecture-mate-${tokenValue}`,
       vector: xq,
       topK: 1,
       includeMetadata: true,
@@ -116,40 +108,18 @@ console.log("Query Info:", info);
 
     // const completion: string | undefined = response.data.choices[0].text;
     console.log(completion);
-    console.log(query);
-
-    const result = {
-      query: query,
-      completion: completion
-    }
-    
-    return (new NextResponse(JSON.stringify(result), {
-      status: 201,
-      headers: { "Content-Type": "application/json" },
-    })
-    )
-    // res.status(200).send({ query, result: completion });
+    res.status(200).send({ query, result: completion });
   } catch (error: any) {
     if (error.response) {
       console.error(error.response.status, error.response.data);
-      return new NextResponse(error.response.data, {
-        status: error.response.status,
-        headers: { "Content-Type": "application/json" },
-      })
-      // res.status().json();
+      res.status(error.response.status).json(error.response.data);
     } else {
       console.error(`Error with request: ${error.message}`);
-
-      return new NextResponse("An error occurred during your request.", {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      })
-      
-      // res.status(500).json({
-      //   error: {
-      //     message: "An error occurred during your request.",
-      //   },
-      // });
+      res.status(500).json({
+        error: {
+          message: "An error occurred during your request.",
+        },
+      });
     }
   }
 

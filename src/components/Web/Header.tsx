@@ -64,7 +64,7 @@ const Header = () => {
         <Flex align="center" gap={2}>
           <Image
             src="/logo.png"
-            alt="Lecture mate Logo"
+            alt="Graybook Logo"
             w="40px"
             pointerEvents="none"
           />

@@ -291,7 +291,7 @@ export default function UserProfile({user4}: any) {
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody mb={7}>
-            <FileUpload user3 = {user4} />
+            <FileUpload />
           </ModalBody>
         </ModalContent>
       </Modal>
