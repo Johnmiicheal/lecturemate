@@ -25,13 +25,21 @@ import {
   Image,
   useToast,
 } from "@chakra-ui/react";
+import Link from 'next/link'
 import React from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { FaTelegramPlane } from "react-icons/fa";
 import { IoMenu, IoChevronForward, IoAdd, IoChatbubbleEllipsesOutline } from "react-icons/io5";
 import FileUpload from "./FileUpload";
 
-export default function UserProfile() {
+export default function UserProfile({user4}: any) {
+  console.log(user4);
+  let username: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined;
+
+  if(user4){
+    username = user4.user_metadata.username;
+  }
+
   const router = useRouter();
   const toast = useToast();
   const {
@@ -54,11 +62,43 @@ export default function UserProfile() {
       isClosable: true,
     });
     setTimeout(() => {
-      router.reload();
+      router.push("/app/chat"); 
     }, 1000);
   };
+
   return (
     <HStack ml={1}>
+      {user4 && (
+      <>
+      <Text zIndex={2} mr={{ base: -10, md: 0 }} ml={5}>
+        Hi, {username} !
+      </Text>
+      <Flex
+        _hover={{ bg: "red.500", color: "white" }}
+        borderRadius="full"
+        border="1px solid"
+        color="red.500"
+        borderColor="red.500"
+        bg={{ base: "none", md: "none" }}
+        minW={{ base: 20, md: 40 }}
+        h={{ base: 8, md: 12 }}
+        cursor="pointer"
+        justify="center"
+        align="center"
+        display={{ base: "none", lg: "flex" }}
+      >
+        <form action="/auth/signout" method="post">
+          <button
+            type="submit"
+          >
+            <Text fontWeight={600} fontSize="0.9em">
+              Logout
+            </Text>
+          </button>
+        </form>
+      </Flex>      
+      </>
+      )}
       <Flex
         _hover={{ bg: "red.500", color: "white" }}
         borderRadius="full"
@@ -74,9 +114,9 @@ export default function UserProfile() {
         display={{ base: "none", lg: "flex" }}
         onClick={handleChat}
       >
-        <Text fontWeight={600} fontSize="0.9em">
-          Clear Chat
-        </Text>
+          <Text fontWeight={600} fontSize="0.9em">
+            Clear Chat
+          </Text>
       </Flex>
       <Text zIndex={2} mr={{ base: -10, md: 0 }} ml={5}>
         25
@@ -195,6 +235,32 @@ export default function UserProfile() {
                   Clear Chat
                 </Text>
               </Flex>
+              
+              {user4 && (
+              <Flex
+               _hover={{ bg: "red.500", color: "white" }}
+                borderRadius="full"
+                border="1px solid"
+                color="red.500"
+                borderColor="red.500"
+                bg={{ base: "none", md: "none" }}
+                w="full"
+                h={12}
+                cursor="pointer"
+                justify="center"
+                align="center"
+              >
+                <form action="/auth/signout" method="post">
+                  <button
+                    type="submit"
+                  >
+                    <Text fontWeight={600} fontSize="0.9em">
+                      Logout
+                    </Text>
+                  </button>
+                </form>
+              </Flex>
+              )}
             </Flex>
           </DrawerBody>
 

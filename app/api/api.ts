@@ -1,4 +1,7 @@
 import { Configuration, OpenAIApi } from "openai";
+import { OpenAI } from "langchain/llms/openai";
+import { BufferMemory } from "langchain/memory";
+import { ConversationChain } from "langchain/chains";
 import { PineconeClient } from "@pinecone-database/pinecone";
 import { setCookie } from "../../utils/cookies";
 // import type { NextApiRequest, NextApiResponse } from 'next'
@@ -88,17 +91,22 @@ if (queryRes && queryRes.matches && queryRes.matches.length > 0) {
 console.log("Query Info:", info);
   const finalPrompt = `
       Info: ${info}
-      Question: ${query}. 
+      Question: ${query}.
       Answer:
     `;
   try {
-    const response = await openai.createCompletion({
-      model: COMPLETIONS_MODEL,
-      prompt: finalPrompt,
-      max_tokens: 2048,
-    });
-  
-    const completion: string | undefined = response.data.choices[0].text;
+    const model = new OpenAI({});
+    const memory = new BufferMemory();
+    // const response = await openai.createCompletion({
+    //   model: COMPLETIONS_MODEL,
+    //   prompt: finalPrompt,
+    //   max_tokens: 2048,
+    // });
+
+    const chain = new ConversationChain({ llm: model, memory: memory });
+    const completion = await chain.call({ input: finalPrompt });
+
+    // const completion: string | undefined = response.data.choices[0].text;
     console.log(completion);
     res.status(200).send({ query, result: completion });
   } catch (error: any) {
@@ -114,5 +122,5 @@ console.log("Query Info:", info);
       });
     }
   }
-  
+
 }

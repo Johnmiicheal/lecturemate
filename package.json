@@ -30,17 +30,20 @@
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "eslint": "8.44.0",
-    "eslint-config-next": "13.4.9",
     "express": "^4.18.2",
     "formik": "^2.4.2",
     "framer-motion": "^10.12.18",
-    "next": "13.4.9",
+    "langchain": "^0.0.117",
+    "next": "^13.4.13",
     "openai": "^3.3.0",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-dropzone": "^14.2.3",
     "react-icons": "^4.10.1",
     "react-topbar-progress-indicator": "^4.1.1",
     "typescript": "5.1.6"
+  },
+  "devDependencies": {
+    "eslint-config-next": "^13.4.13"
   }
 }

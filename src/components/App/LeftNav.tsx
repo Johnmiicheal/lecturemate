@@ -3,10 +3,11 @@ import { AiFillHome, AiOutlineHome, AiOutlineProfile, AiFillProfile } from "reac
 import { RiContactsBookFill, RiContactsBookLine } from "react-icons/ri"
 import { IoChatbubbleEllipsesOutline, IoChatbubbleEllipses, IoFolderOutline, IoFolder, IoTrendingUp, IoSettings, IoSettingsOutline} from "react-icons/io5";
 import { BsEmojiHeartEyes } from "react-icons/bs";
-import { useRouter } from "next/router"
+import { useRouter, usePathname } from "next/navigation"
 
 const LeftNav = () => {
   const router = useRouter();
+  const pathname = usePathname();
 
   const links = [
     { path: "/app", iconActive: AiFillHome, iconInactive: AiOutlineHome, text: "Home" },
@@ -15,7 +16,6 @@ const LeftNav = () => {
     // { path: "#", iconActive: IoTrendingUp, iconInactive: IoTrendingUp, text: "My Stats", isDisabled: true },
     // { path: "#", iconActive: BsBoxArrowUpRight, iconInactive: BsBoxArrowUpRight, text: "Guidelines", isDisabled: true },
   ];
-
   return (
     <Flex
       display={{ base: 'none', lg: 'flex'}}
@@ -44,14 +44,14 @@ const LeftNav = () => {
           _hover={{ color: "#005103", bg: "#90E768" }}
           borderRadius="md"
           cursor="pointer"
-          color={router.pathname === link.path ? "#FFFFFF": "#A5A5A5"}
-          bg={router.pathname === link.path ? "#53AF28": "none"}
+          color={pathname === link.path ? "#FFFFFF": "#A5A5A5"}
+          bg={pathname === link.path ? "#53AF28": "none"}
           onClick={() => router.push(link.path)}
           display={link.text === 'Chat' ? 'none' : 'flex'}
           
         >
-          <Icon as={router.pathname === link.path ? link.iconActive : link.iconInactive} w={6} h={6} mb={2} />
-          <Text fontSize={13} fontWeight={router.pathname === link.path ? 500 : 400}>
+          <Icon as={pathname === link.path ? link.iconActive : link.iconInactive} w={6} h={6} mb={2} />
+          <Text fontSize={13} fontWeight={pathname === link.path ? 500 : 400}>
             {link.text}
           </Text>
         </Flex>
@@ -69,12 +69,12 @@ const LeftNav = () => {
           _hover={{ color: "#005103", bg: "#90E768" }}
           borderRadius="md"
           cursor="pointer"
-          color={router.pathname === "/app/feedback" ? "#53AF28": "#A5A5A5"}
+          color={pathname === "/app/feedback" ? "#53AF28": "#A5A5A5"}
           onClick={() => router.push('/app/feedback')}
           
         >
           <Icon as={BsEmojiHeartEyes} w={6} h={6} mb={2} />
-          <Text fontSize={12} fontWeight={router.pathname === "/app/feedback" ? 500 : 400}>
+          <Text fontSize={12} fontWeight={pathname === "/app/feedback" ? 500 : 400}>
             Send Feedback
           </Text>
         </Flex>
