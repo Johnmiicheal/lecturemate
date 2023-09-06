@@ -5,12 +5,12 @@ import {
   Box,
 } from "@chakra-ui/react";
 import UserProfile from "./UserProfile";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import LeftNav from "./LeftNav";
 
-export default function Layout() {
+export default function Layout({user3}: any) {
   const router = useRouter();
-
+  console.log(user3);
 
   return (
     <Flex w="full" zIndex={5} pos="fixed">
@@ -35,7 +35,7 @@ export default function Layout() {
         </Flex>
 
         <Flex justify="flex-end">
-            <UserProfile  />
+            <UserProfile  user4 = {user3}/>
         </Flex>
         </Flex>
         <LeftNav />
