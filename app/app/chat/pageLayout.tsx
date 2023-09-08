@@ -117,11 +117,6 @@ const Chat = ({user2}: any) => {
   ];
   const toast = useToast();
 
-  useEffect(() => {
-    if (!user2) {
-      router.push("/login");
-    }
-  }, []);
 
   // const auth = async () => {
   //   const { data: { user } } = await supabase.auth.getUser();

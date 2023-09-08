@@ -15,27 +15,27 @@ import {
   Link,
   useToast,
   Icon,
-  InputRightElement,
   IconButton,
+  InputRightElement,
 } from "@chakra-ui/react";
-import { useState, useEffect } from "react";
+import Head from "next/head";
 import { Formik, Form, Field } from "formik";
-import Layout from "../../src/components/Auth/Layout";
-import { useRouter, usePathname } from "next/navigation";
 import NextLink from "next/link";
+import Layout from "../../src/components/Auth/Layout";
+import { useState, useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { FcGoogle } from "react-icons/fc";
 import { IoEye, IoEyeOff, IoLogoGoogle } from "react-icons/io5";
 
-export default function Signup({ user }: any) {
-  const [username, setUsername] = useState("");
+export default function Signin({ user }: any) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [show, setShow] = useState(false);
-  const [view, setView] = useState("sign-up");
+  const [view, setView] = useState("sign-in");
   const router = useRouter();
   const supabase = createClientComponentClient();
-  const toast = useToast();
-  const pathname = usePathname();
+
+  console.log(user);
 
   useEffect(() => {
     if (user) {
@@ -43,58 +43,43 @@ export default function Signup({ user }: any) {
     }
   }, []);
 
-  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     try {
-      const { data, error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
-        options: {
-          data: {
-            username: username,
-          },
-          emailRedirectTo: `${location.origin}/auth/callback`,
-        },
       });
 
-      console.log(data);
-      if (
-        data.user &&
-        data.user.identities &&
-        data.user.identities.length === 0
-      ) {
-        alert("User already exists");
-        return;
-      } else if (error) {
-        alert(error.message);
-        return;
+      if (data.user) {
+        // Sign-in was successful, navigate to the home page or any other desired route.
+        router.push("/app/chat");
+        // Alternatively, you can use router.push('/') again to refresh the page.
       }
 
-      // If there is no error during sign-up, proceed with setView('check-email')
-      setView("check-email");
-    } catch (error) {
-      // Handle the error here, you can show an error message or perform any other actions.
-      if (error instanceof Error) {
-        console.log("Error during sign-up:", error.message);
+      if (error) {
+        if (error.message === "Failed to fetch") {
+          alert("Check your Internet Connection");
+          return;
+        }
+
+        if (error.message === "Invalid signin credentials") {
+          alert("Incorrect username or password");
+        }
       }
-      // You may want to set an error state here if you want to display an error message to the user.
+    } catch (error) {
+      console.log("An error occured with error statement: " + error);
     }
   };
-  // router.push('/')
-  // router.refresh()
+
+  const toast = useToast();
+  const pathname = usePathname();
+  const [show, setShow] = useState(false);
 
   return (
     <Layout>
-      <Image
-        src="/lm-chat.png"
-        w="75%"
-        pos="fixed"
-        right="0"
-        bottom={0}
-        mb={-44}
-        mr={-60}
-        pointerEvents="none"
-      />
+      <Image src="/lm-empty.png" w="75%" pos="fixed" right="0" bottom={0} mb={-44} mr={-60} />
       <Flex
         direction="column"
         h="full"
@@ -111,8 +96,8 @@ export default function Signup({ user }: any) {
           onClick={() => router.push("/")}
           cursor="pointer"
           align="center"
-          py={{ base: "10px", lg: "20px" }}
-          ml={{ base: "20px", lg: "50px" }}
+          py={{ base: "10px", lg: "20px"}}
+          ml={{base: "20px", lg: "50px"}}
           gap={1}
           w="11em"
         >
@@ -122,9 +107,7 @@ export default function Signup({ user }: any) {
             w={6}
             pointerEvents="none"
           />
-          <Text fontWeight="black" fontSize={22}>
-            Lecture Mate
-          </Text>
+          <Text fontWeight="black" fontSize={22}>Lecture Mate</Text>
         </Flex>
 
         <Flex
@@ -133,13 +116,13 @@ export default function Signup({ user }: any) {
           bg="white"
           w={{ base: "full", lg: "600px" }}
           py={5}
-          px={{ base: "20px", lg: "126px" }}
+          px={{ base: "20px", lg:"126px"}}
         >
           <Text mt={10} fontSize={28} fontWeight={600}>
-            Get Started
+            Welcome back
           </Text>
           <Text fontSize={18} fontWeight={500}>
-            Create your account
+            Sign in to your account
           </Text>
 
           <Flex
@@ -148,7 +131,7 @@ export default function Signup({ user }: any) {
             w="100%"
             border="1px solid #53AF28"
             cursor="pointer"
-            _hover={{ bg: "#53AF2820" }}
+            _hover={{ bg: "#53AF2820"}}
             justify="center"
             align="center"
             gap={2}
@@ -159,43 +142,33 @@ export default function Signup({ user }: any) {
           </Flex>
           <Flex direction="column" mt={10}>
             <Formik
-              initialValues={{ username: "", email: "", password: "" }}
+              initialValues={{ email: "", password: "" }}
               onSubmit={async (values, actions) => {
-                const { data, error } = await supabase.auth.signUp({
+                const response = await supabase.auth.signInWithPassword({
                   email: values.email,
                   password: values.password,
-                  options: {
-                    data: {
-                      username: values.username,
-                    },
-                    emailRedirectTo: `${location.origin}/auth/callback`,
-                  },
                 });
-
-                if (data.user && !error) {
-                  setView("check-email");
+                if (response.data.user) {
                   actions.setSubmitting(false);
                   toast({
-                    title: "Congratulations🎉🎉",
-                    description: `Your Account has been created`,
+                    title: "Sign in Complete",
+                    description: `Welcome back, ${response.data.user.user_metadata.username}`,
                     status: "success",
                     variant: "left-accent",
                     duration: 5000,
                     isClosable: true,
                     position: "top-right",
                   });
-                  // setTimeout(() => {
-                  //   router.push("/app/chat");
-                  // }, 1000);
+                  setTimeout(() => {
+                    router.push("/app/chat");
+                  }, 1000);
                 } else if (
-                  data.user &&
-                  data.user.identities &&
-                  data.user.identities.length === 0
+                  response.error?.message === "Invalid signin credentials"
                 ) {
                   actions.setSubmitting(false);
                   toast({
-                    title: "Error creating user",
-                    description: `A user already exists with these details`,
+                    title: "Invalid User Credentials",
+                    description: `This user does not exist`,
                     status: "error",
                     variant: "left-accent",
                     duration: 5000,
@@ -203,7 +176,7 @@ export default function Signup({ user }: any) {
                     position: "top-right",
                   });
                   actions.resetForm();
-                } else if (error?.message === "Failed to fetch") {
+                } else if(response.error?.message === "Failed to fetch"){
                   actions.setSubmitting(false);
                   toast({
                     title: "Network Error",
@@ -215,7 +188,7 @@ export default function Signup({ user }: any) {
                     position: "top-right",
                   });
                   actions.resetForm();
-                } else {
+                }else{
                   actions.setSubmitting(false);
                   toast({
                     title: "Error creating user",
@@ -235,27 +208,6 @@ export default function Signup({ user }: any) {
             >
               {(props) => (
                 <Form>
-                  <Field name="username">
-                    {({ field, form }: any) => (
-                      <FormControl
-                        isInvalid={
-                          form.errors.username && form.touched.username
-                        }
-                      >
-                        <FormLabel>Username</FormLabel>
-                        <Input
-                          {...field}
-                          focusBorderColor="#53AF28"
-                          placeholder="username"
-                          type="text"
-                          variant="outline"
-                          mb={2}
-                        />
-                        <FormErrorMessage>{form.errors.name}</FormErrorMessage>
-                      </FormControl>
-                    )}
-                  </Field>
-
                   <Field name="email">
                     {({ field, form }: any) => (
                       <FormControl
@@ -284,22 +236,17 @@ export default function Signup({ user }: any) {
                       >
                         <FormLabel>Password</FormLabel>
                         <InputGroup>
-                          <Input
-                            {...field}
-                            focusBorderColor="#53AF28"
-                            placeholder="••••••••"
-                            type={show === false ? "password" : "text"}
-                            variant="outline"
-                          />
-                          <InputRightElement>
-                            <IconButton
-                              icon={show === false ? <IoEye /> : <IoEyeOff />}
-                              aria-label="show-hide password"
-                              onClick={() => setShow(!show)}
-                              size="sm"
-                            />
-                          </InputRightElement>
-                        </InputGroup>
+                        <Input
+                          {...field}
+                          focusBorderColor="#53AF28"
+                          placeholder="••••••••"
+                          type={show === false ? 'password' : 'text'}
+                          variant="outline"
+                        />
+                        <InputRightElement>
+                          <IconButton icon={ show===false ? <IoEye/> : <IoEyeOff/> } aria-label="show-hide password" onClick={() => setShow(!show)} size="sm" />
+                        </InputRightElement>
+                      </InputGroup>
                         <FormErrorMessage>
                           {form.errors.password}
                         </FormErrorMessage>
@@ -332,25 +279,23 @@ export default function Signup({ user }: any) {
                     isDisabled={!props.isValid || !props.dirty ? true : false}
                     type="submit"
                   >
-                    Sign Up
+                    Sign In
                   </Button>
                 </Form>
               )}
             </Formik>
-            <Flex gap={2} mt={{ base: 6, lg: 4 }} align="center">
-              <Text fontSize={{ base: "12px" }}>Already have an account?</Text>
+            <Flex gap={2} mt={{ base: 6, lg: 4}} align="center">
+              <Text fontSize={{ base: "12px"}}>Don't have an account?</Text>
               <Button
                 display="inline"
                 variant="link"
                 color="#53AF28"
-                fontSize={{ base: "12px" }}
+                fontSize={{ base: "12px"}}
                 onClick={() =>
-                  router.push(pathname === "/signin" ? "/signup" : "/signin")
+                  router.push("/signup")
                 }
               >
-                {pathname === "/signin"
-                  ? "Create an Account"
-                  : "Sign in to your account"}
+              Create your account
               </Button>
             </Flex>
           </Flex>

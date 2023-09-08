@@ -81,7 +81,7 @@ export default function Home() {
               />{" "}
               the Power of Knowledge with{" "}
               <Text
-                // bgGradient="linear(to-r, #00F0FF, #53AF28)"
+                bgGradient="linear(to-r, #00F0FF, #53AF28)"
                 bgClip="text"
                 fontSize={{ base: "xl", md: "5xl", lg: "5xl" }}
                 fontWeight="extrabold"
@@ -114,9 +114,9 @@ export default function Home() {
                 transition={{ duration: 2 }}
               >
                 <Image
-                  src="/mock.png"
+                  src="/lm-chat.png"
                   pointerEvents="none"
-                  w="900px"
+                  w="1000px"
                   alt="mock of lecture mate"
                 />
               </motion.div>

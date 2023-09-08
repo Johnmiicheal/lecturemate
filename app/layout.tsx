@@ -1,9 +1,11 @@
 import { Metadata } from 'next'
- 
+
 export const metadata: Metadata = {
-  title: 'Lecture mate',
-  description: 'Lecture is now your mate',
-}
+  title: "Lecture Mate AI",
+  description:
+    "Unlock the power of Knowledge with your AI powered study companion",
+  icons: "/logo.png",
+};
 
 export default function RootLayout({
     // Layouts must accept a children prop.

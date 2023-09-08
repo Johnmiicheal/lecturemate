@@ -9,6 +9,8 @@ import { motion } from 'framer-motion';
 
 const App = () => {
     const router = useRouter();
+    
+  
   return (
     <Flex w="full" direction="column" justify="space-between" overflowX="hidden" >
       <Layout />
