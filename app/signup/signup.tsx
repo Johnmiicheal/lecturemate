@@ -172,37 +172,30 @@ export default function Signup({ user }: any) {
                   },
                 });
 
-                if (data.user && !error) {
-                  setView("check-email");
-                  actions.setSubmitting(false);
-                  toast({
-                    title: "Congratulations🎉🎉",
-                    description: `Your Account has been created`,
-                    status: "success",
-                    variant: "left-accent",
-                    duration: 5000,
-                    isClosable: true,
-                    position: "top-right",
-                  });
+                const userData: any = data
+                console.log(userData)
+
+                if (
+                  userData.user &&
+                  userData.user.identities &&
+                  userData.user.identities.length === 0
+                  ) {
+                    console.log("Use profile already exists")
+                    actions.setSubmitting(false);
+                    toast({
+                      title: "Error creating user",
+                      description: `A user already exists with these details`,
+                      status: "error",
+                      variant: "left-accent",
+                      duration: 5000,
+                      isClosable: true,
+                      position: "top-right",
+                    });
+                    actions.resetForm();                   
+                  
                   // setTimeout(() => {
                   //   router.push("/app/chat");
                   // }, 1000);
-                } else if (
-                  data.user &&
-                  data.user.identities &&
-                  data.user.identities.length === 0
-                ) {
-                  actions.setSubmitting(false);
-                  toast({
-                    title: "Error creating user",
-                    description: `A user already exists with these details`,
-                    status: "error",
-                    variant: "left-accent",
-                    duration: 5000,
-                    isClosable: true,
-                    position: "top-right",
-                  });
-                  actions.resetForm();
                 } else if (error?.message === "Failed to fetch") {
                   actions.setSubmitting(false);
                   toast({
@@ -215,7 +208,22 @@ export default function Signup({ user }: any) {
                     position: "top-right",
                   });
                   actions.resetForm();
-                } else {
+                }                                
+                else if (userData && !error) {
+                  console.log("It was a success")
+                  setView("check-email");
+                  actions.setSubmitting(false);
+                  toast({
+                    title: "Congratulations🎉🎉",
+                    description: `Your Account has been created`,
+                    status: "success",
+                    variant: "left-accent",
+                    duration: 5000,
+                    isClosable: true,
+                    position: "top-right",
+                  });
+                }
+                else {
                   actions.setSubmitting(false);
                   toast({
                     title: "Error creating user",
