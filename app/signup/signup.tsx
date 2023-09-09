@@ -208,21 +208,8 @@ export default function Signup({ user }: any) {
                     position: "top-right",
                   });
                   actions.resetForm();
-                } 
-                else if (!userData) {
-                  actions.setSubmitting(false);
-                  toast({
-                    title: "Error creating user",
-                    description: `Oops, we've ran into an error. Try again later`,
-                    status: "error",
-                    variant: "left-accent",
-                    duration: 5000,
-                    isClosable: true,
-                    position: "top-right",
-                  });
-                  actions.resetForm();
-                }                
-                else {
+                }                                
+                else if (userData && !error) {
                   console.log("It was a success")
                   setView("check-email");
                   actions.setSubmitting(false);
@@ -235,6 +222,19 @@ export default function Signup({ user }: any) {
                     isClosable: true,
                     position: "top-right",
                   });
+                }
+                else {
+                  actions.setSubmitting(false);
+                  toast({
+                    title: "Error creating user",
+                    description: `Oops, we've ran into an error. Try again later`,
+                    status: "error",
+                    variant: "left-accent",
+                    duration: 5000,
+                    isClosable: true,
+                    position: "top-right",
+                  });
+                  actions.resetForm();
                 }
               }}
               // setTimeout(() => {
