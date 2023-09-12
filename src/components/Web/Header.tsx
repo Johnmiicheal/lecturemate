@@ -27,7 +27,7 @@ import {
   Divider,
 } from "@chakra-ui/react";
 import React from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import {
   IoChevronForward,
   IoFlash,
@@ -45,11 +45,19 @@ const Header = () => {
     onClose: onDrawerClose,
   } = useDisclosure();
   const router = useRouter();
+  const pathname = usePathname();
+  const [isLoading, setIsLoading] = React.useState(false)
   const links = [
     { path: "/features", text: "Features" },
     { path: "/resources", text: "Resources" },
     { path: "/pricing", text: "Pricing" },
   ];
+  const handleClick = () => {
+    router.push('/app');
+    if (pathname !== '/app'){
+      setIsLoading(true);
+    }
+  }
 
   return (
     <Flex
@@ -122,9 +130,10 @@ const Header = () => {
           bg="#202020"
           _hover={{ bg: "#303030" }}
           rightIcon={<IoChevronForward />}
-          onClick={() => router.push('/app')}
+          onClick={handleClick}
           fontWeight={500}
           fontSize={14}
+          isLoading={isLoading}
         >
           Try it out
         </Button>

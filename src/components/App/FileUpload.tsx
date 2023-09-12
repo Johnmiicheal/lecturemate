@@ -1,11 +1,11 @@
 import { Box, Flex, Icon, Text, Button, useToast } from "@chakra-ui/react";
-import { useRouter } from "next/router";
 import { useFormik } from "formik";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import { RxUpload, RxFile } from "react-icons/rx";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import CopyBox from "./CopyBox";
+import TopBarProgress from "react-topbar-progress-indicator";
 
 interface FormValues {
   file: File | null;
@@ -14,10 +14,10 @@ interface FormValues {
 
 const FileUpload = () => {
   const toast = useToast();
-  const router = useRouter();
   const [token, setToken] = useState('');
   const [timer, setTimer] = useState(0);
   const [textIndex, setTextIndex] = useState(0);
+  const [uploading, setUploading] = useState(false);
   const texts = ['Uploading...', 'Please wait...', 'Almost there...', 'Any minute now...', 'Few seconds left...', 'Approaching light speed...', 'Initiating hyperdrive...', 'Processing...'];
 
   useEffect(() => {
@@ -43,6 +43,7 @@ const FileUpload = () => {
         const formData = new FormData();
         formData.append("file", values.file);
         try {
+          setUploading(true)
           const response = await axios.post(
             "https://api.greynote.app/lecture",
             // "http://127.0.0.1:4000/api/upload/",
@@ -63,8 +64,10 @@ const FileUpload = () => {
               duration: 5000,
               isClosable: true,
             });
+            setUploading(false)
             setToken(response.data.uniqueId);
           } else {
+            setUploading(false)
             toast({
                 title: "Upload Error",
                 position: "top",
@@ -81,6 +84,7 @@ const FileUpload = () => {
           console.log("Upload successful:", response.data);
         } catch (error) {
             if(error){
+              setUploading(false)
               setTimer(0);
             setTextIndex(0);
                 toast({
@@ -107,6 +111,7 @@ const FileUpload = () => {
 
   return (
     <Flex direction="column">
+      {uploading && <TopBarProgress />}
       <Box
         p={4}
         h="17vh"
