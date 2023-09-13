@@ -243,7 +243,7 @@ const Chat = ({user2}: any) => {
                   />
                   <Text>
                     Upload a note to get started or just ask any question <br />
-                    Don't forget to copy your token after uploading your note😊
+                    Don't forget to <strong>copy your token</strong> after uploading your note😊
                   </Text>
                   <Flex
                     w="full"
