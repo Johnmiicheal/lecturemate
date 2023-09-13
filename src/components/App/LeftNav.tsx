@@ -46,6 +46,7 @@ const LeftNav = () => {
     // { path: "#", iconActive: BsBoxArrowUpRight, iconInactive: BsBoxArrowUpRight, text: "Guidelines", isDisabled: true },
   ];
 
+
   const handleLogout = () => {
     setLoading(true)
     fetch("/auth/signout", {
@@ -116,8 +117,7 @@ const LeftNav = () => {
           cursor="pointer"
           color={pathname === link.path ? "#FFFFFF" : "#A5A5A5"}
           bg={pathname === link.path ? "#53AF28" : "none"}
-          onClick={() => router.push(link.path)}
-          display={link.text === "Chat" ? "none" : "flex"}
+          onClick={() => {router.push(link.path); setLoading(true)}}
         >
           <Icon
             as={pathname === link.path ? link.iconActive : link.iconInactive}

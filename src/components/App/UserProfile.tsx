@@ -61,7 +61,7 @@ export default function UserProfile({user4}: any) {
       isClosable: true,
     });
     setTimeout(() => {
-      router.push("/app/chat"); 
+      window.location.reload();
     }, 1000);
   };
 
