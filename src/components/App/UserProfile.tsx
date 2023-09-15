@@ -33,7 +33,6 @@ import { IoMenu, IoChevronForward, IoAdd, IoChatbubbleEllipsesOutline } from "re
 import FileUpload from "./FileUpload";
 
 export default function UserProfile({user4}: any) {
-  console.log(user4);
   let username: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined;
 
   if(user4){
@@ -62,7 +61,7 @@ export default function UserProfile({user4}: any) {
       isClosable: true,
     });
     setTimeout(() => {
-      router.push("/app/chat"); 
+      window.location.reload();
     }, 1000);
   };
 
@@ -70,33 +69,9 @@ export default function UserProfile({user4}: any) {
     <HStack ml={1}>
       {user4 && (
       <>
-      <Text zIndex={2} mr={{ base: -10, md: 0 }} ml={5}>
-        Hi, {username} !
-      </Text>
-      <Flex
-        _hover={{ bg: "red.500", color: "white" }}
-        borderRadius="full"
-        border="1px solid"
-        color="red.500"
-        borderColor="red.500"
-        bg={{ base: "none", md: "none" }}
-        minW={{ base: 20, md: 40 }}
-        h={{ base: 8, md: 12 }}
-        cursor="pointer"
-        justify="center"
-        align="center"
-        display={{ base: "none", lg: "flex" }}
-      >
-        <form action="/auth/signout" method="post">
-          <button
-            type="submit"
-          >
-            <Text fontWeight={600} fontSize="0.9em">
-              Logout
-            </Text>
-          </button>
-        </form>
-      </Flex>      
+      <Text zIndex={2} ml={5}>
+        Hi, {username}
+      </Text>    
       </>
       )}
       <Flex

@@ -27,7 +27,7 @@ import {
   Divider,
 } from "@chakra-ui/react";
 import React from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import {
   IoChevronForward,
   IoFlash,
@@ -35,6 +35,7 @@ import {
   IoMenu,
 } from "react-icons/io5";
 import { FaTelegramPlane } from "react-icons/fa";
+
 
 const Header = () => {
 
@@ -44,11 +45,19 @@ const Header = () => {
     onClose: onDrawerClose,
   } = useDisclosure();
   const router = useRouter();
+  const pathname = usePathname();
+  const [isLoading, setIsLoading] = React.useState(false)
   const links = [
     { path: "/features", text: "Features" },
     { path: "/resources", text: "Resources" },
     { path: "/pricing", text: "Pricing" },
   ];
+  const handleClick = () => {
+    router.push('/app');
+    if (pathname !== '/app'){
+      setIsLoading(true);
+    }
+  }
 
   return (
     <Flex
@@ -61,10 +70,10 @@ const Header = () => {
       h={12}
     >
       <Flex justify="start" gap={10}>
-        <Flex align="center" gap={2}>
+        <Flex align="center" gap={2} onClick={() => router.push('/')} cursor='pointer'>
           <Image
             src="/logo.png"
-            alt="Graybook Logo"
+            alt="Lecture Mate Logo"
             w="40px"
             pointerEvents="none"
           />
@@ -121,9 +130,10 @@ const Header = () => {
           bg="#202020"
           _hover={{ bg: "#303030" }}
           rightIcon={<IoChevronForward />}
-          onClick={() => router.push('/app')}
+          onClick={handleClick}
           fontWeight={500}
           fontSize={14}
+          isLoading={isLoading}
         >
           Try it out
         </Button>

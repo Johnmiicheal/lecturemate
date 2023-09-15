@@ -16,7 +16,7 @@ Feedback is appreciated: [Fill the form](https://forms.office.com/r/xw8mcYPXLp)�
 
 🤖 I am excited to share with you that we are launching an AI assistant to help make your examinations preparation easier. 📚 Our AI will be like having a personalized instructor who can explain your notes to you and answer any questions you may have.
 
-💻 To stay updated on our progress and learn more about our project, please join our Telegram channel using the [link](https://t.me/NEARCommunity)
+💻 To stay updated on our progress and learn more about our project, please join our Community using the [link](https://t.me/NEARCommunity)
 ## Features
 - 🤖 Powerful AI Engine
 - 📒 PDF File Upload
@@ -24,12 +24,12 @@ Feedback is appreciated: [Fill the form](https://forms.office.com/r/xw8mcYPXLp)�
 ## Upcoming
 - 📁 File Management
 - 💻 Split screen with PDF note and Chatbot
+- ⚡️ Flash cards
 <!--
 
 - 📒 Note taking
 - 🗄️ Task Management
 - ✅ Assignment grade calculator
-- ⚡️ Flash cards
 - 📆 Timetable
 - 📈 Insights
 - 🧠 Mind maps

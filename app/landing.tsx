@@ -1,20 +1,23 @@
 'use client'
-
-import React, { Box } from "@chakra-ui/react";
+import React, { Suspense } from "react";
+import { Box } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { Flex, Icon, Text, Image} from "@chakra-ui/react";
 import Header from "../src/components/Web/Header";
 import Footer from "../src/components/Web/Footer";
 import { motion } from "framer-motion";
 import { IoStar } from "react-icons/io5";
+import Loading from "./loading";
 
-export default function Home() {
+
+export default function Landing() {
   const router = useRouter();
   return (
+    <Suspense fallback={<Loading />}>
     <Flex direction="column">
       <Flex
         direction="column"
-        px={{ base: 2, lg: 20 }}
+        px={{ base: 2, lg: 32 }}
         bg="white"
         boxShadow="md"
         zIndex={2}
@@ -32,25 +35,30 @@ export default function Home() {
         overflow="hidden"
         gap={3}
       >
-        <Flex
-          mt={{ base: 10, lg: 20 }}
-          w="13rem"
-          h="20px"
-          gap={3}
-          align="center"
-          justify="center"
-          bg="green.100"
-          color="#53AF28"
-          border="1px solid #53AF28"
-          _hover={{ color: "#005103", bg: "#90E768" }}
-          py={5}
-          px={3}
-          borderRadius="full"
-          cursor="pointer"
-          onClick={() => router.push('https://github.com/johnmiicheal/lecturemate')}
-        >
-          Star us on Github
-          <Icon as={IoStar} w="5" h="5" />
+        <Flex gap="2" align="center">
+          <Flex
+            mt={{ base: 10, lg: 20 }}
+            w="13rem"
+            h="20px"
+            gap={3}
+            align="center"
+            justify="center"
+            bg="green.100"
+            color="#53AF28"
+            border="1px solid #53AF28"
+            _hover={{ color: "#005103", bg: "#90E768" }}
+            py={5}
+            px={3}
+            borderRadius="full"
+            cursor="pointer"
+            onClick={() =>
+              router.push("https://github.com/johnmiicheal/lecturemate")
+            }
+          >
+            Star us on Github
+            <Icon as={IoStar} w="5" h="5" />
+          </Flex>
+        
         </Flex>
         <Flex direction="column" align="center">
           <motion.div
@@ -76,7 +84,7 @@ export default function Home() {
               />{" "}
               the Power of Knowledge with{" "}
               <Text
-                // bgGradient="linear(to-r, #00F0FF, #53AF28)"
+                bgGradient="linear(to-r, #00F0FF, #53AF28)"
                 bgClip="text"
                 fontSize={{ base: "xl", md: "5xl", lg: "5xl" }}
                 fontWeight="extrabold"
@@ -109,9 +117,9 @@ export default function Home() {
                 transition={{ duration: 2 }}
               >
                 <Image
-                  src="/mock.png"
+                  src="/lm-chat.png"
                   pointerEvents="none"
-                  w="900px"
+                  w="1000px"
                   alt="mock of lecture mate"
                 />
               </motion.div>
@@ -121,5 +129,6 @@ export default function Home() {
       </Flex>
       <Footer />
     </Flex>
+    </Suspense>
   );
 }

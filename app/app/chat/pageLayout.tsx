@@ -32,7 +32,7 @@ import {
   Box,
   Textarea,
 } from "@chakra-ui/react";
-import React, { useState, useEffect, ReactNode, useRef } from "react";
+import React, { useState, useEffect, ReactNode, useRef, Suspense } from "react";
 import { Player } from "@lottiefiles/react-lottie-player";
 import Layout from "../../../src/components/App/Layout";
 import {
@@ -47,6 +47,7 @@ import { Field, Form, Formik } from "formik";
 import FileUpload from "../../../src/components/App/FileUpload";
 import styles from "../../../styles/Chat.module.css";
 import { FaTelegramPlane } from "react-icons/fa";
+import Loading from '../../loading';
 
 interface RequestData {
   requestData: string;
@@ -64,7 +65,7 @@ const Chat = ({user2}: any) => {
   const [showChat, setShowChat] = useState(false);
   //   const [query, setQuery] = useState("");
   //   const [result, setResult] = useState("");
-  const [tokenKey, setTokenKey] = useState("");
+  // const [tokenKey, setTokenKey] = useState("");
   const [requests, setRequests] = useState<String[]>([]);
   const [responses, setResponses] = useState<ReactNode[]>([]);
   const fileName = localStorage.getItem("file");
@@ -117,11 +118,6 @@ const Chat = ({user2}: any) => {
   ];
   const toast = useToast();
 
-  useEffect(() => {
-    if (!user2) {
-      router.push("/login");
-    }
-  }, []);
 
   // const auth = async () => {
   //   const { data: { user } } = await supabase.auth.getUser();
@@ -136,7 +132,7 @@ const Chat = ({user2}: any) => {
   // }
 
   return (
-    <>
+    <Suspense fallback={<Loading />}>
       <Flex bg="#F8FCF7">
         <Flex w="full" direction="column" justify="space-between">
           <Layout user3 = {user2}/>
@@ -247,7 +243,7 @@ const Chat = ({user2}: any) => {
                   />
                   <Text>
                     Upload a note to get started or just ask any question <br />
-                    Don't forget to copy your token after uploading your note😊
+                    Don't forget to <strong>copy your token</strong> after uploading your note😊
                   </Text>
                   <Flex
                     w="full"
@@ -361,7 +357,7 @@ const Chat = ({user2}: any) => {
                 pb="10"
               >
                 <Formik
-                  initialValues={{ query: "", token: tokenKey }}
+                  initialValues={{ query: "" }}
                   onSubmit={async (values, actions) => {
                     if (values) {
                       try {
@@ -374,13 +370,13 @@ const Chat = ({user2}: any) => {
                             },
                             body: JSON.stringify({
                               query: values.query,
-                              token: values.token,
+                              userId: user2?.id,
                             }),
                           }
                         );
                         handleStoreRequest(values.query);
                         const data = await response.json();
-                        setTokenKey(values.token);
+                        // setTokenKey(values.token);
                         if (response.status !== 200) {
                           throw (
                             data.error ||
@@ -510,7 +506,7 @@ const Chat = ({user2}: any) => {
                           </FormControl>
                         )}
                       </Field>
-                      <Flex w="full">
+                      {/* <Flex w="full">
                         <Button
                           onClick={handleClick}
                           mt={2}
@@ -538,7 +534,7 @@ const Chat = ({user2}: any) => {
                             </FormControl>
                           )}
                         </Field>
-                      </Flex>
+                      </Flex> */}
                     </Form>
                   )}
                 </Formik>
@@ -571,11 +567,11 @@ const Chat = ({user2}: any) => {
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody mb={7}>
-            <FileUpload />
+            <FileUpload user3 = {user2} />
           </ModalBody>
         </ModalContent>
       </Modal>
-    </>
+    </Suspense>
   );
 };
 

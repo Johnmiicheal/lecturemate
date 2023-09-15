@@ -25,15 +25,15 @@ const EMBEDDING_MODEL = "text-embedding-ada-002";
 
 export default async function api(req: any, res: any) {
   console.log(req.body)
-  const { token } = req.body;
-  setCookie(res, "token", token, { path: "/app/chat", maxAge: 2592000 });
-  const setTokenKey = res.getHeader("Set-Cookie")[0];
-  console.log("Log Token", token);
-  const regex = /token=([^;]+)/;
-  const match = setTokenKey.match(regex);
-  // Extract the token value from the match
-  const tokenValue = match ? match[1] : null;
-  console.log(`lecture-mate-${tokenValue}`);
+  const { userId } = req.body;
+  // setCookie(res, "token", token, { path: "/app/chat", maxAge: 2592000 });
+  // const setTokenKey = res.getHeader("Set-Cookie")[0];
+  // console.log("Log Token", token);
+  // const regex = /token=([^;]+)/;
+  // const match = setTokenKey.match(regex);
+  // // Extract the token value from the match
+  // const tokenValue = match ? match[1] : null;
+  console.log(`lecture-mate-${userId}`);
 
   if (!configuration.apiKey) {
     res.status(500).json({
@@ -75,7 +75,7 @@ export default async function api(req: any, res: any) {
 
   const queryRes = await queryIndex.query({
     queryRequest: {
-      namespace: `lecture-mate-${tokenValue}`,
+      namespace: `lecture-mate-${userId}`,
       vector: xq,
       topK: 1,
       includeMetadata: true,
