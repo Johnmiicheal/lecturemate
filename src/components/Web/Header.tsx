@@ -53,10 +53,10 @@ const Header = () => {
     }
   };
   const links = [
-    { path: "#", text: "Home", point: 'home' },
-    { path: "#features", text: "Features", point: 'features' },
-    { path: "#vision", text: "Vision", point: 'vision' },
-    { path: "#faq", text: "FAQ", point: 'faq' },
+    { path: "#", text: "Home", point: "home" },
+    { path: "#features", text: "Features", point: "features" },
+    { path: "#vision", text: "Vision", point: "vision" },
+    { path: "#faq", text: "FAQ", point: "faq" },
   ];
   const socials = [
     {
@@ -83,7 +83,7 @@ const Header = () => {
       bg="#1C1C1C70"
       css={{
         "-webkit-backdrop-filter": "blur(5px)",
-        "backdrop-filter": "blur(5px)"
+        "backdrop-filter": "blur(5px)",
       }}
       border="1px solid #8D8D8D"
       borderRadius="10px"
@@ -201,25 +201,28 @@ const Header = () => {
 
       <Drawer isOpen={isDrawerOpen} placement="right" onClose={onDrawerClose}>
         <DrawerOverlay />
-        <DrawerContent>
+        <DrawerContent
+          css={{
+            "-webkit-backdrop-filter": "blur(5px)",
+            "backdrop-filter": "blur(5px)",
+          }}
+          bg="#E8E8E860"
+        >
           <DrawerCloseButton />
           <DrawerHeader>Menu</DrawerHeader>
 
           <DrawerBody>
-            {/* <Flex direction="column" textAlign="start" align="start" gap={5}>
-              {links.map((link) => (
-                <Button variant="link" key={link.path} color="#008F06">
-                  {link.text}
-                </Button>
-              ))}
-            </Flex> */}
             {/* <Divider mt={10} /> */}
-            <Flex mt="2" justify="start" gap={10} direction="column-reverse">
+            <Flex mt="2" justify="start" gap={5} direction="column-reverse">
               <Flex
                 align="center"
+                justify="center"
                 gap="1"
                 cursor="pointer"
-                color="#008F06"
+                borderRadius="full"
+                color="#FFFFFF"
+                py={2}
+                bg="#008F06"
                 _hover={{ color: "#005103", fontWeight: 500 }}
                 role="group"
                 onClick={() => router.push("https://t.me/NEARCommunity")}
@@ -230,7 +233,6 @@ const Header = () => {
                   color="#FFF"
                   _groupHover={{ bg: "#005103" }}
                   p={1}
-                  borderRadius="full"
                   w="7"
                   h="7"
                 />
@@ -248,22 +250,28 @@ const Header = () => {
                 fontWeight={500}
                 fontSize={14}
               >
-                Use Demo
+                Use Lecture Mate
               </Button>
-
-              {socials.map((social) => (
-                <Button
-                  display={{ base: "none", md: "flex" }}
-                  variant="link"
-                  key={social.path}
+          <Flex direction="column" justify="center" ml={-2} pos="fixed" bottom={5} bg="black" borderRadius='md' gap={2} p={3}>
+            <Text color="white">
+              Connect with us on our social media
+            </Text>
+            <Flex gap={5}>
+              {socials.map((link) => (
+                <IconButton
+                  icon={<link.iconActive />}
+                  size="lg"
+                  aria-label="social links"
+                  variant="solid"
+                  _hover={{ bg: "none", color: "#53AF28" }}
+                  key={link.path}
                   color="#FFFFFF"
-                  fontWeight={500}
-                  fontSize={14}
-                  mr={-3}
-                >
-                  {social.text}
-                </Button>
+                  bg="gray.700"
+                  onClick={() => router.push(link.path)}
+                />
               ))}
+            </Flex>
+          </Flex>
             </Flex>
           </DrawerBody>
 

@@ -53,7 +53,7 @@ export default function Landing() {
   return (
     <Suspense fallback={<Loading />}>
       {loading && <TopBarProgress />}
-      <Center flexDirection="column" bg="#1C1D1E" overflow="hidden" pb={20}>
+      <Center flexDirection="column" bg="#1C1D1E" overflow="hidden" pb={20} px={2}>
         <Flex
           direction="column"
           w="full"
@@ -82,7 +82,7 @@ export default function Landing() {
         >
           <Flex gap="2" align="center">
             <Flex
-              mt={{ base: 10, lg: 32 }}
+              mt={32}
               w="13rem"
               h="20px"
               gap={3}
@@ -150,7 +150,7 @@ export default function Landing() {
                 Your AI-Powered Study Companion!
               </Text>
             </motion.div>
-            <ButtonGroup mt={{ lg: 5 }} mb={5}>
+            <ButtonGroup mt={5} mb={5}>
               <Button
                 bg="#2F2F2F"
                 color="white"
@@ -209,15 +209,15 @@ export default function Landing() {
           <Text
             fontSize={{ base: "xl", md: "4xl", lg: "4xl" }}
             fontWeight={"extrabold"}
-            w="35rem"
+            w={{ base: "20rem", md: "30rem", lg: "35rem" }}
             textAlign="center"
           >
             Creating a new learning experience for Students
           </Text>
 
           <SimpleGrid>
-            <Flex mt={10} mb={10} gap={3}>
-              <Flex direction="column" justify="start" gap={3}>
+            <Flex mt={10} mb={10} gap={3} direction={{ base: "column", lg: "row" }}>
+              <Flex direction="column" align="center" justify={{ base: "center", lg: "start"}} gap={3}>
                 <VStack
                   p={6}
                   border="2px solid #333333"
@@ -229,7 +229,7 @@ export default function Landing() {
                   borderRadius="20px"
                   align="start"
                   h={{ lg: "20em" }}
-                  w={{ lg: "30em" }}
+                  w={{ base: "22em", md: "30rem", lg: "30em" }}
                   overflow="hidden"
                   transition="0.4s ease"
                 >
@@ -241,7 +241,7 @@ export default function Landing() {
                   <Text fontSize={20} fontWeight={600}>
                     File Upload
                   </Text>
-                  <Text w="25em" fontSize={16}>
+                  <Text w={{ base: "18em" , md: "25rem", lg: "25em"}} fontSize={16}>
                     Create a personalized chat session by uploading your lecture
                     notes and you can ask any question based on your lectures.
                   </Text>
@@ -255,7 +255,7 @@ export default function Landing() {
                   align="center"
                   spacing={4}
                   h={{ lg: "9em" }}
-                  w={{ lg: "30em" }}
+                  w={{ base: "22em",  md: "30rem", lg: "30em" }}
                   overflow="hidden"
                   transition="0.4s ease"
                 >
@@ -283,7 +283,7 @@ export default function Landing() {
                   align="center"
                   spacing={4}
                   h={{ lg: "9em" }}
-                  w={{ lg: "30em" }}
+                  w={{ base: "22em",  md: "30em", lg: "30em" }}
                   overflow="hidden"
                   transition="0.4s ease"
                   cursor="pointer"
@@ -305,8 +305,8 @@ export default function Landing() {
                 </HStack>
               </Flex>
 
-              <Flex direction="column" gap={3}>
-                <Flex gap={3}>
+              <Flex direction="column" align="center" gap={3}>
+                <Flex gap={3} direction={{ base: "column", lg: "row" }}>
                   <VStack
                     p={6}
                     border="2px solid #333333"
@@ -316,7 +316,7 @@ export default function Landing() {
                     align="center"
                     spacing={4}
                     h={{ lg: "20em" }}
-                    w={{ lg: "22em" }}
+                    w={{ base: "22em",  md: "30em",lg: "22em" }}
                     overflow="hidden"
                     transition="0.4s ease"
                   >
@@ -342,7 +342,7 @@ export default function Landing() {
                     align="center"
                     spacing={4}
                     h={{ lg: "20em" }}
-                    w={{ lg: "22em" }}
+                    w={{ base: "22em", md: "30em", lg: "22em" }}
                     overflow="hidden"
                     transition="0.4s ease"
                   >
@@ -369,27 +369,27 @@ export default function Landing() {
                   borderRadius="20px"
                   align="start"
                   spacing={4}
-                  h={{ lg: "18.7em" }}
-                  w={{ lg: "45em" }}
+                  h={{ base: "25em", lg: "18.7em" }}
+                  w={{ base: "22em", md: "30em", lg: "45em" }}
                   overflow="hidden"
                   transition="0.4s ease"
                 >
                   <Image
                     src="/icons/lmai.png"
-                    w="10%"
+                    w="15%"
                     alt="Lecture mate file upload icon"
                   />
                   <Text fontSize={20} fontWeight={600}>
                     Powered by Artificial Intelligence
                   </Text>
-                  <Flex>
-                    <Text w="25em" fontSize={16} textAlign="start">
+                  <Flex direction={{ base: "column", lg: "row"}}>
+                    <Text w={{ base: "20em",md: "25em", lg: "25em"}} fontSize={16} textAlign="start">
                       Lecture Mate utilizes artificial intelligence algorithms
                       to analyze lecture content and provide real-time insights
                       and suggestions, helping students to grasp complex
                       concepts more effectively.
                     </Text>
-                    <Flex mt={-44} ml={-10}>
+                    <Flex mt={{ base: -14, md: -28, lg: -44}} ml={{ lg: -10 }}>
                       <Player
                         autoplay={true}
                         controls={true}
@@ -410,24 +410,24 @@ export default function Landing() {
         <Flex
           color="white"
           id="vision"
-          mt={{ lg: 60 }}
+          mt={{ base: 24, lg: 60 }}
           direction="column"
           align="center"
         >
           <Text
             fontSize={{ base: "xl", md: "4xl", lg: "4xl" }}
             fontWeight={"extrabold"}
-            w="35rem"
+            w={{ base: "20em", lg: "35rem"}}
             textAlign="center"
           >
             Are we going to the Moon? 🚀
           </Text>
-          <Text mt={10} w="40em" fontSize={16} textAlign="justify">
+          <Text mt={10} w={{ base: "20em", md: "30em", lg: "40rem"}} fontSize={16} textAlign="justify">
             Lecture Mate was created at Covenant University by an initial team
             of 2 developers and has steadily grown into a team of 6 including
             what we call a hype team.
           </Text>
-          <Text mt={4} w="40em" fontSize={16} textAlign="justify">
+          <Text mt={4}  w={{ base: "20em", md: "30em", lg: "40rem"}} fontSize={16} textAlign="justify">
             Lecture Mate is a startup company that aims to be at the forefront
             of the education industry in this region. Our approach is centered
             around incorporating the latest advancements in artificial
@@ -448,7 +448,7 @@ export default function Landing() {
         </Flex>
 
         {/* LECTURE IS NOW YOUR MATE 😏🙄 */}
-        <Flex color="white" mt={{ lg: 60 }} direction="column" align="center">
+        <Flex color="white" mt={{ base: 20, lg: 60 }} direction="column" align="center">
           <Text
             id="faq"
             fontSize={{ base: "xl", md: "4xl", lg: "4xl" }}
@@ -461,14 +461,14 @@ export default function Landing() {
           <Text
             fontSize={13}
             fontWeight={"medium"}
-            w="35rem"
+            w={{ base: "20em", lg: "35rem"}}
             mt={2}
             textAlign="center"
           >
             Here's a list of things Lecture Mate said it could do when we asked
             it.🤞
           </Text>
-          <Accordion allowToggle mt={10} w="48em">
+          <Accordion allowToggle mt={10}  w={{ base: "20em", md: "30em", lg: "48rem"}}>
             <AccordionItem border="none" mb={2} >
               <h2>
                 <AccordionButton>

@@ -49,7 +49,7 @@ const Footer = () => {
       direction="column"
       w="full"
       align="start"
-      px={{ base: 10, md: 18, lg: 32 }}
+      px={{ base: 5, md: 18, lg: 32 }}
       py={10}
       overflow="hidden"
     >
@@ -61,14 +61,14 @@ const Footer = () => {
           "-webkit-text-stroke-color": "white",
         }}
         w="full"
-        fontSize="9em"
+        fontSize={{ base: '4em', lg: "9em"}}
         fontWeight="bold"
       >
         Thank You😘
       </Text>
-      <Flex justify="space-between" w="full">
+      <Flex justify="space-between" w="full" direction={{ base: 'column', md: 'row'}} gap={2} mt={{base: 5, md: 0 }}>
         <Flex align="center" gap={2}>
-          <Image src="/logowhite.png" w="15%" pointerEvents="none" />
+          <Image src="/logowhite.png" w={{ base: '7%', md: "15%"}} pointerEvents="none" />
           <Text fontSize={18} fontWeight="700" color="#FFFFFF">
             Lecture Mate
           </Text>
@@ -93,8 +93,8 @@ const Footer = () => {
           </Button>
         ))}
       </Flex> */}
-      <Flex align="center" justify="space-between" w="full" mt={{ base: 10, lg: 5 }} >
-        <Flex gap="2">
+      <Flex align="center" direction={{ base: 'column', md: 'row'}} justify="space-between" w="full" mt={{ base: 10, lg: 5 }} >
+        <Flex gap="2" >
           <a
             href="https://theresanaiforthat.com/ai/lecture-mate/?ref=featured&v=402205"
             target="_blank"
@@ -116,7 +116,7 @@ const Footer = () => {
             />
           </a>
         </Flex>
-        <Flex justify="end">
+        <Flex justify="end" mt={{ base: 2, md: 0}}>
           <Button
             bg="#2F2F2F80"
             color="white"
