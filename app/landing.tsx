@@ -322,7 +322,7 @@ export default function Landing() {
                   >
                     <Image
                       src="/icons/lmquiz.png"
-                      w="15%"
+                      w={{ base: "15%", lg: '20%'}}
                       alt="Lecture mate file upload icon"
                     />
                     <Text fontSize={20} fontWeight={600}>
@@ -348,7 +348,7 @@ export default function Landing() {
                   >
                     <Image
                       src="/icons/lmauth.png"
-                      w="15%"
+                      w={{ base: "15%", lg: '20%'}}
                       alt="Lecture mate file upload icon"
                     />
                     <Text fontSize={20} fontWeight={600}>
@@ -376,7 +376,7 @@ export default function Landing() {
                 >
                   <Image
                     src="/icons/lmai.png"
-                    w="15%"
+                    w={{ base: "15%", lg: '10%'}}
                     alt="Lecture mate file upload icon"
                   />
                   <Text fontSize={20} fontWeight={600}>
