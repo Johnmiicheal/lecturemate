@@ -64,7 +64,7 @@ const Footer = () => {
         fontSize={{ base: '4em', lg: "9em"}}
         fontWeight="bold"
       >
-        Thank You😘
+        Thank You
       </Text>
       <Flex justify="space-between" w="full" direction={{ base: 'column', md: 'row'}} gap={2} mt={{base: 5, md: 0 }}>
         <Flex align="center" gap={2}>

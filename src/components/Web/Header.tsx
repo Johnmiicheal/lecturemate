@@ -203,13 +203,14 @@ const Header = () => {
         <DrawerOverlay />
         <DrawerContent
           css={{
-            "-webkit-backdrop-filter": "blur(5px)",
-            "backdrop-filter": "blur(5px)",
+            "-webkit-backdrop-filter": "blur(6px)",
+            "backdrop-filter": "blur(6px)",
           }}
-          bg="#E8E8E860"
+          bg="#4E4E4E70"
+          borderRadius="20px 0 0 20px"
         >
-          <DrawerCloseButton />
-          <DrawerHeader>Menu</DrawerHeader>
+          <DrawerCloseButton color="white" />
+          <DrawerHeader color="white">Menu</DrawerHeader>
 
           <DrawerBody>
             {/* <Divider mt={10} /> */}
@@ -252,7 +253,7 @@ const Header = () => {
               >
                 Use Lecture Mate
               </Button>
-          <Flex direction="column" justify="center" ml={-2} pos="fixed" bottom={5} bg="black" borderRadius='md' gap={2} p={3}>
+          <Flex direction="column" justify="center" ml={-2} pos="fixed" bottom={5} bg="#202020" borderRadius='md' gap={2} p={3}>
             <Text color="white">
               Connect with us on our social media
             </Text>
@@ -266,7 +267,7 @@ const Header = () => {
                   _hover={{ bg: "none", color: "#53AF28" }}
                   key={link.path}
                   color="#FFFFFF"
-                  bg="gray.700"
+                  bg="#88888850"
                   onClick={() => router.push(link.path)}
                 />
               ))}
