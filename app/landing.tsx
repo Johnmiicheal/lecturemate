@@ -277,7 +277,7 @@ export default function Landing() {
                 <HStack
                   p={6}
                   border="2px solid #333333"
-                  _hover={{ border: "2px solid #434343" }}
+                  _hover={{ border: "2px solid #53AF28" }}
                   bg="#252525"
                   borderRadius="20px"
                   align="center"

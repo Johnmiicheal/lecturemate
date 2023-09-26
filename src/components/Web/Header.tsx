@@ -65,7 +65,7 @@ const Header = () => {
       text: "Github",
     },
     {
-      path: "https://www.instagram.com/lecturemate.ai/",
+      path: "https://www.instagram.com/lecturemate.ai",
       iconActive: IoLogoInstagram,
       text: "Instagram",
     },
