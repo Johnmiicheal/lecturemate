@@ -46,7 +46,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     return (
       <ThemeProvider theme={theme}>
         <ChakraProvider theme={theme}>
-          {/* {progress && <TopBarProgress />} */}
+          {progress && <TopBarProgress />}
           <Center>
             <Box minH="100vh" minW="full" bgColor="green.200" bgSize="cover">
               <Flex justify="center">{children}</Flex>

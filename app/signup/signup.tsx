@@ -161,7 +161,6 @@ export default function Signup({ user }: any) {
             <Formik
               initialValues={{ username: "", email: "", password: "" }}
               onSubmit={async (values, actions) => {
-                console.log(location.origin)
                 const { data, error } = await supabase.auth.signUp({
                   email: values.email,
                   password: values.password,

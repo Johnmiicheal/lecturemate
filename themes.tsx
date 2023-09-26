@@ -4,8 +4,8 @@ import "@fontsource/mulish";
 // Create a theme instance.
 const theme = extendTheme({
   fonts: {
-    heading: 'Mulish',
-    body: 'Mulish',       
+    heading: `'Mulish', san-serif`,
+    body:  `'Mulish', san-serif`,       
 },
 components: {
   Button: { baseStyle: {_focus: { boxShadow: 'none'}}},

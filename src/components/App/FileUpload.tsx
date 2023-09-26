@@ -7,13 +7,9 @@ import React, { useState, useEffect, Suspense } from "react";
 import CopyBox from "./CopyBox";
 import TopBarProgress from "react-topbar-progress-indicator";
 import { createClient } from '@supabase/supabase-js';
-// import { createRequire } from "module";
-// import { createWorker } from "tesseract.js";
-// const require = createRequire(import.meta.url);
-// var pdf2img = require('../../../node_modules/pdf-img-convert/pdf-img-convert');
-// const fs = require('../../../node_modules/fs');
 
 const supabase = createClient('https://mgolchoghrkotexoxizm.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1nb2xjaG9naHJrb3RleG94aXptIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTI5MjE3ODgsImV4cCI6MjAwODQ5Nzc4OH0.cHDO7n3MujZrI9pn40oq-DIFXWs9zBmwjrEb0ZhVixg');
+
 
 interface FormValues {
   file: File | null;
@@ -156,7 +152,6 @@ const FileUpload = ({user3}: any) => {
               isClosable: true,
             });
             setUploading(false)
-            // setToken(response.data.uniqueId);
           } else {
             setUploading(false)
             toast({
@@ -203,10 +198,12 @@ const FileUpload = ({user3}: any) => {
   return (
     <Flex direction="column">
       {uploading && <TopBarProgress />}
+      
       <form onSubmit={handleFormSubmit}>
         <input type="file" name="file" onChange={handleFileChange} />
         <input type="submit" value="Upload" />
       </form>
+
       <Box
         p={4}
         h="17vh"

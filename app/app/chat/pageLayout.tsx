@@ -47,7 +47,7 @@ import { Field, Form, Formik } from "formik";
 import FileUpload from "../../../src/components/App/FileUpload";
 import styles from "../../../styles/Chat.module.css";
 import { FaTelegramPlane } from "react-icons/fa";
-// import Loading from '../../loading';
+import Loading from '../../loading';
 
 interface RequestData {
   requestData: string;
@@ -132,7 +132,7 @@ const Chat = ({user2}: any) => {
   // }
 
   return (
-      <>
+    <Suspense fallback={<Loading />}>
       <Flex bg="#F8FCF7">
         <Flex w="full" direction="column" justify="space-between">
           <Layout user3 = {user2}/>
@@ -576,7 +576,7 @@ const Chat = ({user2}: any) => {
           </ModalBody>
         </ModalContent>
       </Modal>
-      </>
+    </Suspense>
   );
 };
 

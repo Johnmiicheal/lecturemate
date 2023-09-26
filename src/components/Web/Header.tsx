@@ -30,15 +30,14 @@ import React from "react";
 import { useRouter, usePathname } from "next/navigation";
 import {
   IoChevronForward,
-  IoFlash,
-  IoFlashOutline,
+  IoLogoGithub,
+  IoLogoInstagram,
   IoMenu,
 } from "react-icons/io5";
 import { FaTelegramPlane } from "react-icons/fa";
 
 
 const Header = () => {
-
   const {
     isOpen: isDrawerOpen,
     onOpen: onDrawerOpen,
@@ -46,59 +45,96 @@ const Header = () => {
   } = useDisclosure();
   const router = useRouter();
   const pathname = usePathname();
-  const [isLoading, setIsLoading] = React.useState(false)
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  const scrollToAnchor = (point: string) => {
+    const anchorDiv = document.getElementById(point);
+    if (anchorDiv) {
+      anchorDiv.scrollIntoView({ behavior: "smooth" });
+    }
+  };
   const links = [
-    { path: "/features", text: "Features" },
-    { path: "/resources", text: "Resources" },
-    { path: "/pricing", text: "Pricing" },
+    { path: "#", text: "Home", point: "home" },
+    { path: "#features", text: "Features", point: "features" },
+    { path: "#vision", text: "Vision", point: "vision" },
+    { path: "#faq", text: "FAQ", point: "faq" },
+  ];
+  const socials = [
+    {
+      path: "https://github.com/johnmiicheal/lecturemate",
+      iconActive: IoLogoGithub,
+      text: "Github",
+    },
+    {
+      path: "https://www.instagram.com/lecturemate.ai",
+      iconActive: IoLogoInstagram,
+      text: "Instagram",
+    },
   ];
   const handleClick = () => {
-    router.push('/app');
-    if (pathname !== '/app'){
+    router.push("/app");
+    if (pathname !== "/app") {
       setIsLoading(true);
     }
-  }
+  };
 
   return (
     <Flex
       display="flex"
+      bg="#1C1C1C70"
+      css={{
+        "-webkit-backdrop-filter": "blur(5px)",
+        "backdrop-filter": "blur(5px)",
+      }}
+      border="1px solid #8D8D8D"
+      borderRadius="10px"
+      py={2}
+      px={{ base: 2, lg: 4 }}
+      color="white"
       zIndex="1"
       top="0"
       w="full"
       align="center"
       justify="space-between"
-      h={12}
     >
       <Flex justify="start" gap={10}>
-        <Flex align="center" gap={2} onClick={() => router.push('/')} cursor='pointer'>
+        <Flex
+          align="center"
+          gap={2}
+          onClick={() => router.push("/")}
+          cursor="pointer"
+        >
           <Image
             src="/logo.png"
             alt="Lecture Mate Logo"
-            w="40px"
+            w="30px"
             pointerEvents="none"
           />
-          <Text fontSize={18} fontWeight="700" color="#202020">
+          <Text fontSize={18} fontWeight="700" color="#FFFFFF">
             Lecture Mate
           </Text>
         </Flex>
-        {/* {links.map((link) => (
+      </Flex>
+      <Flex gap={14}>
+        {links.map((link) => (
           <Button
             display={{ base: "none", md: "flex" }}
             variant="link"
             key={link.path}
-            color="#202020"
+            color="#FFFFFF"
+            _hover={{ bg: "none", color: "#53AF28" }}
             fontWeight={500}
             fontSize={14}
-            mr={-3}
+            onClick={() => scrollToAnchor(link.point)}
           >
             {link.text}
           </Button>
-        ))} */}
+        ))}
       </Flex>
-      <Flex
+      {/* <Flex
         justify="end"
         ml={10}
-        display={{ base: "none", md: "flex" }}
+        display="none"
         gap={5}
       >
         <Flex
@@ -137,103 +173,58 @@ const Header = () => {
         >
           Try it out
         </Button>
+
+      </Flex> */}
+
+      <Flex gap={3} display={{ base: "none", md: "flex" }}>
+        {socials.map((link) => (
+          <IconButton
+            icon={<link.iconActive />}
+            aria-label="social links"
+            variant="ghost"
+            _hover={{ bg: "none", color: "#53AF28" }}
+            key={link.path}
+            color="#FFFFFF"
+            onClick={() => router.push(link.path)}
+          />
+        ))}
       </Flex>
 
       <Flex justify="end" display={{ base: "flex", md: "none" }}>
         <IconButton
           variant="ghost"
+          color="#FFFFFF"
           aria-label="menu"
           icon={<IoMenu />}
           onClick={onDrawerOpen}
         />
       </Flex>
 
-      {/* <Modal isOpen={isOpen} onClose={onClose} size={{ base: "sm", lg: "lg" }}>
-        <ModalOverlay />
-        <ModalContent
-          minW={{ base: "10rem", lg: "33rem" }}
-          minH="20rem"
-          borderColor="white"
-          borderRadius="10px"
-        >
-          <ModalHeader
-            borderRadius="10px 10px 0 0 "
-            // bgGradient="linear(to-l, #00F0FF, #53AF28)"
-            bgColor="#53AF28"
-          >
-            Lecture Mate - Waitlist
-          </ModalHeader>
-          <ModalCloseButton />
-          <ModalBody mb={7}>
-            <Alert
-              status="info"
-              variant="left-accent"
-              flexDirection="column"
-              alignItems="center"
-              justifyContent="center"
-              textAlign="center"
-              bg="white"
-              border="white"
-            >
-              <AlertTitle mb={1} fontSize="lg">
-                Hi there👋
-              </AlertTitle>
-              <AlertDescription maxWidth="lg" textAlign="justify">
-                We are working hard and fast to deliver to you a seamless
-                experience. Don't worry, we'll be ready sooner than you expect
-                it🚀
-                <br />
-                <br />
-                In the mean time, why not click on the button to join the
-                Waitlist
-              </AlertDescription>
-              <AlertDialogFooter>
-                <Button
-                  variant="solid"
-                  borderRadius="full"
-                  px={4}
-                  color="white"
-                  bg="#202020"
-                  // _hover={{ bgGradient: "linear(to-l, #00F0FF, #53AF28)" }}
-                  rightIcon={<IoChevronForward />}
-                  onClick={onOpen}
-                  fontWeight={500}
-                  fontSize={14}
-                  onClickCapture={() =>
-                    router.push(
-                      "https://docs.google.com/forms/d/e/1FAIpQLSd0z5h-9jIpsp4jP3gaXEsiaJDy0A-gFjmGYjS3DuL_Do2cEA/viewform"
-                    )
-                  }
-                >
-                  Join Waitlist
-                </Button>
-              </AlertDialogFooter>
-            </Alert>
-          </ModalBody>
-        </ModalContent>
-      </Modal> */}
-
       <Drawer isOpen={isDrawerOpen} placement="right" onClose={onDrawerClose}>
         <DrawerOverlay />
-        <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerHeader>Menu</DrawerHeader>
+        <DrawerContent
+          css={{
+            "-webkit-backdrop-filter": "blur(6px)",
+            "backdrop-filter": "blur(6px)",
+          }}
+          bg="#4E4E4E70"
+          borderRadius="20px 0 0 20px"
+        >
+          <DrawerCloseButton color="white" />
+          <DrawerHeader color="white">Menu</DrawerHeader>
 
           <DrawerBody>
-            {/* <Flex direction="column" textAlign="start" align="start" gap={5}>
-              {links.map((link) => (
-                <Button variant="link" key={link.path} color="#008F06">
-                  {link.text}
-                </Button>
-              ))}
-            </Flex> */}
             {/* <Divider mt={10} /> */}
-            <Flex mt="2" justify="start" gap={10} direction="column-reverse">
+            <Flex mt="2" justify="start" gap={5} direction="column-reverse">
               <Flex
                 align="center"
+                justify="center"
                 gap="1"
                 cursor="pointer"
-                color="#008F06"
+                borderRadius="full"
+                color="#FFFFFF"
+                py={2}
+                bg="#008F06"
                 _hover={{ color: "#005103", fontWeight: 500 }}
                 role="group"
                 onClick={() => router.push("https://t.me/NEARCommunity")}
@@ -244,7 +235,6 @@ const Header = () => {
                   color="#FFF"
                   _groupHover={{ bg: "#005103" }}
                   p={1}
-                  borderRadius="full"
                   w="7"
                   h="7"
                 />
@@ -258,22 +248,38 @@ const Header = () => {
                 bg="#202020"
                 _hover={{ bg: "#303030" }}
                 rightIcon={<IoChevronForward />}
-                onClick={() => router.push('/app')}
+                onClick={() => router.push("/app")}
                 fontWeight={500}
                 fontSize={14}
               >
-                Use Demo
+                Use Lecture Mate
               </Button>
+          <Flex direction="column" justify="center" ml={-2} pos="fixed" bottom={5} bg="#202020" borderRadius='md' gap={2} p={3}>
+            <Text color="white">
+              Connect with us on our social media
+            </Text>
+            <Flex gap={5}>
+              {socials.map((link) => (
+                <IconButton
+                  icon={<link.iconActive />}
+                  size="lg"
+                  aria-label="social links"
+                  variant="solid"
+                  _hover={{ bg: "none", color: "#53AF28" }}
+                  key={link.path}
+                  color="#FFFFFF"
+                  bg="#88888850"
+                  onClick={() => router.push(link.path)}
+                />
+              ))}
+            </Flex>
+          </Flex>
             </Flex>
           </DrawerBody>
 
-          <DrawerFooter>
-           
-          </DrawerFooter>
+          <DrawerFooter></DrawerFooter>
         </DrawerContent>
       </Drawer>
-
-
     </Flex>
   );
 };
