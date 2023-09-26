@@ -7,13 +7,13 @@ import Header from "../src/components/Web/Header";
 import Footer from "../src/components/Web/Footer";
 import { motion } from "framer-motion";
 import { IoStar } from "react-icons/io5";
-import Loading from "./loading";
+// import Loading from "./loading";
 
 
 export default function Landing() {
   const router = useRouter();
   return (
-    <Suspense fallback={<Loading />}>
+    // <Suspense fallback={<Loading />}>
     <Flex direction="column">
       <Flex
         direction="column"
@@ -129,6 +129,6 @@ export default function Landing() {
       </Flex>
       <Footer />
     </Flex>
-    </Suspense>
+    // </Suspense>
   );
 }

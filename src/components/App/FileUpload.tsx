@@ -6,6 +6,14 @@ import { RxUpload, RxFile } from "react-icons/rx";
 import React, { useState, useEffect, Suspense } from "react";
 import CopyBox from "./CopyBox";
 import TopBarProgress from "react-topbar-progress-indicator";
+import { createClient } from '@supabase/supabase-js';
+// import { createRequire } from "module";
+// import { createWorker } from "tesseract.js";
+// const require = createRequire(import.meta.url);
+// var pdf2img = require('../../../node_modules/pdf-img-convert/pdf-img-convert');
+// const fs = require('../../../node_modules/fs');
+
+const supabase = createClient('https://mgolchoghrkotexoxizm.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1nb2xjaG9naHJrb3RleG94aXptIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTI5MjE3ODgsImV4cCI6MjAwODQ5Nzc4OH0.cHDO7n3MujZrI9pn40oq-DIFXWs9zBmwjrEb0ZhVixg');
 
 interface FormValues {
   file: File | null;
@@ -19,6 +27,79 @@ const FileUpload = ({user3}: any) => {
   const [textIndex, setTextIndex] = useState(0);
   const [uploading, setUploading] = useState(false);
   const texts = ['Uploading...', 'Please wait...', 'Almost there...', 'Any minute now...', 'Few seconds left...', 'Approaching light speed...', 'Initiating hyperdrive...', 'Processing...'];
+  const bucketName = 'pdfFiles'; // Replace with your actual bucket name
+  const [file, setFile] = useState<File | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
+
+  const uploadToBucket = async () => {
+    console.log(file)
+    if (!file) {
+      setMessage('Please select a file to upload.');
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase
+                                    .storage
+                                    .from(bucketName + "/1234567890")
+                                    .upload(file.name, file);
+
+      if (error) {
+        setMessage('Error uploading file.');
+      } else {
+        setMessage('File uploaded successfully.');
+      }
+
+    } catch (err: any) {
+      setMessage(`Error: ${err.message}`);
+    }
+  }
+
+  const getFileURL = async () => {
+    if (!file) {
+      setMessage('Please select a file to upload.');
+      return;
+    }
+
+    try {
+      const { data } = supabase
+                       .storage
+                       .from(bucketName)
+                       .getPublicUrl("1234567890/" + file.name)
+      
+      console.log(data.publicUrl)
+      const fileURL = data.publicUrl
+
+      const response = await axios.post(
+        "http://localhost:4000/api/upload/",
+        // "https://api.greynote.app/lecture",
+        {
+          "url": fileURL, 
+          "fileName": file.name,
+          "userId": user3?.id,
+        }       
+        )
+      console.log(response)
+
+      if(response.status === 200){
+        localStorage.setItem("filename", file.name)
+      }
+    } catch (error) {
+      console.log("Error retrieving: " + error)
+    }
+  }
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.files) {
+        setFile(e.target.files[0]);
+      }
+    };
+
+    const handleFormSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+
+      uploadToBucket().then(getFileURL)    
+    };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -42,14 +123,23 @@ const FileUpload = ({user3}: any) => {
       if (values.file) {
         const formData = new FormData();
         formData.append("file", values.file);
-        formData.append("userId", user3.id);
+        // formData.append("userId", user3.id);
         try {
           setUploading(true)
           const response = await axios.post(
-            "https://api.greynote.app/lecture",
-            // "http://127.0.0.1:4000/api/upload/",
-            formData
-          );
+            "http://localhost:4000/api/upload/",
+            // "https://api.greynote.app/lecture",
+            formData          
+          )
+          
+          // axios.post(
+          //   // "https://api.greynote.app/lecture",
+          //   "http://127.0.0.1:4000/api/upload/",
+          //   {
+          //     data: formData,
+          //     userId: user3.id
+          //   }            
+          // );
           console.log("Id: ", response.data.uniqueId);
           if (response.status === 200) {
             // alert(values.file.name);
@@ -113,6 +203,10 @@ const FileUpload = ({user3}: any) => {
   return (
     <Flex direction="column">
       {uploading && <TopBarProgress />}
+      <form onSubmit={handleFormSubmit}>
+        <input type="file" name="file" onChange={handleFileChange} />
+        <input type="submit" value="Upload" />
+      </form>
       <Box
         p={4}
         h="17vh"

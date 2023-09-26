@@ -47,7 +47,7 @@ import { Field, Form, Formik } from "formik";
 import FileUpload from "../../../src/components/App/FileUpload";
 import styles from "../../../styles/Chat.module.css";
 import { FaTelegramPlane } from "react-icons/fa";
-import Loading from '../../loading';
+// import Loading from '../../loading';
 
 interface RequestData {
   requestData: string;
@@ -132,7 +132,7 @@ const Chat = ({user2}: any) => {
   // }
 
   return (
-    <Suspense fallback={<Loading />}>
+      <>
       <Flex bg="#F8FCF7">
         <Flex w="full" direction="column" justify="space-between">
           <Layout user3 = {user2}/>
@@ -361,8 +361,11 @@ const Chat = ({user2}: any) => {
                   onSubmit={async (values, actions) => {
                     if (values) {
                       try {
+                        const fileName = localStorage.getItem("filename")
+
                         const response = await fetch(
-                          "https://purple-chipmunk-tam.cyclic.app/api/api/",
+                          "http://localhost:3000/api/",
+                          // "https://purple-chipmunk-tam.cyclic.app/api/api/",
                           {
                             method: "POST",
                             headers: {
@@ -371,11 +374,13 @@ const Chat = ({user2}: any) => {
                             body: JSON.stringify({
                               query: values.query,
                               userId: user2?.id,
+                              nameOfFile: fileName,
                             }),
                           }
                         );
                         handleStoreRequest(values.query);
                         const data = await response.json();
+                        console.log(data.completion);
                         // setTokenKey(values.token);
                         if (response.status !== 200) {
                           throw (
@@ -385,7 +390,7 @@ const Chat = ({user2}: any) => {
                             )
                           );
                         }
-                        handleStoreResponse(data.result);
+                        handleStoreResponse(data.completion);
                       } catch (error) {
                         console.error("Chat error:", error);
                         toast({
@@ -571,7 +576,7 @@ const Chat = ({user2}: any) => {
           </ModalBody>
         </ModalContent>
       </Modal>
-    </Suspense>
+      </>
   );
 };
 

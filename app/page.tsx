@@ -6,7 +6,7 @@ import theme from "../themes";
 import { useRouter } from "next/router";
 import TopBarProgress from "react-topbar-progress-indicator";
 import Landing from "./landing";
-import Loading from "./loading";
+// import Loading from "./loading";
 
 function MyApp() {
   const [showChild, setShowChild] = React.useState(false);
@@ -27,9 +27,9 @@ function MyApp() {
           <title>Lecture Mate</title>
         </Head>
         <ChakraProvider theme={theme}>
-          <Suspense fallback={<Loading />}>
+          {/* <Suspense fallback={<Loading />}> */}
             <Landing />
-          </Suspense>
+          {/* </Suspense> */}
         </ChakraProvider>
       </ThemeProvider>
     );
