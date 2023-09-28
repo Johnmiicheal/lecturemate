@@ -1,14 +1,6 @@
 import { Configuration, OpenAIApi } from "openai";
-import { OpenAI } from "langchain/llms/openai";
-import { BufferMemory } from "langchain/memory";
-import { ConversationChain } from "langchain/chains";
-import { PineconeClient } from "@pinecone-database/pinecone";
-import { setCookie } from "../../utils/cookies";
 import { createClient } from "@supabase/supabase-js";
-import { create } from "domain";
 import { NextRequest, NextResponse } from "next/server"
-import { Interface } from "readline";
-// import type { NextApiRequest, NextApiResponse } from 'next'
 
 // Initialize Openai
 const configuration = new Configuration({
@@ -26,14 +18,18 @@ if (!configuration.apiKey) {
 // Declare constants
 const COMPLETIONS_MODEL = "text-davinci-003";
 const EMBEDDING_MODEL = "text-embedding-ada-002";
-const supabase = createClient('https://mgolchoghrkotexoxizm.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1nb2xjaG9naHJrb3RleG94aXptIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTI5MjE3ODgsImV4cCI6MjAwODQ5Nzc4OH0.cHDO7n3MujZrI9pn40oq-DIFXWs9zBmwjrEb0ZhVixg');
+
+const supaUrl: any = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supaKey: any = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+const supabase = createClient(supaUrl, supaKey);
 
 export async function POST(request: Request) {
   const json = await request.json()
   const nameOfFile = json.nameOfFile
+  const userId = json.userId
   console.log("This is the json: " + nameOfFile)
   
-  const { data: pdfData } = await supabase.from('book_pages').select('*').eq('book_name', nameOfFile);
+  const { data: pdfData } = await supabase.from('pdfs').select('*').eq('pdf_name', nameOfFile).eq('user_id', userId);
 
   console.log("extracted "+ JSON.stringify(pdfData)) 
 
@@ -88,8 +84,8 @@ export async function POST(request: Request) {
     async function calculateSimilarityScores(userQueryEmbedding: number[], pdfData: any[] | any) {
       const similarityScores: { pageData: any; similarity: number; }[] = [];
     
-      pdfData.forEach((row: { page_embedding: any[]; }) => {
-        const pageEmbedding = row.page_embedding;
+      pdfData.forEach((row: { vector_data: any[]; }) => {
+        const pageEmbedding = row.vector_data;
         const similarity = calculateDotProductSimilarity(userQueryEmbedding, pageEmbedding);
     
         similarityScores.push({

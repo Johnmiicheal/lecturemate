@@ -8,8 +8,10 @@ import CopyBox from "./CopyBox";
 import TopBarProgress from "react-topbar-progress-indicator";
 import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient('https://mgolchoghrkotexoxizm.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1nb2xjaG9naHJrb3RleG94aXptIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTI5MjE3ODgsImV4cCI6MjAwODQ5Nzc4OH0.cHDO7n3MujZrI9pn40oq-DIFXWs9zBmwjrEb0ZhVixg');
 
+  const supaUrl: any = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supaKey: any = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  const supabase = createClient(supaUrl, supaKey);
 
 interface FormValues {
   file: File | null;
@@ -28,7 +30,6 @@ const FileUpload = ({user3}: any) => {
   const [message, setMessage] = useState<string | null>(null);
 
   const uploadToBucket = async () => {
-    console.log(file)
     if (!file) {
       setMessage('Please select a file to upload.');
       return;
@@ -37,7 +38,7 @@ const FileUpload = ({user3}: any) => {
     try {
       const { data, error } = await supabase
                                     .storage
-                                    .from(bucketName + "/1234567890")
+                                    .from(bucketName + "/" + user3.id)
                                     .upload(file.name, file);
 
       if (error) {
@@ -47,7 +48,17 @@ const FileUpload = ({user3}: any) => {
       }
 
     } catch (err: any) {
+      console.log("Error uploading to bucket: " + err)
       setMessage(`Error: ${err.message}`);
+      toast({
+        title: "Upload Error",
+        position: "top",
+        description: "We could not upload your note😭",
+        status: "error",
+        variant: "left-accent",
+        duration: 5000,
+        isClosable: true,
+      });
     }
   }
 
@@ -61,14 +72,14 @@ const FileUpload = ({user3}: any) => {
       const { data } = supabase
                        .storage
                        .from(bucketName)
-                       .getPublicUrl("1234567890/" + file.name)
+                       .getPublicUrl(user3.id + "/" + file.name)
       
       console.log(data.publicUrl)
       const fileURL = data.publicUrl
 
       const response = await axios.post(
-        "http://localhost:4000/api/upload/",
-        // "https://api.greynote.app/lecture",
+        // "http://localhost:4000/api/upload/",
+        "https://api.greynote.app/lecture",
         {
           "url": fileURL, 
           "fileName": file.name,
@@ -82,6 +93,15 @@ const FileUpload = ({user3}: any) => {
       }
     } catch (error) {
       console.log("Error retrieving: " + error)
+      toast({
+        title: "Upload Error",
+        position: "top",
+        description: "We could not upload your note😭",
+        status: "error",
+        variant: "left-accent",
+        duration: 5000,
+        isClosable: true,
+      });
     }
   }
 
@@ -93,7 +113,6 @@ const FileUpload = ({user3}: any) => {
 
     const handleFormSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-
       uploadToBucket().then(getFileURL)    
     };
 
@@ -123,8 +142,8 @@ const FileUpload = ({user3}: any) => {
         try {
           setUploading(true)
           const response = await axios.post(
-            "http://localhost:4000/api/upload/",
-            // "https://api.greynote.app/lecture",
+            // "http://localhost:4000/api/upload/",
+            "https://api.greynote.app/lecture",
             formData          
           )
           
@@ -197,8 +216,7 @@ const FileUpload = ({user3}: any) => {
 
   return (
     <Flex direction="column">
-      {uploading && <TopBarProgress />}
-      
+      {uploading && <TopBarProgress />}      
       <form onSubmit={handleFormSubmit}>
         <input type="file" name="file" onChange={handleFileChange} />
         <input type="submit" value="Upload" />
@@ -221,7 +239,7 @@ const FileUpload = ({user3}: any) => {
         {...getRootProps()}
       >
         <Icon as={RxUpload} mt={2} w="8" h="8" color="#202020" />
-        <input {...getInputProps()} />
+        <input {...getInputProps()}/>
         {isDragActive ? (
           <Text color="green.500">Drop the file here</Text>
         ) : (
@@ -233,18 +251,20 @@ const FileUpload = ({user3}: any) => {
           <Flex mt={7} align="center" gap={1}>
             <Icon as={RxFile} w="4" h="4" />
             <Text fontWeight="bold">
-              Selected File: {formik.values.file.name}
-            </Text>
+            Selected File: {formik.values.file.name}
+          </Text>            
           </Flex>
         )}
       </Box>
       <Button
         type="submit"
         mt={4}
+        // onClick={handleFormSubmit}
         onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
           event.preventDefault(); // Prevent the default form submission behavior
           formik.handleSubmit();
-        }}
+        }
+      }
         color="#53AF28"
         border="1px solid #53AF28"
         _hover={{ bg: "#53AF28", color: "white" }}

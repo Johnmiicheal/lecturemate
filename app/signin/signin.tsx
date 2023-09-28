@@ -35,8 +35,6 @@ export default function Signin({ user }: any) {
   const router = useRouter();
   const supabase = createClientComponentClient();
 
-  console.log(user);
-
   useEffect(() => {
     if (user) {
       router.push("/app/chat");

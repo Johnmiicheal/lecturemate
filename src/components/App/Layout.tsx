@@ -10,7 +10,6 @@ import LeftNav from "./LeftNav";
 
 export default function Layout({user3}: any) {
   const router = useRouter();
-  console.log(user3);
 
   return (
     <Flex w="full" zIndex={5} pos="fixed">
