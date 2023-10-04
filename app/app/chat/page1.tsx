@@ -8,7 +8,6 @@ import TopBarProgress from "react-topbar-progress-indicator"
 import PageLayout from "./pageLayout"
 
 function MyApp({user}: any) {
-    console.log(user);
     const [progress, setProgress] = React.useState(false)
     Router.events.on("routeChangeStart", () => { setProgress(true) })
     Router.events.on("routeChangeComplete", () => { setProgress(false) })

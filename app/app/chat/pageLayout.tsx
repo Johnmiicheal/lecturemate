@@ -57,7 +57,6 @@ interface ResponseData {
   responseData: string;
 }
 const Chat = ({user2}: any) => {
-  console.log(JSON.stringify(user2));
   const router = useRouter();
   const supabase = createClientComponentClient();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -65,7 +64,7 @@ const Chat = ({user2}: any) => {
   const [showChat, setShowChat] = useState(false);
   //   const [query, setQuery] = useState("");
   //   const [result, setResult] = useState("");
-  const [tokenKey, setTokenKey] = useState("");
+  // const [tokenKey, setTokenKey] = useState("");
   const [requests, setRequests] = useState<String[]>([]);
   const [responses, setResponses] = useState<ReactNode[]>([]);
   const fileName = localStorage.getItem("file");
@@ -126,7 +125,6 @@ const Chat = ({user2}: any) => {
   
     if(user2){
       username = user2.user_metadata.username;
-      console.log(username);
     }
 
   // }
@@ -357,12 +355,16 @@ const Chat = ({user2}: any) => {
                 pb="10"
               >
                 <Formik
-                  initialValues={{ query: "", token: tokenKey }}
+                  initialValues={{ query: "" }}
                   onSubmit={async (values, actions) => {
                     if (values) {
                       try {
+                        const fileName = localStorage.getItem("filename")
+
                         const response = await fetch(
-                          "https://purple-chipmunk-tam.cyclic.app/api/api/",
+                          // "http://localhost:3000/api/",
+                          // "https://purple-chipmunk-tam.cyclic.app/api/api/",
+                          "https://lecturemate.org/api/",
                           {
                             method: "POST",
                             headers: {
@@ -370,13 +372,15 @@ const Chat = ({user2}: any) => {
                             },
                             body: JSON.stringify({
                               query: values.query,
-                              token: values.token,
+                              userId: user2?.id,
+                              nameOfFile: fileName,
                             }),
                           }
                         );
                         handleStoreRequest(values.query);
                         const data = await response.json();
-                        setTokenKey(values.token);
+                        console.log(data.completion);
+                        // setTokenKey(values.token);
                         if (response.status !== 200) {
                           throw (
                             data.error ||
@@ -385,7 +389,7 @@ const Chat = ({user2}: any) => {
                             )
                           );
                         }
-                        handleStoreResponse(data.result);
+                        handleStoreResponse(data.completion);
                       } catch (error) {
                         console.error("Chat error:", error);
                         toast({
@@ -506,7 +510,7 @@ const Chat = ({user2}: any) => {
                           </FormControl>
                         )}
                       </Field>
-                      <Flex w="full">
+                      {/* <Flex w="full">
                         <Button
                           onClick={handleClick}
                           mt={2}
@@ -534,7 +538,7 @@ const Chat = ({user2}: any) => {
                             </FormControl>
                           )}
                         </Field>
-                      </Flex>
+                      </Flex> */}
                     </Form>
                   )}
                 </Formik>
@@ -567,7 +571,7 @@ const Chat = ({user2}: any) => {
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody mb={7}>
-            <FileUpload />
+            <FileUpload user3 = {user2} />
           </ModalBody>
         </ModalContent>
       </Modal>

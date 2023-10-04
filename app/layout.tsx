@@ -5,7 +5,6 @@ export const metadata: Metadata = {
   description:
     "Unlock the power of Knowledge with your AI powered study companion",
   icons: "/logo.png",
-  
 };
 
 export default function RootLayout({

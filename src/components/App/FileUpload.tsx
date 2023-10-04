@@ -6,19 +6,115 @@ import { RxUpload, RxFile } from "react-icons/rx";
 import React, { useState, useEffect, Suspense } from "react";
 import CopyBox from "./CopyBox";
 import TopBarProgress from "react-topbar-progress-indicator";
+import { createClient } from '@supabase/supabase-js';
+
+
+  const supaUrl: any = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supaKey: any = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  const supabase = createClient(supaUrl, supaKey);
 
 interface FormValues {
   file: File | null;
 }
 
 
-const FileUpload = () => {
+const FileUpload = ({user3}: any) => {
   const toast = useToast();
   const [token, setToken] = useState('');
   const [timer, setTimer] = useState(0);
   const [textIndex, setTextIndex] = useState(0);
   const [uploading, setUploading] = useState(false);
   const texts = ['Uploading...', 'Please wait...', 'Almost there...', 'Any minute now...', 'Few seconds left...', 'Approaching light speed...', 'Initiating hyperdrive...', 'Processing...'];
+  const bucketName = 'pdfFiles'; // Replace with your actual bucket name
+  const [file, setFile] = useState<File | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
+
+  const uploadToBucket = async () => {
+    if (!file) {
+      setMessage('Please select a file to upload.');
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase
+                                    .storage
+                                    .from(bucketName + "/" + user3.id)
+                                    .upload(file.name, file);
+
+      if (error) {
+        setMessage('Error uploading file.');
+      } else {
+        setMessage('File uploaded successfully.');
+      }
+
+    } catch (err: any) {
+      console.log("Error uploading to bucket: " + err)
+      setMessage(`Error: ${err.message}`);
+      toast({
+        title: "Upload Error",
+        position: "top",
+        description: "We could not upload your note😭",
+        status: "error",
+        variant: "left-accent",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  }
+
+  const getFileURL = async () => {
+    if (!file) {
+      setMessage('Please select a file to upload.');
+      return;
+    }
+
+    try {
+      const { data } = supabase
+                       .storage
+                       .from(bucketName)
+                       .getPublicUrl(user3.id + "/" + file.name)
+      
+      console.log(data.publicUrl)
+      const fileURL = data.publicUrl
+
+      const response = await axios.post(
+        // "http://localhost:4000/api/upload/",
+        "https://api.greynote.app/lecture",
+        {
+          "url": fileURL, 
+          "fileName": file.name,
+          "userId": user3?.id,
+        }       
+        )
+      console.log(response)
+
+      if(response.status === 200){
+        localStorage.setItem("filename", file.name)
+      }
+    } catch (error) {
+      console.log("Error retrieving: " + error)
+      toast({
+        title: "Upload Error",
+        position: "top",
+        description: "We could not upload your note😭",
+        status: "error",
+        variant: "left-accent",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  }
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.files) {
+        setFile(e.target.files[0]);
+      }
+    };
+
+    const handleFormSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      uploadToBucket().then(getFileURL)    
+    };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -42,13 +138,23 @@ const FileUpload = () => {
       if (values.file) {
         const formData = new FormData();
         formData.append("file", values.file);
+        // formData.append("userId", user3.id);
         try {
           setUploading(true)
           const response = await axios.post(
+            // "http://localhost:4000/api/upload/",
             "https://api.greynote.app/lecture",
-            // "http://127.0.0.1:4000/api/upload/",
-            formData
-          );
+            formData          
+          )
+          
+          // axios.post(
+          //   // "https://api.greynote.app/lecture",
+          //   "http://127.0.0.1:4000/api/upload/",
+          //   {
+          //     data: formData,
+          //     userId: user3.id
+          //   }            
+          // );
           console.log("Id: ", response.data.uniqueId);
           if (response.status === 200) {
             // alert(values.file.name);
@@ -65,7 +171,6 @@ const FileUpload = () => {
               isClosable: true,
             });
             setUploading(false)
-            setToken(response.data.uniqueId);
           } else {
             setUploading(false)
             toast({
@@ -111,7 +216,12 @@ const FileUpload = () => {
 
   return (
     <Flex direction="column">
-      {uploading && <TopBarProgress />}
+      {uploading && <TopBarProgress />}      
+      <form onSubmit={handleFormSubmit}>
+        <input type="file" name="file" onChange={handleFileChange} />
+        <input type="submit" value="Upload" />
+      </form>
+
       <Box
         p={4}
         h="17vh"
@@ -129,7 +239,7 @@ const FileUpload = () => {
         {...getRootProps()}
       >
         <Icon as={RxUpload} mt={2} w="8" h="8" color="#202020" />
-        <input {...getInputProps()} />
+        <input {...getInputProps()}/>
         {isDragActive ? (
           <Text color="green.500">Drop the file here</Text>
         ) : (
@@ -141,18 +251,20 @@ const FileUpload = () => {
           <Flex mt={7} align="center" gap={1}>
             <Icon as={RxFile} w="4" h="4" />
             <Text fontWeight="bold">
-              Selected File: {formik.values.file.name}
-            </Text>
+            Selected File: {formik.values.file.name}
+          </Text>            
           </Flex>
         )}
       </Box>
       <Button
         type="submit"
         mt={4}
+        // onClick={handleFormSubmit}
         onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
           event.preventDefault(); // Prevent the default form submission behavior
           formik.handleSubmit();
-        }}
+        }
+      }
         color="#53AF28"
         border="1px solid #53AF28"
         _hover={{ bg: "#53AF28", color: "white" }}
@@ -167,9 +279,9 @@ const FileUpload = () => {
           {texts[textIndex]}
         </Text>
       )}
-      <Flex display={!formik.values.file ? 'none' : 'block'} mt={2}>
+      {/* <Flex display={!formik.values.file ? 'none' : 'block'} mt={2}>
         <CopyBox content={token} height={10} />
-      </Flex>
+      </Flex> */}
     </Flex>
   );
 };
