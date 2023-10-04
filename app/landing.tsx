@@ -32,7 +32,6 @@ import Loading from "./loading";
 import TopBarProgress from "react-topbar-progress-indicator";
 import { Player } from "@lottiefiles/react-lottie-player";
 import styles from "../styles/Chat.module.css";
-import Script from "next/script";
 
 export default function Landing() {
   const router = useRouter();

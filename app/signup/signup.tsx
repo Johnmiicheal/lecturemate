@@ -17,6 +17,7 @@ import {
   Icon,
   InputRightElement,
   IconButton,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { Formik, Form, Field } from "formik";
@@ -25,6 +26,7 @@ import { useRouter, usePathname } from "next/navigation";
 import NextLink from "next/link";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { IoEye, IoEyeOff, IoLogoGoogle } from "react-icons/io5";
+import WIPAlert from "../../src/components/Web/WIPAlert";
 
 export default function Signup({ user }: any) {
   const [username, setUsername] = useState("");
@@ -36,6 +38,7 @@ export default function Signup({ user }: any) {
   const supabase = createClientComponentClient();
   const toast = useToast();
   const pathname = usePathname();
+  const {isOpen, onOpen, onClose} = useDisclosure()
 
   useEffect(() => {
     if (user) {
@@ -153,10 +156,12 @@ export default function Signup({ user }: any) {
             align="center"
             gap={2}
             borderRadius="6px"
+            onClick={onOpen}
           >
             <Icon as={IoLogoGoogle} />
             <Text>Continue with Google</Text>
           </Flex>
+          <WIPAlert isOpen={isOpen} onClose={onClose} />
           <Flex direction="column" mt={10}>
             <Formik
               initialValues={{ username: "", email: "", password: "" }}
@@ -192,10 +197,6 @@ export default function Signup({ user }: any) {
                       position: "top-right",
                     });
                     actions.resetForm();                   
-                  
-                  // setTimeout(() => {
-                  //   router.push("/app/chat");
-                  // }, 1000);
                 } else if (error?.message === "Failed to fetch") {
                   actions.setSubmitting(false);
                   toast({
@@ -222,6 +223,9 @@ export default function Signup({ user }: any) {
                     isClosable: true,
                     position: "top-right",
                   });
+                  setTimeout(() => {
+                    router.push('/verify-email')
+                  }, 600)
                 }
                 else {
                   actions.setSubmitting(false);
@@ -237,9 +241,6 @@ export default function Signup({ user }: any) {
                   actions.resetForm();
                 }
               }}
-              // setTimeout(() => {
-              //   alert(JSON.stringify(values, null, 2));
-              // }, 1000);
             >
               {(props) => (
                 <Form>
@@ -314,7 +315,7 @@ export default function Signup({ user }: any) {
                       </FormControl>
                     )}
                   </Field>
-                  <Flex align="center">
+                  {/* <Flex align="center">
                     <Text
                       color="gray.500"
                       fontSize={12}
@@ -329,9 +330,10 @@ export default function Signup({ user }: any) {
                         </Link>
                       </NextLink>
                     </Text>
-                  </Flex>
+                  </Flex> */}
 
                   <Button
+                    mt={10}
                     w="full"
                     bg="#53AF28"
                     color="white"
