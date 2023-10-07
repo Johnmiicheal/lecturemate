@@ -77,9 +77,7 @@ export async function POST(request: Request) {
       console.log("It's me Ifiok2")
 
       return dotProduct;
-    }
-
-    
+    }    
   
     async function calculateSimilarityScores(userQueryEmbedding: number[], pdfData: any[] | any) {
       const similarityScores: { pageData: any; similarity: number; }[] = [];
@@ -162,14 +160,55 @@ export async function POST(request: Request) {
     }
   }
 
-  const result = await calculateSimilarityScores(xq, pdfData)
+  if(!nameOfFile){
+      // const query = json.query || "";
+
+      if (query.trim().length === 0) {
+        return (new NextResponse("Please enter a question", {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        })) 
+      }
+
+      const finalPrompt = `
+          Question: ${query}.
+          Answer:
+        `;
+      try {
+        // const model = new OpenAI({});
+        // const memory = new BufferMemory();
+        const response = await openai.createCompletion({
+          model: COMPLETIONS_MODEL,
+          prompt: finalPrompt,
+          max_tokens: 2048,
+        });
+    
+        // const chain = new ConversationChain({ llm: model, memory: memory });
+        // const completion = await chain.call({ input: finalPrompt });
+    
+        const completion: string | undefined = response.data.choices[0].text;
+        console.log(completion);
+        console.log(query);
+    
+        const result = {
+          query: query,
+          completion: completion
+        }
+
+        console.log("Funny how this will work: " + result)
+        return result
+      }catch(err){
+        console.log(err)
+      }
+  }else{
+    const result = await calculateSimilarityScores(xq, pdfData)
   
-  return (
-    new NextResponse(JSON.stringify(result), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    })
-  )
-  }  
+    return (
+      new NextResponse(JSON.stringify(result), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      })
+    )
+  }}  
 
 
