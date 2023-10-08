@@ -355,11 +355,11 @@ const Chat = ({user2}: any) => {
                 pb="10"
               >
                 <Formik
-                  initialValues={{ query: "" }}
+                  initialValues={{ query: ""}}
                   onSubmit={async (values, actions) => {
                     if (values) {
                       try {
-                        const fileName = localStorage.getItem("filename")
+                        const fileName = localStorage.getItem("file")
 
                         const response = await fetch(
                           "https://purple-chipmunk-tam.cyclic.app/api/api/",
