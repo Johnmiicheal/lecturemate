@@ -362,8 +362,8 @@ const Chat = ({user2}: any) => {
                         const fileName = localStorage.getItem("filename")
 
                         const response = await fetch(
-                          // "https://purple-chipmunk-tam.cyclic.app/api/api/",
-                          "https://lecturemate.org/api",
+                          "https://purple-chipmunk-tam.cyclic.app/api/api/",
+                          // "https://lecturemate.org/api",
                           {
                             method: "POST",
                             headers: {
