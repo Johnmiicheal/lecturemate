@@ -1,5 +1,5 @@
 "use client";
-
+import React, {useState} from "react";
 import {
   Modal,
   ModalOverlay,
@@ -14,11 +14,17 @@ import {
   Button,
   useDisclosure,
 } from "@chakra-ui/react";
-import router from "next/router";
+import {useRouter} from "next/navigation";
 import { IoChevronForward } from "react-icons/io5";
 
-const WIPAlert = () => {
-  const { isOpen, onClose, onOpen } = useDisclosure();
+const WIPAlert = ({ isOpen, onClose }: any) => {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
+  const handleClick = () => {
+    router.push('https://t.me/NEARCommunity');
+    setLoading(true);
+  }
   return (
     <Modal isOpen={isOpen} onClose={onClose} size={{ base: "sm", lg: "lg" }}>
       <ModalOverlay />
@@ -33,7 +39,7 @@ const WIPAlert = () => {
           // bgGradient="linear(to-l, #00F0FF, #53AF28)"
           bgColor="#53AF28"
         >
-          Lecture Mate - Waitlist
+          🚧 Lecture Mate - Work in Progress 🚧
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody mb={7}>
@@ -47,16 +53,16 @@ const WIPAlert = () => {
             bg="white"
             border="white"
           >
-            <AlertTitle mb={1} fontSize="lg">
+            <AlertTitle mb={4} fontSize="lg">
               Hi there👋
             </AlertTitle>
             <AlertDescription maxWidth="lg" textAlign="justify">
-              We are working hard and fast to deliver to you a seamless
+              We are working hard and fast to deliver this feature to you so you can have a seamless
               experience. Don't worry, we'll be ready sooner than you expect
               it🚀
               <br />
               <br />
-              In the mean time, why not click on the button to join the Waitlist
+              In the mean time, why not join our Community to get more updates
             </AlertDescription>
             <AlertDialogFooter>
               <Button
@@ -67,16 +73,12 @@ const WIPAlert = () => {
                 bg="#202020"
                 _hover={{ bgGradient: "linear(to-l, #00F0FF, #53AF28)" }}
                 rightIcon={<IoChevronForward />}
-                onClick={onOpen}
                 fontWeight={500}
                 fontSize={14}
-                onClickCapture={() =>
-                  router.push(
-                    "https://docs.google.com/forms/d/e/1FAIpQLSd0z5h-9jIpsp4jP3gaXEsiaJDy0A-gFjmGYjS3DuL_Do2cEA/viewform"
-                  )
-                }
+                isLoading={loading}
+                onClick={ handleClick }
               >
-                Join Waitlist
+                Join our Community
               </Button>
             </AlertDialogFooter>
           </Alert>
