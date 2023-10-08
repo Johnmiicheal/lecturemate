@@ -18,23 +18,22 @@ if (!configuration.apiKey) {
 // Declare constants
 const COMPLETIONS_MODEL = "text-davinci-003";
 const EMBEDDING_MODEL = "text-embedding-ada-002";
-
 const supaUrl: any = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supaKey: any = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 const supabase = createClient(supaUrl, supaKey);
 
 export async function POST(request: Request) {
   const json = await request.json()
-  const nameOfFile = json.nameOfFile
+  const nameOfFile = localStorage.getItem("file");
   const userId = json.userId
-  console.log("This is the json: " + nameOfFile)
+  console.log("This is the json: ", nameOfFile)
   
   const { data: pdfData } = await supabase.from('pdfs').select('*').eq('pdf_name', nameOfFile).eq('user_id', userId);
 
-  console.log("extracted "+ JSON.stringify(pdfData)) 
+  console.log("extracted: ", JSON.stringify(pdfData)) 
 
   if(pdfData !== null){
-    console.log("length of file: "+ pdfData.length)
+    console.log("length of file: ", pdfData.length)
   }
 
 

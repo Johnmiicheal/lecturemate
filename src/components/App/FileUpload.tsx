@@ -6,115 +6,33 @@ import { RxUpload, RxFile } from "react-icons/rx";
 import React, { useState, useEffect, Suspense } from "react";
 import CopyBox from "./CopyBox";
 import TopBarProgress from "react-topbar-progress-indicator";
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "@supabase/supabase-js";
 
-
-  const supaUrl: any = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supaKey: any = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  const supabase = createClient(supaUrl, supaKey);
+const supaUrl: any = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supaKey: any = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabase = createClient(supaUrl, supaKey);
 
 interface FormValues {
   file: File | null;
 }
 
-
-const FileUpload = ({user3}: any) => {
+const FileUpload = ({ user3 }: any) => {
   const toast = useToast();
-  const [token, setToken] = useState('');
+  const [token, setToken] = useState("");
   const [timer, setTimer] = useState(0);
   const [textIndex, setTextIndex] = useState(0);
   const [uploading, setUploading] = useState(false);
-  const texts = ['Uploading...', 'Please wait...', 'Almost there...', 'Any minute now...', 'Few seconds left...', 'Approaching light speed...', 'Initiating hyperdrive...', 'Processing...'];
-  const bucketName = 'pdfFiles'; // Replace with your actual bucket name
-  const [file, setFile] = useState<File | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
-
-  const uploadToBucket = async () => {
-    if (!file) {
-      setMessage('Please select a file to upload.');
-      return;
-    }
-
-    try {
-      const { data, error } = await supabase
-                                    .storage
-                                    .from(bucketName + "/" + user3.id)
-                                    .upload(file.name, file);
-
-      if (error) {
-        setMessage('Error uploading file.');
-      } else {
-        setMessage('File uploaded successfully.');
-      }
-
-    } catch (err: any) {
-      console.log("Error uploading to bucket: " + err)
-      setMessage(`Error: ${err.message}`);
-      toast({
-        title: "Upload Error",
-        position: "top",
-        description: "We could not upload your note😭",
-        status: "error",
-        variant: "left-accent",
-        duration: 5000,
-        isClosable: true,
-      });
-    }
-  }
-
-  const getFileURL = async () => {
-    if (!file) {
-      setMessage('Please select a file to upload.');
-      return;
-    }
-
-    try {
-      const { data } = supabase
-                       .storage
-                       .from(bucketName)
-                       .getPublicUrl(user3.id + "/" + file.name)
-      
-      console.log(data.publicUrl)
-      const fileURL = data.publicUrl
-
-      const response = await axios.post(
-        // "http://localhost:4000/api/upload/",
-        "https://api.greynote.app/lecture",
-        {
-          "url": fileURL, 
-          "fileName": file.name,
-          "userId": user3?.id,
-        }       
-        )
-      console.log(response)
-
-      if(response.status === 200){
-        localStorage.setItem("filename", file.name)
-      }
-    } catch (error) {
-      console.log("Error retrieving: " + error)
-      toast({
-        title: "Upload Error",
-        position: "top",
-        description: "We could not upload your note😭",
-        status: "error",
-        variant: "left-accent",
-        duration: 5000,
-        isClosable: true,
-      });
-    }
-  }
-
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (e.target.files) {
-        setFile(e.target.files[0]);
-      }
-    };
-
-    const handleFormSubmit = async (e: React.FormEvent) => {
-      e.preventDefault();
-      uploadToBucket().then(getFileURL)    
-    };
+  const texts = [
+    "Uploading...",
+    "Please wait...",
+    "Almost there...",
+    "Any minute now...",
+    "Few seconds left...",
+    "Approaching light speed...",
+    "Initiating hyperdrive...",
+    "Processing...",
+  ];
+  const bucketName = "pdfFiles"; // Replace with your actual bucket name
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -129,7 +47,7 @@ const FileUpload = ({user3}: any) => {
       setTextIndex((prevIndex) => (prevIndex + 1) % texts.length);
     }
   }, [timer]);
-  
+
   const formik = useFormik<FormValues>({
     initialValues: {
       file: null,
@@ -140,27 +58,16 @@ const FileUpload = ({user3}: any) => {
         formData.append("file", values.file);
         // formData.append("userId", user3.id);
         try {
-          setUploading(true)
-          const response = await axios.post(
-            // "http://localhost:4000/api/upload/",
-            "https://api.greynote.app/lecture",
-            formData          
-          )
-          
-          // axios.post(
-          //   // "https://api.greynote.app/lecture",
-          //   "http://127.0.0.1:4000/api/upload/",
-          //   {
-          //     data: formData,
-          //     userId: user3.id
-          //   }            
-          // );
-          console.log("Id: ", response.data.uniqueId);
-          if (response.status === 200) {
+          setUploading(true);
+          const { data, error } = await supabase.storage
+          .from(bucketName + "/" + user3.id)
+          .upload(values.file.name, values.file);
+
+          if (!error) {
             // alert(values.file.name);
             setTimer(0);
             setTextIndex(0);
-            localStorage.setItem('file', values.file.name);
+            localStorage.setItem("file", data.path);
             toast({
               title: "Notes Uploaded",
               position: "top-right",
@@ -170,38 +77,38 @@ const FileUpload = ({user3}: any) => {
               duration: 5000,
               isClosable: true,
             });
-            setUploading(false)
+            setUploading(false);
           } else {
-            setUploading(false)
+            setUploading(false);
             toast({
-                title: "Upload Error",
-                position: "top",
-                description: "We could not upload your note😭",
-                status: "error",
-                variant: "left-accent",
-                duration: 5000,
-                isClosable: true,
-              });
+              title: "Upload Error",
+              position: "top",
+              description: error.message,
+              status: "error",
+              variant: "left-accent",
+              duration: 5000,
+              isClosable: true,
+            });
             //   setTimeout(() => {
             //     router.reload();
             //   }, 1000);
           }
-          console.log("Upload successful:", response.data);
+          console.log("Upload successful:", data);
         } catch (error) {
-            if(error){
-              setUploading(false)
-              setTimer(0);
+          if (error) {
+            setUploading(false);
+            setTimer(0);
             setTextIndex(0);
-                toast({
-                    title: "Upload Error",
-                    position: "top-right",
-                    description: "We were unable to upload your note😞",
-                    status: "error",
-                    variant: "left-accent",
-                    duration: 5000,
-                    isClosable: true,
-                  });
-            }
+            toast({
+              title: "Upload Error",
+              position: "top-right",
+              description: "We were unable to upload your note😞",
+              status: "error",
+              variant: "left-accent",
+              duration: 5000,
+              isClosable: true,
+            });
+          }
           console.error("Upload error:", error);
         }
       }
@@ -216,12 +123,7 @@ const FileUpload = ({user3}: any) => {
 
   return (
     <Flex direction="column">
-      {uploading && <TopBarProgress />}      
-      <form onSubmit={handleFormSubmit}>
-        <input type="file" name="file" onChange={handleFileChange} />
-        <input type="submit" value="Upload" />
-      </form>
-
+      {uploading && <TopBarProgress />}
       <Box
         p={4}
         h="17vh"
@@ -239,7 +141,7 @@ const FileUpload = ({user3}: any) => {
         {...getRootProps()}
       >
         <Icon as={RxUpload} mt={2} w="8" h="8" color="#202020" />
-        <input {...getInputProps()}/>
+        <input {...getInputProps()} />
         {isDragActive ? (
           <Text color="green.500">Drop the file here</Text>
         ) : (
@@ -251,8 +153,8 @@ const FileUpload = ({user3}: any) => {
           <Flex mt={7} align="center" gap={1}>
             <Icon as={RxFile} w="4" h="4" />
             <Text fontWeight="bold">
-            Selected File: {formik.values.file.name}
-          </Text>            
+              Selected File: {formik.values.file.name}
+            </Text>
           </Flex>
         )}
       </Box>
@@ -263,8 +165,7 @@ const FileUpload = ({user3}: any) => {
         onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
           event.preventDefault(); // Prevent the default form submission behavior
           formik.handleSubmit();
-        }
-      }
+        }}
         color="#53AF28"
         border="1px solid #53AF28"
         _hover={{ bg: "#53AF28", color: "white" }}
