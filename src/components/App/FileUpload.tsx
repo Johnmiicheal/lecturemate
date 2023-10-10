@@ -66,22 +66,8 @@ const FileUpload = ({ user3 }: any) => {
               .from(bucketName + "/" + user3.id)
               .upload(values.file.name, values.file);          
   
-            if (!error) {
+            if (error) {
               // alert(values.file.name);
-              setTimer(0);
-              setTextIndex(0);
-              localStorage.setItem("file", data.path);
-              toast({
-                title: "Notes Uploaded",
-                position: "top-right",
-                description: "We've successfully uploaded your notes🎉🎉",
-                status: "success",
-                variant: "left-accent",
-                duration: 5000,
-                isClosable: true,
-              });
-              setUploading(false);
-            } else {
               setUploading(false);
               toast({
                 title: "Upload Error",
@@ -96,7 +82,6 @@ const FileUpload = ({ user3 }: any) => {
               //     router.reload();
               //   }, 1000);
             }
-            console.log("Upload successful:", data);
             }catch(error){
               if (error) {
                 setUploading(false);
@@ -138,7 +123,19 @@ const FileUpload = ({ user3 }: any) => {
             console.log(response)
       
             if(response.status === 200){
-              localStorage.setItem("filename", file)
+              setTimer(0);
+              setTextIndex(0);
+              toast({
+                title: "Notes Uploaded",
+                position: "top-right",
+                description: "We've successfully uploaded your notes🎉🎉",
+                status: "success",
+                variant: "left-accent",
+                duration: 5000,
+                isClosable: true,
+              });
+              localStorage.setItem("file", file)
+              setUploading(false);
             }
           } catch (error) {
             console.log("Error retrieving: " + error)

@@ -158,17 +158,8 @@ export async function POST(request: Request) {
         }
     }
   }
-
-  if(!nameOfFile){
-      // const query = json.query || "";
-
-      if (query.trim().length === 0) {
-        return (new NextResponse("Please enter a question", {
-          status: 500,
-          headers: { "Content-Type": "application/json" },
-        })) 
-      }
-
+  
+  if(pdfData !== null && pdfData.length === 0){
       const finalPrompt = `
           Question: ${query}.
           Answer:
@@ -195,7 +186,12 @@ export async function POST(request: Request) {
         }
 
         console.log("Funny how this will work: " + result)
-        return result
+        return (
+          new NextResponse(JSON.stringify(result), {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+          })
+        )
       }catch(err){
         console.log(err)
       }
