@@ -37,7 +37,7 @@
     "framer-motion": "^10.12.18",
     "langchain": "^0.0.117",
     "next": "^13.4.13",
-    "openai": "^3.3.0",
+    "openai": "^4.12.1",
     "pdfjs-dist": "^3.10.111",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

@@ -65,8 +65,9 @@ const Chat = ({user2}: any) => {
   //   const [query, setQuery] = useState("");
   //   const [result, setResult] = useState("");
   // const [tokenKey, setTokenKey] = useState("");
-  const [requests, setRequests] = useState<String[]>([]);
-  const [responses, setResponses] = useState<ReactNode[]>([]);
+  const [requests, setRequests] = useState<any[]>([]);
+  const [responses, setResponses] = useState<any[]>([]);
+  const [pdfList, setPdfList] = useState<any[]>([]);
   const fileName = localStorage.getItem("file");
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
@@ -98,15 +99,93 @@ const Chat = ({user2}: any) => {
     }
   }, []);
 
-  const handleStoreRequest = (values: string) => {
-    setRequests((prevRequests) => [...prevRequests, values]);
-    localStorage.setItem("requests", JSON.stringify([...requests, values]));
+  const handleStoreRequest = (values: any[]) => {
+    const questions = values.filter((element, index) => index % 2 == 0 || index === 0);
+    console.log(questions);
+
+    setRequests(questions)
+    
+    // setRequests((prevRequests) => [...prevRequests, values]);
+    // localStorage.setItem("requests", JSON.stringify([...requests, values]));
   };
 
-  const handleStoreResponse = (response: ReactNode) => {
-    setResponses((prevResponses) => [...prevResponses, response]);
-    localStorage.setItem("responses", JSON.stringify([...responses, response]));
+  const handleStoreResponse = (response: any[]) => {
+    const assistantResponses = response.filter((element, index) => index % 2 !== 0);
+    console.log(assistantResponses);
+
+    setResponses(assistantResponses)
+    // setResponses((prevResponses) => [...prevResponses, response]);
+    // localStorage.setItem("responses", JSON.stringify([...responses, response]));
   };
+
+  useEffect(() => {
+    const onReload = async () => {
+      const getChatHistory = async () => {
+        const condition = { column_value: "1111" }; // Replace with your own condition
+  
+        function delay(ms: number | undefined) {
+          return new Promise(resolve => setTimeout(resolve, ms));
+        }
+  
+        const data = await delay(5000).then(async () => {
+          const { data, error } = await supabase
+            .from('chats')
+            .select()
+            .eq('user_id', condition.column_value);
+      
+          if (error) {
+            console.log(error);
+          } else {
+            console.log("This is the get chat history: " + JSON.stringify(data[0].chats));
+            return data[0].chats;
+          }
+        });
+      
+        return data;
+      }
+  
+      const history = await getChatHistory()
+      handleStoreRequest(history)
+      handleStoreResponse(history) 
+    }
+
+    onReload()
+    
+  }, [])
+
+  useEffect(() => {
+    const onReload = async () => {
+      const listOfPdfs = async () => {
+        const condition = { column_value: "957d6d61-a255-4900-9349-ebd1d9da82b5" }; // Replace with your own condition
+  
+        function delay(ms: number | undefined) {
+          return new Promise(resolve => setTimeout(resolve, ms));
+        }
+  
+        const data = await delay(5000).then(async () => {
+          const { data, error } = await supabase
+            .from('booklist')
+            .select('*')
+            .eq('user_id', condition.column_value);
+      
+          if (error) {
+            console.log(error);
+          } else {
+            console.log("This is the list of books: " + JSON.stringify(data[0].chats));
+            return data[0].chats;
+          }
+        });
+      
+        return data;
+      }
+  
+      const pdfList = await listOfPdfs()
+      setPdfList(pdfList)
+    }
+
+    onReload()
+    
+  }, [])
 
   const handleClick = () => {
     setShowInput(!showInput);
@@ -168,29 +247,31 @@ const Chat = ({user2}: any) => {
                 Upload Note
               </Flex>
 
-              {fileName && (
+              {pdfList.map((pdf, index)=> (
                 <Flex
-                  h="50px"
-                  mt={5}
-                  gap={2}
-                  justify="start"
-                  align="center"
-                  bg="#53AF28"
-                  color="white"
-                  w="full"
-                  border="1px solid #53AF28"
-                  _hover={{ color: "#005103", bg: "#90E768" }}
-                  pl={3}
-                  borderRadius="md"
-                  cursor="pointer"
-                  onClick={onOpen}
-                >
-                  <Icon as={IoChatbubbleEllipsesOutline} w="5" h="5" />
-                  <Text noOfLines={1} textOverflow="ellipsis">
-                    {fileName}
-                  </Text>
-                </Flex>
-              )}
+                h="50px"
+                mt={5}
+                gap={2}
+                justify="start"
+                align="center"
+                bg="#53AF28"
+                color="white"
+                w="full"
+                border="1px solid #53AF28"
+                _hover={{ color: "#005103", bg: "#90E768" }}
+                pl={3}
+                borderRadius="md"
+                cursor="pointer"
+                onClick={onOpen}
+              >
+                <Icon as={IoChatbubbleEllipsesOutline} w="5" h="5" />
+                <Text noOfLines={1} textOverflow="ellipsis" key={index}>
+                  {pdf.book_name}
+                </Text>
+              </Flex>
+              ))
+                
+              }
 
               <Flex
                 direction="column"
@@ -307,7 +388,7 @@ const Chat = ({user2}: any) => {
                       >
                         <Flex direction="column" justify="space-between">
                           {/* <Text>{query}</Text> */}
-                          <Text key={index}>{request}</Text>
+                          <Text key={index}>{request.content}</Text>
                           <Text
                             fontSize={11}
                             mt={2}
@@ -334,12 +415,16 @@ const Chat = ({user2}: any) => {
                         borderColor="gray.100"
                         display={responses.length <= 0 ? "none" : "block"}
                       >
-                        <Flex direction="column" justify="space-between">
-                          <Text key={index}>{responses[index]}</Text>
-                          <Text fontSize={11} mt={3} fontWeight="bold">
-                            Lecture Mate
-                          </Text>
-                        </Flex>
+                        {/* {
+                          (index < responses.length && */}
+                            <Flex direction="column" justify="space-between">
+                            <Text key={index}>{responses[index].content}</Text>
+                            <Text fontSize={11} mt={3} fontWeight="bold">
+                              Lecture Mate
+                            </Text>
+                          </Flex>
+                          {/* )
+                        } */}
                         {/* <Text> {result} </Text> */}
                       </Box>
                     </Flex>
@@ -363,7 +448,7 @@ const Chat = ({user2}: any) => {
 
                         const response = await fetch(
                           "https://purple-chipmunk-tam.cyclic.app/api/api/",
-                          // "https://lecturemate.org/api",
+                          // "http://localhost:3000/api",
                           {
                             method: "POST",
                             headers: {
@@ -376,8 +461,10 @@ const Chat = ({user2}: any) => {
                             }),
                           }
                         );
-                        handleStoreRequest(values.query);
                         const data = await response.json();
+                        const history = data.query
+                        console.log(JSON.stringify(history))
+                        console.log(history)
                         console.log(data.completion);
                         // setTokenKey(values.token);
                         if (response.status !== 200) {
@@ -388,7 +475,8 @@ const Chat = ({user2}: any) => {
                             )
                           );
                         }
-                        handleStoreResponse(data.completion);
+                        handleStoreRequest(history);
+                        handleStoreResponse(history);
                       } catch (error) {
                         console.error("Chat error:", error);
                         toast({
