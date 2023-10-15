@@ -58,42 +58,108 @@ const FileUpload = ({ user3 }: any) => {
         formData.append("file", values.file);
         // formData.append("userId", user3.id);
         try {
-          setUploading(true);
-          const { data, error } = await supabase.storage
-          .from(bucketName + "/" + user3.id)
-          .upload(values.file.name, values.file);
+          const uploadToBucket = async (values: any) => {
+            setUploading(true);
+            
+            try{
+              const { data, error } = await supabase.storage
+              .from(bucketName + "/" + user3.id)
+              .upload(values.file.name, values.file);          
+  
+            if (error) {
+              // alert(values.file.name);
+              setUploading(false);
+              toast({
+                title: "Upload Error",
+                position: "top",
+                description: error.message,
+                status: "error",
+                variant: "left-accent",
+                duration: 5000,
+                isClosable: true,
+              });
+              //   setTimeout(() => {
+              //     router.reload();
+              //   }, 1000);
+            }
+            }catch(error){
+              if (error) {
+                setUploading(false);
+                setTimer(0);
+                setTextIndex(0);
+                toast({
+                  title: "Upload Error",
+                  position: "top-right",
+                  description: "We were unable to upload your note😞",
+                  status: "error",
+                  variant: "left-accent",
+                  duration: 5000,
+                  isClosable: true,
+                });
+              }
+              console.error("Upload error:", error);
+            }            
+        }
 
-          if (!error) {
-            // alert(values.file.name);
-            setTimer(0);
-            setTextIndex(0);
-            localStorage.setItem("file", data.path);
-            toast({
-              title: "Notes Uploaded",
-              position: "top-right",
-              description: "We've successfully uploaded your notes🎉🎉",
-              status: "success",
-              variant: "left-accent",
-              duration: 5000,
-              isClosable: true,
-            });
-            setUploading(false);
-          } else {
-            setUploading(false);
+        const getFileURL = async (file: any) => {
+          try {
+            const { data } = supabase
+                             .storage
+                             .from(bucketName)
+                             .getPublicUrl(user3.id + "/" + file)
+            
+            console.log(data.publicUrl)
+            const fileURL = data.publicUrl
+      
+            const response = await axios.post(
+              // "http://localhost:4000/api/upload/",
+              "https://api.greynote.app/lecture",
+              {
+                "url": fileURL, 
+                "fileName": file,
+                "userId": user3?.id,
+              }       
+              )
+            console.log(response)
+      
+            if(response.status === 200){
+              setTimer(0);
+              setTextIndex(0);
+              toast({
+                title: "Notes Uploaded",
+                position: "top-right",
+                description: "We've successfully uploaded your notes🎉🎉",
+                status: "success",
+                variant: "left-accent",
+                duration: 5000,
+                isClosable: true,
+              });
+              localStorage.setItem("file", file)
+              setUploading(false);
+            }
+          } catch (error) {
+            console.log("Error retrieving: " + error)
             toast({
               title: "Upload Error",
               position: "top",
-              description: error.message,
+              description: "We could not upload your note😭",
               status: "error",
               variant: "left-accent",
               duration: 5000,
               isClosable: true,
             });
-            //   setTimeout(() => {
-            //     router.reload();
-            //   }, 1000);
           }
-          console.log("Upload successful:", data);
+        }
+
+        //This is are the main functions carrying out job
+        /////////////////////////////////////////////////
+        uploadToBucket(values).then(() => { 
+          if(values.file){
+            getFileURL(values.file.name);
+          }})
+        /////////////////////////////////////////////////
+        /////////////////////////////////////////////////
+        
         } catch (error) {
           if (error) {
             setUploading(false);

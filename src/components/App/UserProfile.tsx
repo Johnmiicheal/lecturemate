@@ -1,3 +1,5 @@
+'use client'
+
 import {
   IconButton,
   Avatar,
@@ -31,9 +33,14 @@ import { useRouter } from "next/navigation";
 import { FaTelegramPlane } from "react-icons/fa";
 import { IoMenu, IoChevronForward, IoAdd, IoChatbubbleEllipsesOutline } from "react-icons/io5";
 import FileUpload from "./FileUpload";
+import { useEffect, useState } from 'react';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 
 export default function UserProfile({user4}: any) {
+  const [pdfList, setPdfList] = useState<any[]>([]);
+  const [selectedPdf, setSelectedPdf] = useState<string | null>(null); 
   let username: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined;
+  const supabase = createClientComponentClient();
 
   if(user4){
     username = user4.user_metadata.username;
@@ -63,6 +70,56 @@ export default function UserProfile({user4}: any) {
     setTimeout(() => {
       window.location.reload();
     }, 1000);
+  };
+
+  useEffect(() => {
+    const onReload = async () => {
+      const listOfPdfs = async () => {
+        const condition = { column_value: user4.id }; // Replace with your own condition
+        const arr: any[] = []
+
+        function delay(ms: number | undefined) {
+          return new Promise(resolve => setTimeout(resolve, ms));
+        }
+  
+        const data: any[] | any = await delay(5000).then(async () => {
+          const { data, error } = await supabase
+            .from('booklist')
+            .select('*')
+            .eq('user_id', condition.column_value);
+      
+          if (error) {
+            console.log(error);
+          } else {
+            console.log("This is the list of books: " + JSON.stringify(data));
+            return data;
+          }
+        });
+    
+        console.log(data)
+        data.map((element: any) => (
+          arr.push(element.book_name)
+        ))
+        return arr;
+      }
+  
+      const pdfList: any = await listOfPdfs()
+
+      const uniqueArrayPdfList = pdfList.filter(
+        (value: any, index: any, self: any) => self.indexOf(value) === index
+      );
+      console.log(uniqueArrayPdfList);
+      setPdfList(uniqueArrayPdfList)
+    }
+
+    onReload()
+    
+  }, [])
+
+  // Add this function to set the selected PDF when a Flex is clicked
+  const handlePdfClick = (pdf: string) => {
+    localStorage.setItem("file", pdf)
+    setSelectedPdf(pdf);
   };
 
   return (
@@ -148,29 +205,33 @@ export default function UserProfile({user4}: any) {
                 <Text>Join our Community</Text>
               </Flex>
 
-              {fileName && (
+              {pdfList.map((pdf, index)=> (
                 <Flex
-                  h="50px"
-                  mt={5}
-                  gap={2}
-                  justify="start"
-                  align="center"
-                  bg="#53AF28"
-                  color="white"
-                  w="full"
-                  border="1px solid #53AF28"
-                  _hover={{ color: "#005103", bg: "#90E768" }}
-                  pl={3}
-                  borderRadius="md"
-                  cursor="pointer"
-                  onClick={onOpen}
-                >
-                  <Icon as={IoChatbubbleEllipsesOutline} w="5" h="5" />
-                  <Text noOfLines={1} textOverflow="ellipsis">
-                    {fileName}
-                  </Text>
-                </Flex>
-              )}
+                key={index}
+                h="50px"
+                mt={5}
+                gap={2}
+                justify="start"
+                align="center"
+                // Change the background color based on selectedPdf
+                bg={pdf === selectedPdf ? "#53AF28" : ""}
+                color={pdf === selectedPdf ? "white" : "#53AF28"}
+                w="full"
+                border={"1px solid #53AF28"}
+                _hover={{ color: "#005103", bg: "#90E768" }}
+                pl={3}
+                borderRadius="md"
+                cursor="pointer"
+                onClick={() => handlePdfClick(pdf)}
+              >
+                <Icon as={IoChatbubbleEllipsesOutline} w="5" h="5" />
+                <Text noOfLines={1} textOverflow="ellipsis" key={index}>
+                  {pdf}
+                </Text>
+              </Flex>
+              ))
+                
+              }
 
               <Flex
                 w="full"

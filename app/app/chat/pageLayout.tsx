@@ -65,12 +65,13 @@ const Chat = ({user2}: any) => {
   //   const [query, setQuery] = useState("");
   //   const [result, setResult] = useState("");
   // const [tokenKey, setTokenKey] = useState("");
-  const [requests, setRequests] = useState<String[]>([]);
-  const [responses, setResponses] = useState<ReactNode[]>([]);
+  const [requests, setRequests] = useState<any[]>([]);
+  const [responses, setResponses] = useState<any[]>([]);
+  const [pdfList, setPdfList] = useState<any[]>([]);
+  const [selectedPdf, setSelectedPdf] = useState<string | null>(null); 
   const fileName = localStorage.getItem("file");
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
-
   const {
     isOpen: isDrawerOpen,
     onOpen: onDrawerOpen,
@@ -98,19 +99,113 @@ const Chat = ({user2}: any) => {
     }
   }, []);
 
-  const handleStoreRequest = (values: string) => {
-    setRequests((prevRequests) => [...prevRequests, values]);
-    localStorage.setItem("requests", JSON.stringify([...requests, values]));
+  const handleStoreRequest = (values: any[]) => {
+    const questions = values.filter((element, index) => index % 2 == 0 || index === 0);
+    console.log(questions);
+
+    setRequests(questions)
+    
+    // setRequests((prevRequests) => [...prevRequests, values]);
+    // localStorage.setItem("requests", JSON.stringify([...requests, values]));
   };
 
-  const handleStoreResponse = (response: ReactNode) => {
-    setResponses((prevResponses) => [...prevResponses, response]);
-    localStorage.setItem("responses", JSON.stringify([...responses, response]));
+  const handleStoreResponse = (response: any[]) => {
+    const assistantResponses = response.filter((element, index) => index % 2 !== 0);
+    console.log(assistantResponses);
+
+    setResponses(assistantResponses)
+    // setResponses((prevResponses) => [...prevResponses, response]);
+    // localStorage.setItem("responses", JSON.stringify([...responses, response]));
   };
+
+  useEffect(() => {
+    const onReload = async () => {
+      const getChatHistory = async () => {
+        const condition = { column_value: user2.id }; // Replace with your own condition
+  
+        function delay(ms: number | undefined) {
+          return new Promise(resolve => setTimeout(resolve, ms));
+        }
+  
+        const data = await delay(5000).then(async () => {
+          const { data, error } = await supabase
+            .from('chats')
+            .select()
+            .eq('user_id', condition.column_value);
+      
+          if (error) {
+            console.log(error);
+          } else {
+            console.log("This is the get chat history: " + JSON.stringify(data[0].chats));
+            return data[0].chats;
+          }
+        });
+      
+        return data;
+      }
+  
+      const history = await getChatHistory()
+      handleStoreRequest(history)
+      handleStoreResponse(history) 
+    }
+
+    onReload()
+    
+  }, [])
+
+  useEffect(() => {
+    const onReload = async () => {
+      const listOfPdfs = async () => {
+        const condition = { column_value: user2.id }; // Replace with your own condition
+        const arr: any[] = []
+
+        function delay(ms: number | undefined) {
+          return new Promise(resolve => setTimeout(resolve, ms));
+        }
+  
+        const data: any[] | any = await delay(5000).then(async () => {
+          const { data, error } = await supabase
+            .from('booklist')
+            .select('*')
+            .eq('user_id', condition.column_value);
+      
+          if (error) {
+            console.log(error);
+          } else {
+            console.log("This is the list of books: " + JSON.stringify(data));
+            return data;
+          }
+        });
+    
+        console.log(data)
+        data.map((element: any) => (
+          arr.push(element.book_name)
+        ))
+        return arr;
+      }
+  
+      const pdfList: any = await listOfPdfs()
+
+      const uniqueArrayPdfList = pdfList.filter(
+        (value: any, index: any, self: any) => self.indexOf(value) === index
+      );
+      console.log(uniqueArrayPdfList);
+      setPdfList(uniqueArrayPdfList)
+    }
+
+    onReload()
+    
+  }, [])
 
   const handleClick = () => {
     setShowInput(!showInput);
   };
+
+  // Add this function to set the selected PDF when a Flex is clicked
+  const handlePdfClick = (pdf: string) => {
+    localStorage.setItem("file", pdf)
+    setSelectedPdf(pdf);
+  }; 
 
   const sponsors = [
     { name: "Sky Waiters", img: "/skywaiter.png", role: "Investor", link: "#" },
@@ -168,29 +263,34 @@ const Chat = ({user2}: any) => {
                 Upload Note
               </Flex>
 
-              {fileName && (
+              {pdfList.map((pdf, index)=> (
                 <Flex
-                  h="50px"
-                  mt={5}
-                  gap={2}
-                  justify="start"
-                  align="center"
-                  bg="#53AF28"
-                  color="white"
-                  w="full"
-                  border="1px solid #53AF28"
-                  _hover={{ color: "#005103", bg: "#90E768" }}
-                  pl={3}
-                  borderRadius="md"
-                  cursor="pointer"
-                  onClick={onOpen}
-                >
-                  <Icon as={IoChatbubbleEllipsesOutline} w="5" h="5" />
-                  <Text noOfLines={1} textOverflow="ellipsis">
-                    {fileName}
-                  </Text>
-                </Flex>
-              )}
+                key={index}
+                h="50px"
+                mt={5}
+                gap={2}
+                justify="start"
+                align="center"
+                // Change the background color based on selectedPdf
+                bg={pdf === selectedPdf ? "#53AF28" : ""}
+                color={pdf === selectedPdf ? "white" : "#53AF28"}
+                w="full"
+                border={"1px solid #53AF28"}
+                _hover={pdf === selectedPdf ? {color: "white", bg: "#53AF28"} : { color: "#005103", bg: "#90E768" }}
+                _active={{ color: "white", bg: "#53AF28" }}
+                pl={3}
+                borderRadius="md"
+                cursor="pointer"
+                onClick={() => handlePdfClick(pdf)}
+              >
+                <Icon as={IoChatbubbleEllipsesOutline} w="5" h="5" />
+                <Text noOfLines={1} textOverflow="ellipsis" key={index}>
+                  {pdf}
+                </Text>
+              </Flex>
+              ))
+                
+              }
 
               <Flex
                 direction="column"
@@ -307,7 +407,7 @@ const Chat = ({user2}: any) => {
                       >
                         <Flex direction="column" justify="space-between">
                           {/* <Text>{query}</Text> */}
-                          <Text key={index}>{request}</Text>
+                          <Text key={index}>{request.content}</Text>
                           <Text
                             fontSize={11}
                             mt={2}
@@ -334,12 +434,16 @@ const Chat = ({user2}: any) => {
                         borderColor="gray.100"
                         display={responses.length <= 0 ? "none" : "block"}
                       >
-                        <Flex direction="column" justify="space-between">
-                          <Text key={index}>{responses[index]}</Text>
-                          <Text fontSize={11} mt={3} fontWeight="bold">
-                            Lecture Mate
-                          </Text>
-                        </Flex>
+                        {/* {
+                          (index < responses.length && */}
+                            <Flex direction="column" justify="space-between">
+                            <Text key={index}>{responses[index].content}</Text>
+                            <Text fontSize={11} mt={3} fontWeight="bold">
+                              Lecture Mate
+                            </Text>
+                          </Flex>
+                          {/* )
+                        } */}
                         {/* <Text> {result} </Text> */}
                       </Box>
                     </Flex>
@@ -363,7 +467,7 @@ const Chat = ({user2}: any) => {
 
                         const response = await fetch(
                           "https://purple-chipmunk-tam.cyclic.app/api/api/",
-                          // "https://lecturemate.org/api",
+                          // "http://localhost:3000/api",
                           {
                             method: "POST",
                             headers: {
@@ -376,8 +480,10 @@ const Chat = ({user2}: any) => {
                             }),
                           }
                         );
-                        handleStoreRequest(values.query);
                         const data = await response.json();
+                        const history = data.query
+                        console.log(JSON.stringify(history))
+                        console.log(history)
                         console.log(data.completion);
                         // setTokenKey(values.token);
                         if (response.status !== 200) {
@@ -388,7 +494,8 @@ const Chat = ({user2}: any) => {
                             )
                           );
                         }
-                        handleStoreResponse(data.completion);
+                        handleStoreRequest(history);
+                        handleStoreResponse(history);
                       } catch (error) {
                         console.error("Chat error:", error);
                         toast({
