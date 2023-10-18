@@ -176,6 +176,69 @@ export async function POST(request: Request) {
       //     Question: ${query}.
       //     Answer:
       //   `;
+        const deleteLastQuestion = async () => {
+          console.log("Delete question")
+          try{
+            const { data: rowData, error } = await supabase
+            .from('chats')
+            .select('chats')
+            .eq('user_id', userId);
+        
+            if (rowData && rowData.length > 0) {
+              const newArray = rowData[0].chats;
+              const revertedArray = newArray.pop();
+        
+              if (revertedArray) {
+                try {
+                  const { data: revertedData, error: revertError } = await supabase
+                  .from('chats')
+                  .update({ chats: revertedArray })
+                  .eq('user_id', userId);
+              
+                if (revertError) {
+                  // Handle the update error.
+                  console.log(revertError)
+                } else {
+                  // Handle the successful update.
+                  console.log(revertedData)
+                }          
+                } catch (err) {
+                  console.log(err)
+                }
+              }
+            }
+          }catch(err){
+            console.log(err)
+          }    
+        }
+
+        const getChatHistory = async () => {
+          const condition = { column_value: userId }; // Replace with your own condition
+
+          function delay(ms: number | undefined) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+          }
+
+          const data = await delay(5000).then(async () => {
+            const { data, error } = await supabase
+              .from('chats')
+              .select()
+              .eq('user_id', condition.column_value);
+        
+            if (error) {
+              console.log(error);
+              if(history.length % 2 !== 0 && history.length !== 0){
+              deleteLastQuestion()
+            } 
+            } else {
+              console.log("This is the get chat history: " + JSON.stringify(data[0].chats));
+              return data[0].chats;
+            }
+          });
+        
+          return data;
+        }              
+
       try {
         const createUser = async () => {
           const { data, error } = await supabase
@@ -260,68 +323,60 @@ export async function POST(request: Request) {
             createUser()
           }
         }
-
-        const getChatHistory = async () => {
-          const condition = { column_value: userId }; // Replace with your own condition
-
-          function delay(ms: number | undefined) {
-            return new Promise(resolve => setTimeout(resolve, ms));
-          }
-
-          const data = await delay(5000).then(async () => {
-            const { data, error } = await supabase
-              .from('chats')
-              .select()
-              .eq('user_id', condition.column_value);
-        
-            if (error) {
-              console.log(error);
-            } else {
-              console.log("This is the get chat history: " + JSON.stringify(data[0].chats));
-              return data[0].chats;
-            }
-          });
-        
-          return data;
-        }     
         
         const processAnswers = async () => {
 
-          function delay(ms: number | undefined) {
-            return new Promise(resolve => setTimeout(resolve, ms));
-          }
-
-            const result = delay(7000).then(async () => {
-            const history: any = await getChatHistory()
-            console.log("This is the history: " + history)
-            console.log("This is the history: " + JSON.stringify(history))
-
-            
-              const chatCompletion = await openai.chat.completions.create({
-                messages: history,
-                model: 'gpt-3.5-turbo',
-              });
-            
-              console.log(chatCompletion.choices);
+          
+            function delay(ms: number | undefined) {
+              return new Promise(resolve => setTimeout(resolve, ms));
+            }
+            try{
+              const result = delay(7000).then(async () => {
+              const history: any = await getChatHistory()
+              console.log("This is the history: " + history)
+              console.log("This is the history: " + JSON.stringify(history))
+  
               
-              const chatResponse = chatCompletion.choices[0].message.content
-              upsertAssistant(chatResponse)
-
-              const history2: any = await getChatHistory()
-
-              const result: any = {
-                query: history2,
-                completion: chatResponse
-              }
-
-              return result 
-          })
-          return result
+                const chatCompletion = await openai.chat.completions.create({
+                  messages: history,
+                  model: 'gpt-3.5-turbo',
+                });
+  
+                console.log("This is the chat completion: " + JSON.stringify(chatCompletion))
+              
+                console.log("This is the chat completion.choices " + JSON.stringify(chatCompletion.choices));
+                
+                const chatResponse = chatCompletion.choices[0].message.content
+  
+                console.log("This is the chat response: " + chatResponse)
+                
+                upsertAssistant(chatResponse)
+  
+                const history2: any = await getChatHistory()
+  
+                const result: any = {
+                  query: history2,
+                  completion: chatResponse
+                }
+  
+                return result 
+            })
+            return result
+          }catch(err){
+            console.log("Finally this is the error: " + err)
+            const history: any = await getChatHistory()
+            if(history.length % 2 !== 0 && history.length !== 0){
+              deleteLastQuestion()
+            }            
+          }          
         }
 
         await checkIfRowExists()
         const result = await processAnswers()
 
+        if(!result) {
+          console.log("There was no result")
+        }
         
         // const model = new OpenAI({});
         // const memory = new BufferMemory();
@@ -330,9 +385,7 @@ export async function POST(request: Request) {
         //   prompt: finalPrompt,
         //   max_tokens: 2048,
         // });
-        // const messages = []
-
-        
+        // const messages = []        
         
         // messages.push({
         //   role: 'user',
@@ -359,7 +412,12 @@ export async function POST(request: Request) {
           })
         )
       }catch(err){
-        console.log(err)
+        console.log("This was the error"+ err)
+        const history: any = await getChatHistory()
+        if(history.length % 2 !== 0 && history.length !== 0){
+          deleteLastQuestion()
+        }
+        console.log("There was no result 2")
       }
   // }else{
   //   const xq: any = "Ifiok"

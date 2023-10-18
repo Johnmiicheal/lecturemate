@@ -68,7 +68,8 @@ const Chat = ({user2}: any) => {
   const [requests, setRequests] = useState<any[]>([]);
   const [responses, setResponses] = useState<any[]>([]);
   const [pdfList, setPdfList] = useState<any[]>([]);
-  const [selectedPdf, setSelectedPdf] = useState<string | null>(null); 
+  const [selectedPdf, setSelectedPdf] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean | any>(false) 
   const fileName = localStorage.getItem("file");
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
@@ -118,32 +119,32 @@ const Chat = ({user2}: any) => {
     // localStorage.setItem("responses", JSON.stringify([...responses, response]));
   };
 
-  useEffect(() => {
-    const onReload = async () => {
-      const getChatHistory = async () => {
-        const condition = { column_value: user2.id }; // Replace with your own condition
+  const getChatHistory = async () => {
+    const condition = { column_value: user2.id }; // Replace with your own condition
+
+    function delay(ms: number | undefined) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    const data = await delay(5000).then(async () => {
+      const { data, error } = await supabase
+        .from('chats')
+        .select()
+        .eq('user_id', condition.column_value);
   
-        function delay(ms: number | undefined) {
-          return new Promise(resolve => setTimeout(resolve, ms));
-        }
-  
-        const data = await delay(5000).then(async () => {
-          const { data, error } = await supabase
-            .from('chats')
-            .select()
-            .eq('user_id', condition.column_value);
-      
-          if (error) {
-            console.log(error);
-          } else {
-            console.log("This is the get chat history: " + JSON.stringify(data[0].chats));
-            return data[0].chats;
-          }
-        });
-      
-        return data;
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("This is the get chat history: " + JSON.stringify(data[0].chats));
+        return data[0].chats;
       }
+    });
   
+    return data;
+  }
+
+  useEffect(() => {
+    const onReload = async () => {  
       const history = await getChatHistory()
       handleStoreRequest(history)
       handleStoreResponse(history) 
@@ -207,22 +208,57 @@ const Chat = ({user2}: any) => {
     setSelectedPdf(pdf);
   }; 
 
+  const handleRetry = async () => {
+    setIsLoading(true)
+    const history = await getChatHistory()
+    const fileName = localStorage.getItem("file")
+
+    const retryResponse = await fetch(
+    "https://purple-chipmunk-tam.cyclic.app/api/api/",
+     // "http://localhost:3000/api",
+     {
+      method: "POST",
+      headers: {
+      "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+      retryQuery: history,
+      userId: user2?.id,
+      nameOfFile: fileName,
+      }),
+      });
+
+      const data = await retryResponse.json();
+      if(retryResponse){
+        const retryAnswers = data.query
+        console.log(JSON.stringify(retryAnswers))
+        console.log(retryAnswers)
+        console.log(data.completion);
+        // setTokenKey(values.token);
+        if (retryResponse.status !== 200) {
+          throw (
+            data.error ||
+            new Error(
+              `Request failed with status ${retryResponse.status}`
+            )
+          );
+        }
+        handleStoreRequest(history);
+        handleStoreResponse(history);
+        setIsLoading(false)
+      }      
+  }
+
   const sponsors = [
     { name: "Sky Waiters", img: "/skywaiter.png", role: "Investor", link: "#" },
   ];
   const toast = useToast();
-
-
-  // const auth = async () => {
-  //   const { data: { user } } = await supabase.auth.getUser();
 
     let username: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined;
   
     if(user2){
       username = user2.user_metadata.username;
     }
-
-  // }
 
   return (
     <Suspense fallback={<Loading />}>
@@ -392,7 +428,9 @@ const Chat = ({user2}: any) => {
                   }}
                 >
                   {" "}
-                  {requests.map((request, index) => (
+                  
+                  {
+                  requests.map((request, index) => (
                     <Flex direction="column" key={index}>
                       <Box
                         bg="green.100"
@@ -420,6 +458,35 @@ const Chat = ({user2}: any) => {
                         </Flex>
                       </Box>
 
+                      {index >= responses.length ? 
+                      <Box
+                      bg="white"
+                      h="full"
+                      w={"100%"}
+                      py={2}
+                      px={4}
+                      mb={5}
+                      border="2px solid"
+                      borderColor="gray.100"
+                      display={responses.length <= 0 ? "none" : "block"}
+                      >
+                        <Flex direction="column" justify="center">
+                          <Button
+                            type="submit"
+                            mt={4}
+                            // onClick={handleFormSubmit}
+                            onClick={handleRetry}
+                            color="#53AF28"
+                            border="1px solid #53AF28"
+                            _hover={{ bg: "#53AF28", color: "white" }}
+                            variant="outline"                          
+                            isLoading={isLoading}
+                          >
+                            Retry
+                          </Button>                            
+                        </Flex>
+                    </Box>
+                      :
                       <Box
                         bg="white"
                         minW="150px"
@@ -434,20 +501,15 @@ const Chat = ({user2}: any) => {
                         borderColor="gray.100"
                         display={responses.length <= 0 ? "none" : "block"}
                       >
-                        {/* {
-                          (index < responses.length && */}
-                            <Flex direction="column" justify="space-between">
+                          <Flex direction="column" justify="space-between">
                             <Text key={index}>{responses[index].content}</Text>
                             <Text fontSize={11} mt={3} fontWeight="bold">
                               Lecture Mate
-                            </Text>
+                            </Text>                            
                           </Flex>
-                          {/* )
-                        } */}
-                        {/* <Text> {result} </Text> */}
-                      </Box>
+                      </Box>}
                     </Flex>
-                  ))}
+                  ))}                              
                 </Flex>
               </Flex>
 
