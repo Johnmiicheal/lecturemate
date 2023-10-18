@@ -75,7 +75,7 @@ export default function UserProfile({user4}: any) {
   useEffect(() => {
     const onReload = async () => {
       const listOfPdfs = async () => {
-        const condition = { column_value: "1111" }; // Replace with your own condition
+        const condition = { column_value: user4.id }; // Replace with your own condition
         const arr: any[] = []
 
         function delay(ms: number | undefined) {
