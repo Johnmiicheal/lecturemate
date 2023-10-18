@@ -225,6 +225,7 @@ const Chat = ({user2}: any) => {
       retryQuery: history,
       userId: user2?.id,
       nameOfFile: fileName,
+      query: undefined,
       }),
       });
 
@@ -539,6 +540,7 @@ const Chat = ({user2}: any) => {
                               query: values.query,
                               userId: user2?.id,
                               nameOfFile: fileName,
+                              retryQuery: undefined,
                             }),
                           }
                         );
