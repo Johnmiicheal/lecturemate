@@ -209,6 +209,7 @@ const Chat = ({user2}: any) => {
   }; 
 
   const handleRetry = async () => {
+    try{
     setIsLoading(true)
     const history = await getChatHistory()
     const fileName = localStorage.getItem("file")
@@ -230,7 +231,6 @@ const Chat = ({user2}: any) => {
       });
 
       const data = await retryResponse.json();
-      try{
           const retryAnswers = data.query
           console.log(JSON.stringify(retryAnswers))
           console.log(retryAnswers)
