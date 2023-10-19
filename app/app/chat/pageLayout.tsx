@@ -230,25 +230,38 @@ const Chat = ({user2}: any) => {
       });
 
       const data = await retryResponse.json();
-      if(retryResponse){
-        const retryAnswers = data.query
-        console.log(JSON.stringify(retryAnswers))
-        console.log(retryAnswers)
-        console.log(data.completion);
-        // setTokenKey(values.token);
-        if (retryResponse.status !== 200) {
-          throw (
-            data.error ||
-            new Error(
-              `Request failed with status ${retryResponse.status}`
-            )
-          );
-        }
-        handleStoreRequest(history);
-        handleStoreResponse(history);
-        router.push('https://lecturemate.org/app/chat')
+      try{
+          const retryAnswers = data.query
+          console.log(JSON.stringify(retryAnswers))
+          console.log(retryAnswers)
+          console.log(data.completion);
+          // setTokenKey(values.token);
+          if (retryResponse.status !== 200) {
+            throw (
+              data.error ||
+              new Error(
+                `Request failed with status ${retryResponse.status}`
+              )
+            );
+          }
+          handleStoreRequest(history);
+          handleStoreResponse(history);
+          router.push('https://lecturemate.org/app/chat') 
+        setIsLoading(false)
+      }catch(error) {
+        setIsLoading(false)
+        console.error("Chat error:", error);
+        toast({
+          title: "Server Error",
+          position: "top-right",
+          description:
+            "We were unable to complete your request",
+          status: "error",
+          variant: "left-accent",
+          duration: 5000,
+          isClosable: true,
+        });        
       }   
-      setIsLoading(false)   
   }
 
   const sponsors = [
