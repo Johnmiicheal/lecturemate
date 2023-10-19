@@ -247,8 +247,8 @@ const Chat = ({user2}: any) => {
         handleStoreRequest(history);
         handleStoreResponse(history);
         router.push('https://lecturemate.org/app/chat')
-        setIsLoading(false)
-      }      
+      }   
+      setIsLoading(false)   
   }
 
   const sponsors = [
