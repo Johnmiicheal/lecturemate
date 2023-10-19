@@ -246,6 +246,7 @@ const Chat = ({user2}: any) => {
         }
         handleStoreRequest(history);
         handleStoreResponse(history);
+        router.push('https://lecturemate.org/app/chat')
         setIsLoading(false)
       }      
   }
@@ -514,7 +515,7 @@ const Chat = ({user2}: any) => {
                 </Flex>
               </Flex>
 
-              <Flex
+              {requests.length === responses.length && (<Flex
                 pos="fixed"
                 bottom="0"
                 bg="#F8FCF7"
@@ -712,7 +713,7 @@ const Chat = ({user2}: any) => {
                     </Form>
                   )}
                 </Formik>
-              </Flex>
+              </Flex>)}
             </Flex>
           </Flex>
         </Flex>
