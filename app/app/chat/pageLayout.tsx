@@ -488,7 +488,7 @@ const Chat = ({user2}: any) => {
                       borderColor="gray.100"
                       display={responses.length <= 0 ? "none" : "block"}
                       >
-                        <Flex direction="column" justify="center">                          
+                        <Flex direction="column" justify="center" textAlign={"center"}>                          
                         <Text>There was an error processing your request please try again</Text>
                           <Button
                             type="submit"
