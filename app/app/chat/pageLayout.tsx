@@ -215,7 +215,8 @@ const Chat = ({user2}: any) => {
     const fileName = localStorage.getItem("file")
 
     const retryResponse = await fetch(
-    "https://purple-chipmunk-tam.cyclic.app/api/api/",
+      "https://crazy-rose-leg-warmers.cyclic.app/api/api",
+    // "https://purple-chipmunk-tam.cyclic.app/api/api/",
      // "http://localhost:3000/api",
      {
       method: "POST",
@@ -543,7 +544,8 @@ const Chat = ({user2}: any) => {
                         const fileName = localStorage.getItem("file")
 
                         const response = await fetch(
-                          "https://purple-chipmunk-tam.cyclic.app/api/api/",
+                          "https://crazy-rose-leg-warmers.cyclic.app/api/api",
+                          // "https://purple-chipmunk-tam.cyclic.app/api/api/",
                           // "http://localhost:3000/api",
                           {
                             method: "POST",
