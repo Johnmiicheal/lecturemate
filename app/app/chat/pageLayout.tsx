@@ -479,11 +479,11 @@ const Chat = ({user2}: any) => {
                       bg="white"
                       h="full"
                       w={"100%"}
-                      mt={10}
+                      mt={20}
                       py={2}
                       px={4}
                       mb={5}
-                      borderRadius={20}
+                      borderRadius={8}
                       border="2px solid"
                       borderColor="gray.100"
                       display={responses.length <= 0 ? "none" : "block"}
