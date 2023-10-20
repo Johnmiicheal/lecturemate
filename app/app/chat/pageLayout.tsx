@@ -247,11 +247,10 @@ const Chat = ({user2}: any) => {
           }
           handleStoreRequest(history);
           handleStoreResponse(history);
-          router.push('https://lecturemate.org/app/chat') 
+          router.push('https://lecturemate-git-login-signup-page-edit-ifiokabasiudo.vercel.app/app/chat') 
         setIsLoading(false)
       }catch(error) {
         setIsLoading(false)
-        router.push('https://lecturemate.org/app/chat')
         console.error("Chat error:", error);
         toast({
           title: "Server Error",
@@ -262,7 +261,8 @@ const Chat = ({user2}: any) => {
           variant: "left-accent",
           duration: 5000,
           isClosable: true,
-        });        
+        });   
+        router.push('https://lecturemate-git-login-signup-page-edit-ifiokabasiudo.vercel.app/app/chat')     
       }   
   }
 
