@@ -483,7 +483,7 @@ const Chat = ({user2}: any) => {
                       py={2}
                       px={4}
                       mb={5}
-                      borderRadius={8}
+                      borderRadius={20}
                       border="2px solid"
                       borderColor="gray.100"
                       display={responses.length <= 0 ? "none" : "block"}
