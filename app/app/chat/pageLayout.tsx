@@ -251,6 +251,7 @@ const Chat = ({user2}: any) => {
         setIsLoading(false)
       }catch(error) {
         setIsLoading(false)
+        router.push('https://lecturemate.org/app/chat')
         console.error("Chat error:", error);
         toast({
           title: "Server Error",
