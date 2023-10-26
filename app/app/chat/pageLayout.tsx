@@ -209,12 +209,14 @@ const Chat = ({user2}: any) => {
   }; 
 
   const handleRetry = async () => {
+    try{
     setIsLoading(true)
     const history = await getChatHistory()
     const fileName = localStorage.getItem("file")
 
     const retryResponse = await fetch(
-    "https://purple-chipmunk-tam.cyclic.app/api/api/",
+      "https://crazy-rose-leg-warmers.cyclic.app/api/api",
+    // "https://purple-chipmunk-tam.cyclic.app/api/api/",
      // "http://localhost:3000/api",
      {
       method: "POST",
@@ -230,24 +232,38 @@ const Chat = ({user2}: any) => {
       });
 
       const data = await retryResponse.json();
-      if(retryResponse){
-        const retryAnswers = data.query
-        console.log(JSON.stringify(retryAnswers))
-        console.log(retryAnswers)
-        console.log(data.completion);
-        // setTokenKey(values.token);
-        if (retryResponse.status !== 200) {
-          throw (
-            data.error ||
-            new Error(
-              `Request failed with status ${retryResponse.status}`
-            )
-          );
-        }
-        handleStoreRequest(history);
-        handleStoreResponse(history);
+          const retryAnswers = data.query
+          console.log(JSON.stringify(retryAnswers))
+          console.log(retryAnswers)
+          console.log(data.completion);
+          // setTokenKey(values.token);
+          if (retryResponse.status !== 200) {
+            throw (
+              data.error ||
+              new Error(
+                `Request failed with status ${retryResponse.status}`
+              )
+            );
+          }
+          handleStoreRequest(history);
+          handleStoreResponse(history);
+          router.push('https://lecturemate.org/app/chat') 
         setIsLoading(false)
-      }      
+      }catch(error) {
+        setIsLoading(false)
+        console.error("Chat error:", error);
+        toast({
+          title: "Server Error",
+          position: "top-right",
+          description:
+            "We were unable to complete your request",
+          status: "error",
+          variant: "left-accent",
+          duration: 5000,
+          isClosable: true,
+        });   
+        router.push('https://lecturemate.org/app/chat')     
+      }   
   }
 
   const sponsors = [
@@ -464,14 +480,17 @@ const Chat = ({user2}: any) => {
                       bg="white"
                       h="full"
                       w={"100%"}
+                      mt={20}
                       py={2}
                       px={4}
                       mb={5}
+                      borderRadius={8}
                       border="2px solid"
                       borderColor="gray.100"
                       display={responses.length <= 0 ? "none" : "block"}
                       >
-                        <Flex direction="column" justify="center">
+                        <Flex direction="column" justify="center" textAlign={"center"}>                          
+                        <Text>There was an error processing your request please try again</Text>
                           <Button
                             type="submit"
                             mt={4}
@@ -514,7 +533,7 @@ const Chat = ({user2}: any) => {
                 </Flex>
               </Flex>
 
-              <Flex
+              {requests.length === responses.length && (<Flex
                 pos="fixed"
                 bottom="0"
                 bg="#F8FCF7"
@@ -529,7 +548,8 @@ const Chat = ({user2}: any) => {
                         const fileName = localStorage.getItem("file")
 
                         const response = await fetch(
-                          "https://purple-chipmunk-tam.cyclic.app/api/api/",
+                          "https://crazy-rose-leg-warmers.cyclic.app/api/api",
+                          // "https://purple-chipmunk-tam.cyclic.app/api/api/",
                           // "http://localhost:3000/api",
                           {
                             method: "POST",
@@ -712,7 +732,7 @@ const Chat = ({user2}: any) => {
                     </Form>
                   )}
                 </Formik>
-              </Flex>
+              </Flex>)}
             </Flex>
           </Flex>
         </Flex>
