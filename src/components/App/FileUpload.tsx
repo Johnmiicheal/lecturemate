@@ -112,8 +112,8 @@ const FileUpload = ({ user3 }: any) => {
             const fileURL = data.publicUrl
       
             const response = await axios.post(
-              "http://localhost:4000/api/upload/",
-              // "https://api.greynote.app/lecture/api/upload",
+              // "http://localhost:4000/api/upload/",
+              "https://api.greynote.app/lecture/api/upload",
               {
                 "url": fileURL, 
                 "fileName": file,
