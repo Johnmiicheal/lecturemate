@@ -104,8 +104,7 @@ const Chat = ({user2}: any) => {
     const questions = values.filter((element, index) => index % 2 == 0 || index === 0);
     console.log(questions);
 
-    setRequests(questions)
-    
+    setRequests(questions)    
     // setRequests((prevRequests) => [...prevRequests, values]);
     // localStorage.setItem("requests", JSON.stringify([...requests, values]));
   };
@@ -118,6 +117,17 @@ const Chat = ({user2}: any) => {
     // setResponses((prevResponses) => [...prevResponses, response]);
     // localStorage.setItem("responses", JSON.stringify([...responses, response]));
   };
+
+  const extractQuestion = (content: any) => {
+    const regex = /Question:\/\/--(.*?)--\/\//;
+    const match = content.match(regex);
+    return match ? match[1].trim() : content;
+  };
+
+  // Map requests to extract questions
+  const requestsWithQuestions = requests.map((request) => {
+    return { content: extractQuestion(request.content) };
+  });
 
   const getChatHistory = async () => {
     const condition = { column_value: user2.id }; // Replace with your own condition
@@ -447,7 +457,7 @@ const Chat = ({user2}: any) => {
                   {" "}
                   
                   {
-                  requests.map((request, index) => (
+                  requestsWithQuestions.map((request, index) => (
                     <Flex direction="column" key={index}>
                       <Box
                         bg="green.100"
