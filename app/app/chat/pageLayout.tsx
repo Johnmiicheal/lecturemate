@@ -321,9 +321,9 @@ const Chat = ({user2}: any) => {
       }   
   }
 
-  const sponsors = [
-    { name: "Sky Waiters", img: "/skywaiter.png", role: "Investor", link: "#" },
-  ];
+  // const sponsors = [
+  //   // { name: "Sky Waiters", img: "/skywaiter.png", role: "Investor", link: "#" },
+  // ];
   const toast = useToast();
 
     let username: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined;
@@ -351,6 +351,7 @@ const Chat = ({user2}: any) => {
               px={5}
               zIndex={2}
               display={{ base: "none", lg: "flex" }}
+              overflow={"scroll"}
             >
               <Flex
                 w="full"
@@ -429,7 +430,7 @@ const Chat = ({user2}: any) => {
                 
               }
 
-              <Flex
+              {/* <Flex
                 direction="column"
                 justify="center"
                 mb={10}
@@ -452,7 +453,7 @@ const Chat = ({user2}: any) => {
                     </Box>
                   </Flex>
                 ))}
-              </Flex>
+              </Flex> */}
             </Flex>
 
             {requests.length <= 0 && (
