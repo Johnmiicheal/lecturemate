@@ -68,6 +68,7 @@ const Chat = ({user2}: any) => {
   const [requests, setRequests] = useState<any[]>([]);
   const [responses, setResponses] = useState<any[]>([]);
   const [pdfList, setPdfList] = useState<any[]>([]);
+  const [constantinePdfList, setConstantinePdfList] = useState<any[]>([]);
   const [selectedPdf, setSelectedPdf] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean | any>(false) 
   const fileName = localStorage.getItem("file");
@@ -208,6 +209,50 @@ const Chat = ({user2}: any) => {
     
   }, [])
 
+  useEffect(() => {
+    const onReload = async () => {
+      const constantinePdfs = async () => {
+        const condition = { column_value: "constantine" }; // Replace with your own condition
+        const arr: any[] = []
+
+        function delay(ms: number | undefined) {
+          return new Promise(resolve => setTimeout(resolve, ms));
+        }
+  
+        const data: any[] | any = await delay(5000).then(async () => {
+          const { data, error } = await supabase
+            .from('booklist')
+            .select('*')
+            .eq('user_id', condition.column_value);
+      
+          if (error) {
+            console.log(error);
+          } else {
+            console.log("This is the list of books: " + JSON.stringify(data));
+            return data;
+          }
+        });
+    
+        console.log(data)
+        data.map((element: any) => (
+          arr.push(element.book_name)
+        ))
+        return arr;
+      }
+  
+      const constantinePdfList: any = await constantinePdfs()
+
+      const constantineUniqueArrayPdfList = constantinePdfList.filter(
+        (value: any, index: any, self: any) => self.indexOf(value) === index
+      );
+      console.log(constantineUniqueArrayPdfList);
+      setConstantinePdfList(constantineUniqueArrayPdfList)
+    }
+
+    onReload()
+    
+  }, [])
+
   const handleClick = () => {
     setShowInput(!showInput);
   };
@@ -327,6 +372,35 @@ const Chat = ({user2}: any) => {
               </Flex>
 
               {pdfList.map((pdf, index)=> (
+                <Flex
+                key={index}
+                h="50px"
+                mt={5}
+                gap={2}
+                justify="start"
+                align="center"
+                // Change the background color based on selectedPdf
+                bg={pdf === selectedPdf ? "#53AF28" : ""}
+                color={pdf === selectedPdf ? "white" : "#53AF28"}
+                w="full"
+                border={"1px solid #53AF28"}
+                _hover={pdf === selectedPdf ? {color: "white", bg: "#53AF28"} : { color: "#005103", bg: "#90E768" }}
+                _active={{ color: "white", bg: "#53AF28" }}
+                pl={3}
+                borderRadius="md"
+                cursor="pointer"
+                onClick={() => handlePdfClick(pdf)}
+              >
+                <Icon as={IoChatbubbleEllipsesOutline} w="5" h="5" />
+                <Text noOfLines={1} textOverflow="ellipsis" key={index}>
+                  {pdf}
+                </Text>
+              </Flex>
+              ))
+                
+              }
+
+              {constantinePdfList.map((pdf, index)=> (
                 <Flex
                 key={index}
                 h="50px"
