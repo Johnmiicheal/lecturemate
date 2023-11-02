@@ -121,7 +121,7 @@ const Chat = ({user2}: any) => {
 
   const extractQuestion = (content: any) => {
     const regex = /Question:\/\/--(.*?)--\/\//;
-    const match = content.match(regex);
+    const match = content?.match(regex);
     return match ? match[1].trim() : content;
   };
 
