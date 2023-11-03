@@ -302,7 +302,7 @@ const Chat = ({user2}: any) => {
           }
           handleStoreRequest(history);
           handleStoreResponse(history);
-          router.push('https://https://lecturemate-git-login-signup-page-edit-ifiokabasiudo.vercel.app/app/chat') 
+          router.push('https://lecturemate-git-login-signup-page-edit-ifiokabasiudo.vercel.app/app/chat') 
         setIsLoading(false)
       }catch(error) {
         setIsLoading(false)
@@ -317,7 +317,7 @@ const Chat = ({user2}: any) => {
           duration: 5000,
           isClosable: true,
         });   
-        router.push('https://https://lecturemate-git-login-signup-page-edit-ifiokabasiudo.vercel.app/app/chat')     
+        router.push('https://lecturemate-git-login-signup-page-edit-ifiokabasiudo.vercel.app/app/chat')     
       }   
   }
 

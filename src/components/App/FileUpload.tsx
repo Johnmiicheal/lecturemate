@@ -136,7 +136,7 @@ const FileUpload = ({ user3 }: any) => {
             const fileURL = data.publicUrl
       
             const response = await axios.post(
-              "http://lm-backend.eastus.cloudapp.azure.com:4000/api/upload",
+              "https://lm-backend.eastus.cloudapp.azure.com/api/upload",
               // "http://localhost:4000/api/upload/",
               // "https://api.greynote.app/lecture/api/upload",
               {
