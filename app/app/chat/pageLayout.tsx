@@ -133,12 +133,13 @@ const Chat = ({user2}: any) => {
   const getChatHistory = async () => {
     const condition = { column_value: user2.id }; // Replace with your own condition
 
-    function delay(ms: number | undefined) {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    }
+    // function delay(ms) {
+    //   return new Promise(resolve => setTimeout(resolve, ms));
+    // }
 
-    const data = await delay(5000).then(async () => {
-      const { data, error } = await supabase
+    // const data = await delay(5000).then(async () => {
+      try {
+        const { data, error } = await supabase
         .from('chats')
         .select()
         .eq('user_id', condition.column_value);
@@ -146,13 +147,16 @@ const Chat = ({user2}: any) => {
       if (error) {
         console.log(error);
       } else {
-        console.log("This is the get chat history: " + JSON.stringify(data[0].chats));
+        console.log("Get chat history success");
         return data[0].chats;
       }
-    });
+      } catch (err) {
+       console.log(err)
+      }
+    // });
   
-    return data;
-  }
+    // return data;
+    }
 
   useEffect(() => {
     const onReload = async () => {  
@@ -171,11 +175,11 @@ const Chat = ({user2}: any) => {
         const condition = { column_value: user2.id }; // Replace with your own condition
         const arr: any[] = []
 
-        function delay(ms: number | undefined) {
-          return new Promise(resolve => setTimeout(resolve, ms));
-        }
+        // function delay(ms: number | undefined) {
+        //   return new Promise(resolve => setTimeout(resolve, ms));
+        // }
   
-        const data: any[] | any = await delay(5000).then(async () => {
+        try{
           const { data, error } = await supabase
             .from('booklist')
             .select('*')
@@ -184,16 +188,15 @@ const Chat = ({user2}: any) => {
           if (error) {
             console.log(error);
           } else {
-            console.log("This is the list of books: " + JSON.stringify(data));
-            return data;
+            data.map((element: any) => (
+              arr.push(element.book_name)
+            ))
+            return arr;
           }
-        });
-    
-        console.log(data)
-        data.map((element: any) => (
-          arr.push(element.book_name)
-        ))
-        return arr;
+
+        }catch(error){
+          console.log("There was an error fetching the pdfs: " + error)
+        }
       }
   
       const pdfList: any = await listOfPdfs()
@@ -215,11 +218,11 @@ const Chat = ({user2}: any) => {
         const condition = { column_value: "constantine" }; // Replace with your own condition
         const arr: any[] = []
 
-        function delay(ms: number | undefined) {
-          return new Promise(resolve => setTimeout(resolve, ms));
-        }
+        // function delay(ms: number | undefined) {
+        //   return new Promise(resolve => setTimeout(resolve, ms));
+        // }
   
-        const data: any[] | any = await delay(5000).then(async () => {
+        try{
           const { data, error } = await supabase
             .from('booklist')
             .select('*')
@@ -228,16 +231,14 @@ const Chat = ({user2}: any) => {
           if (error) {
             console.log(error);
           } else {
-            console.log("This is the list of books: " + JSON.stringify(data));
-            return data;
+            data.map((element: any) => (
+              arr.push(element.book_name)
+            ))
+            return arr;
           }
-        });
-    
-        console.log(data)
-        data.map((element: any) => (
-          arr.push(element.book_name)
-        ))
-        return arr;
+        }catch(error){
+          console.log("There was an error fetching the pdfs: " + error)
+        };
       }
   
       const constantinePdfList: any = await constantinePdfs()
@@ -302,7 +303,7 @@ const Chat = ({user2}: any) => {
           }
           handleStoreRequest(history);
           handleStoreResponse(history);
-          router.push('https://lecturemate-git-login-signup-page-edit-ifiokabasiudo.vercel.app/app/chat') 
+          router.push('https://lecturemate.org/app/chat') 
         setIsLoading(false)
       }catch(error) {
         setIsLoading(false)
@@ -317,7 +318,7 @@ const Chat = ({user2}: any) => {
           duration: 5000,
           isClosable: true,
         });   
-        router.push('https://lecturemate-git-login-signup-page-edit-ifiokabasiudo.vercel.app/app/chat')     
+        router.push('https://lecturemate.org/app/chat')     
       }   
   }
 
