@@ -3,7 +3,7 @@ import { useFormik } from "formik";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import { RxUpload, RxFile } from "react-icons/rx";
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState, useEffect, Suspense, useRef } from "react";
 import CopyBox from "./CopyBox";
 import TopBarProgress from "react-topbar-progress-indicator";
 import { createClient } from "@supabase/supabase-js";
@@ -22,6 +22,9 @@ const FileUpload = ({ user3 }: any) => {
   const [timer, setTimer] = useState(0);
   const [textIndex, setTextIndex] = useState(0);
   const [uploading, setUploading] = useState(false);
+  const socketRef = useRef<WebSocket | null>(null);
+  const [progress, setProgress] = useState<number | null>(null);
+
   const texts = [
     "Uploading...",
     "Please wait...",
@@ -47,6 +50,27 @@ const FileUpload = ({ user3 }: any) => {
       setTextIndex((prevIndex) => (prevIndex + 1) % texts.length);
     }
   }, [timer]);
+
+  
+
+  useEffect(() => {
+    // Create a WebSocket connection when the component mounts.
+    socketRef.current = new WebSocket("ws://localhost:4000");
+
+    // Listen for messages from the WebSocket.
+    socketRef.current.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      const { percentage } = data;
+      setProgress(percentage);
+    };
+
+    // Clean up the WebSocket connection when the component unmounts.
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.close();
+      }
+    };
+  }, []);
 
   const formik = useFormik<FormValues>({
     initialValues: {
@@ -112,7 +136,8 @@ const FileUpload = ({ user3 }: any) => {
             const fileURL = data.publicUrl
       
             const response = await axios.post(
-              "http://localhost:4000/api/upload/",
+              "https://lm-backend.eastus.cloudapp.azure.com/api/upload",
+              // "http://localhost:4000/api/upload/",
               // "https://api.greynote.app/lecture/api/upload",
               {
                 "url": fileURL, 
@@ -224,6 +249,15 @@ const FileUpload = ({ user3 }: any) => {
           </Flex>
         )}
       </Box>
+      <div>
+      {/* Your existing JSX code */}
+      {progress !== null && (
+        <div>
+          <p>Processing progress: {progress}%</p>
+          {/* Add your progress indicator UI here, e.g., a loading bar */}
+        </div>
+      )}
+    </div>
       <Button
         type="submit"
         mt={4}

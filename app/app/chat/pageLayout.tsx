@@ -68,6 +68,7 @@ const Chat = ({user2}: any) => {
   const [requests, setRequests] = useState<any[]>([]);
   const [responses, setResponses] = useState<any[]>([]);
   const [pdfList, setPdfList] = useState<any[]>([]);
+  const [constantinePdfList, setConstantinePdfList] = useState<any[]>([]);
   const [selectedPdf, setSelectedPdf] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean | any>(false) 
   const fileName = localStorage.getItem("file");
@@ -104,8 +105,7 @@ const Chat = ({user2}: any) => {
     const questions = values.filter((element, index) => index % 2 == 0 || index === 0);
     console.log(questions);
 
-    setRequests(questions)
-    
+    setRequests(questions)    
     // setRequests((prevRequests) => [...prevRequests, values]);
     // localStorage.setItem("requests", JSON.stringify([...requests, values]));
   };
@@ -119,15 +119,27 @@ const Chat = ({user2}: any) => {
     // localStorage.setItem("responses", JSON.stringify([...responses, response]));
   };
 
+  const extractQuestion = (content: any) => {
+    const regex = /Question:\/\/--(.*?)--\/\//;
+    const match = content?.match(regex);
+    return match ? match[1].trim() : content;
+  };
+
+  // Map requests to extract questions
+  const requestsWithQuestions = requests.map((request) => {
+    return { content: extractQuestion(request.content) };
+  });
+
   const getChatHistory = async () => {
     const condition = { column_value: user2.id }; // Replace with your own condition
 
-    function delay(ms: number | undefined) {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    }
+    // function delay(ms) {
+    //   return new Promise(resolve => setTimeout(resolve, ms));
+    // }
 
-    const data = await delay(5000).then(async () => {
-      const { data, error } = await supabase
+    // const data = await delay(5000).then(async () => {
+      try {
+        const { data, error } = await supabase
         .from('chats')
         .select()
         .eq('user_id', condition.column_value);
@@ -135,13 +147,16 @@ const Chat = ({user2}: any) => {
       if (error) {
         console.log(error);
       } else {
-        console.log("This is the get chat history: " + JSON.stringify(data[0].chats));
+        console.log("Get chat history success");
         return data[0].chats;
       }
-    });
+      } catch (err) {
+       console.log(err)
+      }
+    // });
   
-    return data;
-  }
+    // return data;
+    }
 
   useEffect(() => {
     const onReload = async () => {  
@@ -160,11 +175,11 @@ const Chat = ({user2}: any) => {
         const condition = { column_value: user2.id }; // Replace with your own condition
         const arr: any[] = []
 
-        function delay(ms: number | undefined) {
-          return new Promise(resolve => setTimeout(resolve, ms));
-        }
+        // function delay(ms: number | undefined) {
+        //   return new Promise(resolve => setTimeout(resolve, ms));
+        // }
   
-        const data: any[] | any = await delay(5000).then(async () => {
+        try{
           const { data, error } = await supabase
             .from('booklist')
             .select('*')
@@ -173,16 +188,15 @@ const Chat = ({user2}: any) => {
           if (error) {
             console.log(error);
           } else {
-            console.log("This is the list of books: " + JSON.stringify(data));
-            return data;
+            data.map((element: any) => (
+              arr.push(element.book_name)
+            ))
+            return arr;
           }
-        });
-    
-        console.log(data)
-        data.map((element: any) => (
-          arr.push(element.book_name)
-        ))
-        return arr;
+
+        }catch(error){
+          console.log("There was an error fetching the pdfs: " + error)
+        }
       }
   
       const pdfList: any = await listOfPdfs()
@@ -192,6 +206,48 @@ const Chat = ({user2}: any) => {
       );
       console.log(uniqueArrayPdfList);
       setPdfList(uniqueArrayPdfList)
+    }
+
+    onReload()
+    
+  }, [])
+
+  useEffect(() => {
+    const onReload = async () => {
+      const constantinePdfs = async () => {
+        const condition = { column_value: "constantine" }; // Replace with your own condition
+        const arr: any[] = []
+
+        // function delay(ms: number | undefined) {
+        //   return new Promise(resolve => setTimeout(resolve, ms));
+        // }
+  
+        try{
+          const { data, error } = await supabase
+            .from('booklist')
+            .select('*')
+            .eq('user_id', condition.column_value);
+      
+          if (error) {
+            console.log(error);
+          } else {
+            data.map((element: any) => (
+              arr.push(element.book_name)
+            ))
+            return arr;
+          }
+        }catch(error){
+          console.log("There was an error fetching the pdfs: " + error)
+        };
+      }
+  
+      const constantinePdfList: any = await constantinePdfs()
+
+      const constantineUniqueArrayPdfList = constantinePdfList.filter(
+        (value: any, index: any, self: any) => self.indexOf(value) === index
+      );
+      console.log(constantineUniqueArrayPdfList);
+      setConstantinePdfList(constantineUniqueArrayPdfList)
     }
 
     onReload()
@@ -266,9 +322,9 @@ const Chat = ({user2}: any) => {
       }   
   }
 
-  const sponsors = [
-    { name: "Sky Waiters", img: "/skywaiter.png", role: "Investor", link: "#" },
-  ];
+  // const sponsors = [
+  //   // { name: "Sky Waiters", img: "/skywaiter.png", role: "Investor", link: "#" },
+  // ];
   const toast = useToast();
 
     let username: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined;
@@ -296,6 +352,7 @@ const Chat = ({user2}: any) => {
               px={5}
               zIndex={2}
               display={{ base: "none", lg: "flex" }}
+              overflow={"scroll"}
             >
               <Flex
                 w="full"
@@ -345,7 +402,36 @@ const Chat = ({user2}: any) => {
                 
               }
 
-              <Flex
+              {constantinePdfList.map((pdf, index)=> (
+                <Flex
+                key={index}
+                h="50px"
+                mt={5}
+                gap={2}
+                justify="start"
+                align="center"
+                // Change the background color based on selectedPdf
+                bg={pdf === selectedPdf ? "#53AF28" : ""}
+                color={pdf === selectedPdf ? "white" : "#53AF28"}
+                w="full"
+                border={"1px solid #53AF28"}
+                _hover={pdf === selectedPdf ? {color: "white", bg: "#53AF28"} : { color: "#005103", bg: "#90E768" }}
+                _active={{ color: "white", bg: "#53AF28" }}
+                pl={3}
+                borderRadius="md"
+                cursor="pointer"
+                onClick={() => handlePdfClick(pdf)}
+              >
+                <Icon as={IoChatbubbleEllipsesOutline} w="5" h="5" />
+                <Text noOfLines={1} textOverflow="ellipsis" key={index}>
+                  {pdf}
+                </Text>
+              </Flex>
+              ))
+                
+              }
+
+              {/* <Flex
                 direction="column"
                 justify="center"
                 mb={10}
@@ -368,7 +454,7 @@ const Chat = ({user2}: any) => {
                     </Box>
                   </Flex>
                 ))}
-              </Flex>
+              </Flex> */}
             </Flex>
 
             {requests.length <= 0 && (
@@ -447,7 +533,7 @@ const Chat = ({user2}: any) => {
                   {" "}
                   
                   {
-                  requests.map((request, index) => (
+                  requestsWithQuestions.map((request, index) => (
                     <Flex direction="column" key={index}>
                       <Box
                         bg="green.100"
