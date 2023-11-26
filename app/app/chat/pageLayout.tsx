@@ -119,10 +119,22 @@ const Chat = ({user2}: any) => {
     // localStorage.setItem("responses", JSON.stringify([...responses, response]));
   };
 
-  const extractQuestion = (content: any) => {
-    const regex = /Question:\/\/--(.*?)--\/\//;
+  const separateQuestion = (content: any) => {
+    const regex = /^(.*?)(?=--\/\/)/;
     const match = content?.match(regex);
     return match ? match[1].trim() : content;
+  }
+
+  const extractQuestion = (content: any) => {
+    const regexPattern1 = /Question:\/\/--(.*?)--\/\//;
+    const matchResult1 = content.match(regexPattern1);
+    const textBeforePattern1 = matchResult1 ? matchResult1[1].trim() : content;
+
+    const regexPattern2 = /^(.*?)(?=--\/\/)/;
+    const matchResult2 = textBeforePattern1.match(regexPattern2);
+    const finalText = matchResult2 ? matchResult2[1].trim() : textBeforePattern1;
+
+    return finalText;
   };
 
   // Map requests to extract questions
