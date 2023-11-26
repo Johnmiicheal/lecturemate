@@ -608,7 +608,8 @@ const Chat = ({user2}: any) => {
                         display={responses.length <= 0 ? "none" : "block"}
                       >
                           <Flex direction="column" justify="space-between">
-                            <Text key={index}>{responses[index].content}</Text>
+                            {/* <Text key={index}>{responses[index].content}</Text> */}
+                            <div dangerouslySetInnerHTML={{ __html: responses[index].content.replace(/\n/g, '<br>') }} />
                             <Text fontSize={11} mt={3} fontWeight="bold">
                               Lecture Mate
                             </Text>                            
