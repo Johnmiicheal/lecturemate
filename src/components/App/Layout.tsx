@@ -13,7 +13,7 @@ type User = {
   handleClearChats: () => Promise<void>,
 }
 
-export default function Layout({user3, handleClearChats}: User) {
+export default function Layout({user3, handleClearChats}: User | any) {
   const router = useRouter();
 
   return (

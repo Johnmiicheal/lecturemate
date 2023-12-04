@@ -41,7 +41,7 @@ type User = {
   handleClearChats: () => Promise<void>,
 }
 
-export default function UserProfile({user4, handleClearChats}: User) {
+export default function UserProfile({user4, handleClearChats}: User | any) {
   const [pdfList, setPdfList] = useState<any[]>([]);
   const [selectedPdf, setSelectedPdf] = useState<string | null>(null); 
   let username: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined;
