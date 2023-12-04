@@ -36,7 +36,12 @@ import FileUpload from "./FileUpload";
 import { useEffect, useState } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 
-export default function UserProfile({user4}: any) {
+type User = {
+  user4 : any,
+  handleClearChats: () => Promise<void>,
+}
+
+export default function UserProfile({user4, handleClearChats}: User) {
   const [pdfList, setPdfList] = useState<any[]>([]);
   const [selectedPdf, setSelectedPdf] = useState<string | null>(null); 
   let username: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined;
@@ -144,7 +149,7 @@ export default function UserProfile({user4}: any) {
         justify="center"
         align="center"
         display={{ base: "none", lg: "flex" }}
-        onClick={handleChat}
+        onClick={handleClearChats}
       >
           <Text fontWeight={600} fontSize="0.9em">
             Clear Chat
@@ -265,7 +270,7 @@ export default function UserProfile({user4}: any) {
                 cursor="pointer"
                 justify="center"
                 align="center"
-                onClick={handleChat}
+                onClick={handleClearChats}
               >
                 <Text fontWeight={600} fontSize="0.9em">
                   Clear Chat

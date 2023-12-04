@@ -8,7 +8,12 @@ import UserProfile from "./UserProfile";
 import { useRouter } from "next/navigation";
 import LeftNav from "./LeftNav";
 
-export default function Layout({user3}: any) {
+type User = {
+  user3 : any,
+  handleClearChats: () => Promise<void>,
+}
+
+export default function Layout({user3, handleClearChats}: User) {
   const router = useRouter();
 
   return (
@@ -34,7 +39,8 @@ export default function Layout({user3}: any) {
         </Flex>
 
         <Flex justify="flex-end">
-            <UserProfile  user4 = {user3}/>
+            <UserProfile  user4 = {user3} 
+            handleClearChats = {handleClearChats}/>
         </Flex>
         </Flex>
         <LeftNav />

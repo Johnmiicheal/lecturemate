@@ -138,7 +138,7 @@ const Chat = ({user2}: any) => {
   };
 
   // Map requests to extract questions
-  const requestsWithQuestions = requests.map((request) => {
+  let requestsWithQuestions = requests.map((request) => {
     return { content: extractQuestion(request.content) };
   });
 
@@ -334,6 +334,42 @@ const Chat = ({user2}: any) => {
       }   
   }
 
+  const handleClearChats = async () => {
+      try {
+        // Delete the scheduler from Supabase
+        const { data, error } = await supabase
+          .from("chats")
+          .delete()
+          .eq("id", user2.id)
+
+        if (error) {
+          console.error("Error deleting scheduler:", error.message);
+          return;
+        }
+
+        requestsWithQuestions = []
+        handleStoreRequest([])
+        handleStoreResponse([])
+
+        toast({
+          title: "Chat Cleared",
+          position: "top-right",
+          description: "You have cleared the chat",
+          status: "success",
+          variant: "left-accent",
+          duration: 5000,
+          isClosable: true,
+        });
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+
+        // Call the onDelete callback to update the local state
+      } catch (error) {
+        console.error("Error handling scheduler deletion:", error);
+      }
+  }
+
   // const sponsors = [
   //   // { name: "Sky Waiters", img: "/skywaiter.png", role: "Investor", link: "#" },
   // ];
@@ -349,7 +385,7 @@ const Chat = ({user2}: any) => {
     <Suspense fallback={<Loading />}>
       <Flex bg="#F8FCF7">
         <Flex w="full" direction="column" justify="space-between">
-          <Layout user3 = {user2}/>
+          <Layout user3 = {user2} handleClearChats = {handleClearChats}/>
           <Flex
             direction="column"
             w="full"
