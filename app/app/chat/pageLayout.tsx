@@ -340,7 +340,7 @@ const Chat = ({user2}: any) => {
         const { data, error } = await supabase
           .from("chats")
           .delete()
-          .eq("id", user2.id)
+          .eq("user_id", user2.id)
 
         if (error) {
           console.error("Error deleting scheduler:", error.message);
