@@ -483,7 +483,7 @@ const Chat = ({user2}: any) => {
                 cursor="pointer"
                 onClick={onGlobal}
               >
-                <Icon as={IoGlobeOutline} w="5" h="5" mr={"3"}/>
+                <Icon as={IoGlobeOutline} w="5" h="5" mr={"1"}/>
                 Global
               </Flex>
 
