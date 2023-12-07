@@ -411,6 +411,7 @@ const Chat = ({user2}: any) => {
 
   const onGlobal = () => {
     localStorage.removeItem("file");
+    setSelectedPdf("none")
   }
 
   // const sponsors = [
@@ -471,9 +472,11 @@ const Chat = ({user2}: any) => {
                 mb={13}
                 align="center"
                 justify="start"
-                color="#53AF28"
+                bg={"none" === selectedPdf ? "#53AF28" : ""}
+                color={"none" === selectedPdf ? "white" : "#53AF28"}
                 border="1px solid #53AF28"
-                _hover={{ bg: "#53AF28", color: "white" }}
+                _hover={"none" === selectedPdf ? {color: "white", bg: "#53AF28"} : { color: "#005103", bg: "#90E768" }}
+                _active={{ color: "white", bg: "#53AF28" }}
                 py={5}
                 pl={3}
                 borderRadius="md"
