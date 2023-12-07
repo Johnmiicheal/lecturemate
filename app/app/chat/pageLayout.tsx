@@ -371,6 +371,43 @@ const Chat = ({user2}: any) => {
       }
   }
 
+  const handleRemovePdf = async (pdfId: any, pdfName: any, pdfListId: any) => {
+    try {
+      const { data, error } = await supabase
+    .from('booklist')
+    .delete()
+    .eq("user_id", user2.id)
+    .eq('id', pdfId)
+
+    if(data){
+      try {
+        const { data, error } = await supabase
+      .from('pdfs')
+      .delete()
+      .eq("user_id", user2.id)
+      .eq('pdf_name', pdfName)
+
+      if(error) {
+        console.log("Error deleting pdf " + error)
+      }else {
+        const updatedArrayPdfList = pdfList.filter(
+          (pdfs, index) => index !== pdfListId
+        );
+        setPdfList(updatedArrayPdfList)
+        localStorage.removeItem("file")
+      }
+      } catch (error) {
+        console.log(error)
+      }
+
+    }else {
+      console.log("Error deleting pdf name " + error)
+    }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   // const sponsors = [
   //   // { name: "Sky Waiters", img: "/skywaiter.png", role: "Investor", link: "#" },
   // ];
@@ -446,7 +483,7 @@ const Chat = ({user2}: any) => {
                 <Text noOfLines={1} w='70%' textOverflow="ellipsis" key={index}>
                   {pdf}
                 </Text>
-                <Icon as={IoRemoveCircleOutline} ml={'10%'} mr={'3%'} w="5" h="5" />
+                <Icon as={IoRemoveCircleOutline} onClick={() => handleRemovePdf(pdf.id, pdf.pdf_name, index)} ml={'10%'} mr={'3%'} _hover={{color: "white", bg: "#53AF28"}} w="5" h="5" />
               </Flex>
               ))
                 
