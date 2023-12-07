@@ -41,6 +41,7 @@ import {
   IoChatbubbleEllipsesOutline,
   IoChevronForward,
   IoPaperPlane,
+  IoRemoveCircleOutline,
 } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import { Field, Form, Formik } from "formik";
@@ -445,6 +446,7 @@ const Chat = ({user2}: any) => {
                 <Text noOfLines={1} textOverflow="ellipsis" key={index}>
                   {pdf}
                 </Text>
+                <Icon as={IoRemoveCircleOutline} w="5" h="5" />
               </Flex>
               ))
                 
