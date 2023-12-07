@@ -446,7 +446,7 @@ const Chat = ({user2}: any) => {
                 <Text noOfLines={1} w='70%' textOverflow="ellipsis" key={index}>
                   {pdf}
                 </Text>
-                <Icon as={IoRemoveCircleOutline} ml={'10%'} w="5" h="5" />
+                <Icon as={IoRemoveCircleOutline} ml={'10%'} mr={'3%'} w="5" h="5" />
               </Flex>
               ))
                 
