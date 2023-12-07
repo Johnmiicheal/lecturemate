@@ -443,10 +443,10 @@ const Chat = ({user2}: any) => {
                 onClick={() => handlePdfClick(pdf)}
               >
                 <Icon as={IoChatbubbleEllipsesOutline} w="5" h="5" />
-                <Text noOfLines={1} textOverflow="ellipsis" key={index}>
+                <Text noOfLines={1} w='70%' textOverflow="ellipsis" key={index}>
                   {pdf}
                 </Text>
-                <Icon as={IoRemoveCircleOutline} w="5" h="5" />
+                <Icon as={IoRemoveCircleOutline} ml={'10%'} w="5" h="5" />
               </Flex>
               ))
                 
