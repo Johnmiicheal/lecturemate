@@ -508,7 +508,7 @@ const Chat = ({user2}: any) => {
                 <Text noOfLines={1} w='70%' textOverflow="ellipsis" key={index}>
                   {pdf.book_name}
                 </Text>
-                <Icon as={IoRemoveCircleOutline} onClick={() => handleRemovePdf(pdf.id, pdf.book_name, index)} ml={'10%'} mr={'3%'} _hover={{color: "white", bg: "#53AF28",  borderRadius: '100%'}} w="5" h="5" />
+                <Icon as={IoRemoveCircleOutline} onClick={() => handleRemovePdf(pdf.id, pdf.book_name, index)} ml={'10%'} mr={'3%'} _hover={pdf.book_name === selectedPdf ? {color: "white", bg: "#3C7C1C",  borderRadius: '100%'} : {color: "white", bg: "#53AF28",  borderRadius: '100%'}} w="5" h="5" />
               </Flex>
               ))
                 
