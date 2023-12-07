@@ -479,7 +479,7 @@ const Chat = ({user2}: any) => {
                 cursor="pointer"
                 onClick={() => handlePdfClick(pdf.book_name)}
               >
-                <Icon as={IoChatbubbleEllipsesOutline} w="5" h="5" />
+                <Icon as={IoChatbubbleEllipsesOutline} w="5" h="5" borderRadius={'full'}/>
                 <Text noOfLines={1} w='70%' textOverflow="ellipsis" key={index}>
                   {pdf.book_name}
                 </Text>
