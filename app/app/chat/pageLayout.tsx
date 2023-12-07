@@ -202,7 +202,7 @@ const Chat = ({user2}: any) => {
             console.log(error);
           } else {
             data.map((element: any) => (
-              arr.push(element.book_name)
+              arr.push(element)
             ))
             return arr;
           }
@@ -245,7 +245,7 @@ const Chat = ({user2}: any) => {
             console.log(error);
           } else {
             data.map((element: any) => (
-              arr.push(element.book_name)
+              arr.push(element)
             ))
             return arr;
           }
@@ -468,22 +468,22 @@ const Chat = ({user2}: any) => {
                 justify="start"
                 align="center"
                 // Change the background color based on selectedPdf
-                bg={pdf === selectedPdf ? "#53AF28" : ""}
-                color={pdf === selectedPdf ? "white" : "#53AF28"}
+                bg={pdf.book_name === selectedPdf ? "#53AF28" : ""}
+                color={pdf.book_name === selectedPdf ? "white" : "#53AF28"}
                 w="full"
                 border={"1px solid #53AF28"}
-                _hover={pdf === selectedPdf ? {color: "white", bg: "#53AF28"} : { color: "#005103", bg: "#90E768" }}
+                _hover={pdf.book_name === selectedPdf ? {color: "white", bg: "#53AF28"} : { color: "#005103", bg: "#90E768" }}
                 _active={{ color: "white", bg: "#53AF28" }}
                 pl={3}
                 borderRadius="md"
                 cursor="pointer"
-                onClick={() => handlePdfClick(pdf)}
+                onClick={() => handlePdfClick(pdf.book_name)}
               >
                 <Icon as={IoChatbubbleEllipsesOutline} w="5" h="5" />
                 <Text noOfLines={1} w='70%' textOverflow="ellipsis" key={index}>
-                  {pdf}
+                  {pdf.book_name}
                 </Text>
-                <Icon as={IoRemoveCircleOutline} onClick={() => handleRemovePdf(pdf.id, pdf.pdf_name, index)} ml={'10%'} mr={'3%'} _hover={{color: "white", bg: "#53AF28"}} w="5" h="5" />
+                <Icon as={IoRemoveCircleOutline} onClick={() => handleRemovePdf(pdf.id, pdf.book_name, index)} ml={'10%'} mr={'3%'} _hover={{color: "white", bg: "#53AF28"}} w="5" h="5" />
               </Flex>
               ))
                 
@@ -498,20 +498,20 @@ const Chat = ({user2}: any) => {
                 justify="start"
                 align="center"
                 // Change the background color based on selectedPdf
-                bg={pdf === selectedPdf ? "#53AF28" : ""}
-                color={pdf === selectedPdf ? "white" : "#53AF28"}
+                bg={pdf.book_name === selectedPdf ? "#53AF28" : ""}
+                color={pdf.book_name === selectedPdf ? "white" : "#53AF28"}
                 w="full"
                 border={"1px solid #53AF28"}
-                _hover={pdf === selectedPdf ? {color: "white", bg: "#53AF28"} : { color: "#005103", bg: "#90E768" }}
+                _hover={pdf.book_name === selectedPdf ? {color: "white", bg: "#53AF28"} : { color: "#005103", bg: "#90E768" }}
                 _active={{ color: "white", bg: "#53AF28" }}
                 pl={3}
                 borderRadius="md"
                 cursor="pointer"
-                onClick={() => handlePdfClick(pdf)}
+                onClick={() => handlePdfClick(pdf.book_name)}
               >
                 <Icon as={IoChatbubbleEllipsesOutline} w="5" h="5" />
                 <Text noOfLines={1} textOverflow="ellipsis" key={index}>
-                  {pdf}
+                  {pdf.book_name}
                 </Text>
               </Flex>
               ))
