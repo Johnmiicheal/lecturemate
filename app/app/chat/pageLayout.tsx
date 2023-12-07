@@ -468,7 +468,7 @@ const Chat = ({user2}: any) => {
                 w="full"
                 h="20px"
                 mt={5}
-                mb={20}
+                mb={13}
                 align="center"
                 justify="start"
                 color="#53AF28"
