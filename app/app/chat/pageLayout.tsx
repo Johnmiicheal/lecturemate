@@ -42,6 +42,7 @@ import {
   IoChevronForward,
   IoPaperPlane,
   IoRemoveCircleOutline,
+  IoGlobeOutline,
 } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import { Field, Form, Formik } from "formik";
@@ -408,6 +409,10 @@ const Chat = ({user2}: any) => {
     }
   }
 
+  const onGlobal = () => {
+    localStorage.removeItem("file");
+  }
+
   // const sponsors = [
   //   // { name: "Sky Waiters", img: "/skywaiter.png", role: "Investor", link: "#" },
   // ];
@@ -457,6 +462,25 @@ const Chat = ({user2}: any) => {
               >
                 <Icon as={IoAdd} w="5" h="5" />
                 Upload Note
+              </Flex>
+
+              <Flex
+                w="full"
+                h="20px"
+                mt={20}
+                align="center"
+                justify="start"
+                color="#53AF28"
+                border="1px solid #53AF28"
+                _hover={{ bg: "#53AF28", color: "white" }}
+                py={5}
+                pl={3}
+                borderRadius="md"
+                cursor="pointer"
+                onClick={onGlobal}
+              >
+                <Icon as={IoGlobeOutline} w="5" h="5" />
+                Global
               </Flex>
 
               {pdfList.map((pdf, index)=> (
