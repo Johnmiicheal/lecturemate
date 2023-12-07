@@ -379,7 +379,7 @@ const Chat = ({user2}: any) => {
     .eq("user_id", user2.id)
     .eq('id', pdfId)
 
-    if(data){
+    if(!error){
       try {
         const { data, error } = await supabase
       .from('pdfs')
