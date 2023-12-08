@@ -227,7 +227,7 @@ export default function UserProfile({
               ))}
             </Flex> */}
             {/* <Divider mt={10} /> */}
-            <Flex mt="2" align="center" gap={5} direction="column">
+            <Flex mt="2" align="center" gap={5} direction="column" position={"relative"}>
             {user4 && (
                 <Flex
                   _hover={{ bg: "red.500", color: "white" }}
@@ -356,7 +356,7 @@ export default function UserProfile({
                   onClick={() => handlePdfClick(pdf.book_name)}
                   >
                     <Icon as={IoChatbubbleEllipsesOutline} w="5" h="5" />
-                    <Text noOfLines={1} textOverflow="ellipsis" key={index}>
+                    <Text noOfLines={1} textOverflow="ellipsis" key={index} w={"70%"}>
                       {pdf.book_name}
                     </Text>
                     <Icon as={IoRemoveCircleOutline} onClick={() => handleRemovePdf(pdf.id, pdf.book_name, index)} position={"absolute"} top={"50%"} right={3} transform={"translateY(-50%)"} _hover={pdf.book_name === selectedPdf ? {color: "white", bg: "#3C7C1C",  borderRadius: '100%'} : {color: "white", bg: "#53AF28",  borderRadius: '100%'}} w="5" h="5" />
