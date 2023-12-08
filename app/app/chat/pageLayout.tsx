@@ -183,45 +183,45 @@ const Chat = ({user2}: any) => {
     
   }, [])
 
-  useEffect(() => {
-    const onReload = async () => {
-      const listOfPdfs = async () => {
-        const condition = { column_value: user2.id }; // Replace with your own condition
-        const arr: any[] = []
+  const onReload = async () => {
+    const listOfPdfs = async () => {
+      const condition = { column_value: user2.id }; // Replace with your own condition
+      const arr: any[] = []
 
-        // function delay(ms: number | undefined) {
-        //   return new Promise(resolve => setTimeout(resolve, ms));
-        // }
-  
-        try{
-          const { data, error } = await supabase
-            .from('booklist')
-            .select('*')
-            .eq('user_id', condition.column_value);
-      
-          if (error) {
-            console.log(error);
-          } else {
-            data.map((element: any) => (
-              arr.push(element)
-            ))
-            return arr;
-          }
+      // function delay(ms: number | undefined) {
+      //   return new Promise(resolve => setTimeout(resolve, ms));
+      // }
 
-        }catch(error){
-          console.log("There was an error fetching the pdfs: " + error)
+      try{
+        const { data, error } = await supabase
+          .from('booklist')
+          .select('*')
+          .eq('user_id', condition.column_value);
+    
+        if (error) {
+          console.log(error);
+        } else {
+          data.map((element: any) => (
+            arr.push(element)
+          ))
+          return arr;
         }
-      }
-  
-      const pdfList: any = await listOfPdfs()
 
-      const uniqueArrayPdfList = pdfList.filter(
-        (value: any, index: any, self: any) => self.indexOf(value) === index
-      );
-      console.log(uniqueArrayPdfList);
-      setPdfList(uniqueArrayPdfList)
+      }catch(error){
+        console.log("There was an error fetching the pdfs: " + error)
+      }
     }
 
+    const pdfList: any = await listOfPdfs()
+
+    const uniqueArrayPdfList = pdfList.filter(
+      (value: any, index: any, self: any) => self.indexOf(value) === index
+    );
+    console.log(uniqueArrayPdfList);
+    setPdfList(uniqueArrayPdfList)
+  }
+
+  useEffect(() => {
     onReload()
     
   }, [])
@@ -317,7 +317,7 @@ const Chat = ({user2}: any) => {
           }
           handleStoreRequest(history);
           handleStoreResponse(history);
-          router.push('https://lecturemate.org/app/chat') 
+           
         setIsLoading(false)
       }catch(error) {
         setIsLoading(false)
@@ -332,7 +332,9 @@ const Chat = ({user2}: any) => {
           duration: 5000,
           isClosable: true,
         });   
-        router.push('https://lecturemate.org/app/chat')     
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);    
       }   
   }
 
@@ -362,9 +364,6 @@ const Chat = ({user2}: any) => {
           duration: 5000,
           isClosable: true,
         });
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
 
         // Call the onDelete callback to update the local state
       } catch (error) {
@@ -429,7 +428,14 @@ const Chat = ({user2}: any) => {
     <Suspense fallback={<Loading />}>
       <Flex bg="#F8FCF7">
         <Flex w="full" direction="column" justify="space-between">
-          <Layout user3 = {user2} handleClearChats = {handleClearChats}/>
+          <Layout user3 = {user2} 
+            handleClearChats = {handleClearChats}
+            selectedPdf = {selectedPdf}
+            onGlobal= {onGlobal}
+            handlePdfClick = {handlePdfClick}
+            onReload = {onReload}
+            pdfList = {pdfList}
+          />
           <Flex
             direction="column"
             w="full"
