@@ -96,7 +96,7 @@ const FileUpload = ({ user3, isUploaded, setIsUplaoded }: Changes | any) => {
               .from(bucketName + "/" + user3.id)
               .upload(values.file.name, values.file);          
   
-            if (error) {
+            if (error && error.message !== "Resource already exists") {
               // alert(values.file.name);
               setUploading(false);
               toast({
