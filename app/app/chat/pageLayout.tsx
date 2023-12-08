@@ -184,45 +184,47 @@ const Chat = ({user2}: any) => {
     
   }, [])
 
-  // const onReload = async () => {
-    // const listOfPdfs = async () => {
-      // const condition = { column_value: user2.id }; // Replace with your own condition
-      // const arr: any[] = []
+  const onReload = async () => {
+    const listOfPdfs = async () => {
+      const condition = { column_value: user2.id }; // Replace with your own condition
+      const arr: any[] = []
 
-      // function delay(ms: number | undefined) {
-      //   return new Promise(resolve => setTimeout(resolve, ms));
-      // }
+      function delay(ms: number | undefined) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
 
-    //   try{
-    //     const { data, error } = await supabase
-    //       .from('booklist')
-    //       .select('*')
-    //       .eq('user_id', condition.column_value);
+      try{
+        const { data, error } = await supabase
+          .from('booklist')
+          .select('*')
+          .eq('user_id', condition.column_value);
     
-    //     if (error) {
-    //       console.log(error);
-    //     } else {
-    //       data.map((element: any) => (
-    //         arr.push(element)
-    //       ))
-    //       return arr;
-    //     }
+        if (error) {
+          console.log(error);
+        } else {
+          data.map((element: any) => (
+            arr.push(element)
+          ))
+          return arr;
+        }
 
-    //   }catch(error){
-    //     console.log("There was an error fetching the pdfs: " + error)
-    //   }
-    // }
+      }catch(error){
+        console.log("There was an error fetching the pdfs: " + error)
+      }
+    }
 
-    // const pdfList: any = await listOfPdfs()
+    const pdfList: any = await listOfPdfs()
 
-    // const uniqueArrayPdfList = pdfList.filter(
-    //   (value: any, index: any, self: any) => self.indexOf(value) === index
-    // );
-    // console.log(uniqueArrayPdfList);
-    // setPdfList(uniqueArrayPdfList)
-  // }
+    const uniqueArrayPdfList = pdfList.filter(
+      (value: any, index: any, self: any) => self.indexOf(value) === index
+    );
+    console.log(uniqueArrayPdfList);
+    setPdfList(uniqueArrayPdfList)
+  }
 
-  const onReload = () => {
+  const realtimeReload = () => {
+    onReload()
+
     const channel = supabase
       .channel("pdfList-realtime")
       .on(
@@ -236,9 +238,10 @@ const Chat = ({user2}: any) => {
         (payload) => {
           console.log("This is the payload: " + JSON.stringify(payload));
           if(Object.keys(payload.new).length !== 0){
-          setPdfList(
-            (prevPdfList) => [...prevPdfList, payload.new] as any[]
-          );
+            onReload()
+          // setPdfList(
+          //   (prevPdfList) => [...prevPdfList, payload.new] as any[]
+          // );
         }
           console.log(
             "These are the schedules why: " +
@@ -254,7 +257,7 @@ const Chat = ({user2}: any) => {
   }
 
   useEffect(() => {
-    onReload()
+    realtimeReload()
   }, [supabase])
 
   // useEffect(() => {
