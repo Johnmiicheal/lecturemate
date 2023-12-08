@@ -290,7 +290,7 @@ export default function UserProfile({
               <Flex
                 w="full"
                 h="20px"
-                mt={5}
+                mt={2}
                 mb={13}
                 align="center"
                 justify="start"
