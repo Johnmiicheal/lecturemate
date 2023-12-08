@@ -16,7 +16,13 @@ interface FormValues {
   file: File | null;
 }
 
-const FileUpload = ({ user3 }: any) => {
+type Changes = {
+  user3: any,
+  setIsUploaded: React.Dispatch<React.SetStateAction<boolean>>,
+  isUploaded: boolean
+}
+
+const FileUpload = ({ user3, isUploaded, setIsUplaoded }: Changes | any) => {
   const toast = useToast();
   const [token, setToken] = useState("");
   const [timer, setTimer] = useState(0);
@@ -148,6 +154,7 @@ const FileUpload = ({ user3 }: any) => {
             console.log(response)
       
             if(response.status === 200){
+              setIsUplaoded(!isUploaded)
               setTimer(0);
               setTextIndex(0);
               toast({
@@ -159,6 +166,7 @@ const FileUpload = ({ user3 }: any) => {
                 duration: 5000,
                 isClosable: true,
               });
+              
               localStorage.setItem("file", file)
               setUploading(false);
             }

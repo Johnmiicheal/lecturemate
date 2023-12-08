@@ -73,7 +73,7 @@ const Chat = ({user2}: any) => {
   const [constantinePdfList, setConstantinePdfList] = useState<any[]>([]);
   const [selectedPdf, setSelectedPdf] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean | any>(false) 
-  const [isDisabled, setIsDisabled] = useState<boolean | any>(true) 
+  const [isUploaded, setIsUploaded] = useState<boolean>(true) 
   const fileName = localStorage.getItem("file");
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
@@ -258,7 +258,7 @@ const Chat = ({user2}: any) => {
 
   useEffect(() => {
     realtimeReload()
-  }, [supabase])
+  }, [supabase, isUploaded])
 
   // useEffect(() => {
   //   // Fetch scheduler data from Supabase
@@ -425,7 +425,6 @@ const Chat = ({user2}: any) => {
 
   const handleClearChats = async () => {
       try {       
-        await setIsDisabled(false)
         // Delete the scheduler from Supabase
         const { data, error } = await supabase
           .from("chats")
@@ -440,8 +439,6 @@ const Chat = ({user2}: any) => {
         requestsWithQuestions = []
         handleStoreRequest([])
         handleStoreResponse([])
-
-        await setIsDisabled(true)
 
         toast({
           title: "Chat Cleared",
@@ -1060,7 +1057,10 @@ const Chat = ({user2}: any) => {
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody mb={7}>
-            <FileUpload user3 = {user2} />
+            <FileUpload user3 = {user2}
+            isUploaded = {isUploaded}
+            setIsUplaoded = {setIsUploaded}
+            />
           </ModalBody>
         </ModalContent>
       </Modal>
