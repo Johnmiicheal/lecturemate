@@ -73,6 +73,7 @@ const Chat = ({user2}: any) => {
   const [constantinePdfList, setConstantinePdfList] = useState<any[]>([]);
   const [selectedPdf, setSelectedPdf] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean | any>(false) 
+  const [isDisabled, setIsDisabled] = useState<boolean | any>(true) 
   const fileName = localStorage.getItem("file");
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
@@ -183,47 +184,77 @@ const Chat = ({user2}: any) => {
     
   }, [])
 
-  const onReload = async () => {
-    const listOfPdfs = async () => {
-      const condition = { column_value: user2.id }; // Replace with your own condition
-      const arr: any[] = []
+  // const onReload = async () => {
+    // const listOfPdfs = async () => {
+      // const condition = { column_value: user2.id }; // Replace with your own condition
+      // const arr: any[] = []
 
       // function delay(ms: number | undefined) {
       //   return new Promise(resolve => setTimeout(resolve, ms));
       // }
 
-      try{
-        const { data, error } = await supabase
-          .from('booklist')
-          .select('*')
-          .eq('user_id', condition.column_value);
+    //   try{
+    //     const { data, error } = await supabase
+    //       .from('booklist')
+    //       .select('*')
+    //       .eq('user_id', condition.column_value);
     
-        if (error) {
-          console.log(error);
-        } else {
-          data.map((element: any) => (
-            arr.push(element)
-          ))
-          return arr;
+    //     if (error) {
+    //       console.log(error);
+    //     } else {
+    //       data.map((element: any) => (
+    //         arr.push(element)
+    //       ))
+    //       return arr;
+    //     }
+
+    //   }catch(error){
+    //     console.log("There was an error fetching the pdfs: " + error)
+    //   }
+    // }
+
+    // const pdfList: any = await listOfPdfs()
+
+    // const uniqueArrayPdfList = pdfList.filter(
+    //   (value: any, index: any, self: any) => self.indexOf(value) === index
+    // );
+    // console.log(uniqueArrayPdfList);
+    // setPdfList(uniqueArrayPdfList)
+  // }
+
+  const onReload = () => {
+    const channel = supabase
+      .channel("pdfList-realtime")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "booklist",
+          filter: `user_id=eq.${user2.id}`
+        },
+        (payload) => {
+          console.log("This is the payload: " + JSON.stringify(payload));
+          if(Object.keys(payload.new).length !== 0){
+          setPdfList(
+            (prevPdfList) => [...prevPdfList, payload.new] as any[]
+          );
         }
+          console.log(
+            "These are the schedules why: " +
+              JSON.stringify(pdfList, null, 2)
+          );
+        }
+      )
+      .subscribe();
 
-      }catch(error){
-        console.log("There was an error fetching the pdfs: " + error)
-      }
-    }
-
-    const pdfList: any = await listOfPdfs()
-
-    const uniqueArrayPdfList = pdfList.filter(
-      (value: any, index: any, self: any) => self.indexOf(value) === index
-    );
-    console.log(uniqueArrayPdfList);
-    setPdfList(uniqueArrayPdfList)
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }
 
   useEffect(() => {
     onReload()
-    
   }, [supabase])
 
   // useEffect(() => {
@@ -390,7 +421,8 @@ const Chat = ({user2}: any) => {
   }
 
   const handleClearChats = async () => {
-      try {
+      try {       
+        await setIsDisabled(false)
         // Delete the scheduler from Supabase
         const { data, error } = await supabase
           .from("chats")
@@ -405,6 +437,8 @@ const Chat = ({user2}: any) => {
         requestsWithQuestions = []
         handleStoreRequest([])
         handleStoreResponse([])
+
+        await setIsDisabled(true)
 
         toast({
           title: "Chat Cleared",
