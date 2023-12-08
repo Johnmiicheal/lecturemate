@@ -319,7 +319,10 @@ export default function UserProfile({
 
               <Flex 
                 direction={"column"}
-                w={'full'} >
+                w={'full'} 
+                overflowY={"scroll"}
+                h={"40vh"}
+                >
               {pdfList.map(
                 (
                   pdf:
