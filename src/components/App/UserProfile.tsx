@@ -317,6 +317,7 @@ export default function UserProfile({
                 Global
               </Flex>
 
+              <Flex overflowY={"scroll"} w={'full'}>
               {pdfList.map(
                 (
                   pdf:
@@ -392,6 +393,7 @@ export default function UserProfile({
               ))
                 
               }
+              </Flex>
 
               <Flex
                 align="center"
@@ -401,7 +403,7 @@ export default function UserProfile({
                 _hover={{ color: "#005103", fontWeight: 500 }}
                 role="group"
                 onClick={() => router.push("https://t.me/NEARCommunity")}
-                pos="relative"
+                pos="fixed"
                 bottom={10}
               >
                 <Icon
