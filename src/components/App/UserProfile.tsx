@@ -318,6 +318,7 @@ export default function UserProfile({
               </Flex>
 
               <Flex 
+                direction={"column"}
                 w={'full'} >
               {pdfList.map(
                 (
