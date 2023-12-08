@@ -317,7 +317,8 @@ export default function UserProfile({
                 Global
               </Flex>
 
-              <Flex overflowY={"scroll"} w={'full'}>
+              <Flex 
+                w={'full'} >
               {pdfList.map(
                 (
                   pdf:
