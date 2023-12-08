@@ -401,7 +401,7 @@ export default function UserProfile({
                 _hover={{ color: "#005103", fontWeight: 500 }}
                 role="group"
                 onClick={() => router.push("https://t.me/NEARCommunity")}
-                pos="fixed"
+                pos="relative"
                 bottom={10}
               >
                 <Icon
