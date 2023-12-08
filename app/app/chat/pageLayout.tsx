@@ -226,45 +226,45 @@ const Chat = ({user2}: any) => {
     
   }, [])
 
-  useEffect(() => {
-    const onReload = async () => {
-      const constantinePdfs = async () => {
-        const condition = { column_value: "constantine" }; // Replace with your own condition
-        const arr: any[] = []
+  const constantineOnReload = async () => {
+    const constantinePdfs = async () => {
+      const condition = { column_value: "constantine" }; // Replace with your own condition
+      const arr: any[] = []
 
-        // function delay(ms: number | undefined) {
-        //   return new Promise(resolve => setTimeout(resolve, ms));
-        // }
-  
-        try{
-          const { data, error } = await supabase
-            .from('booklist')
-            .select('*')
-            .eq('user_id', condition.column_value);
-      
-          if (error) {
-            console.log(error);
-          } else {
-            data.map((element: any) => (
-              arr.push(element)
-            ))
-            return arr;
-          }
-        }catch(error){
-          console.log("There was an error fetching the pdfs: " + error)
-        };
-      }
-  
-      const constantinePdfList: any = await constantinePdfs()
+      // function delay(ms: number | undefined) {
+      //   return new Promise(resolve => setTimeout(resolve, ms));
+      // }
 
-      const constantineUniqueArrayPdfList = constantinePdfList.filter(
-        (value: any, index: any, self: any) => self.indexOf(value) === index
-      );
-      console.log(constantineUniqueArrayPdfList);
-      setConstantinePdfList(constantineUniqueArrayPdfList)
+      try{
+        const { data, error } = await supabase
+          .from('booklist')
+          .select('*')
+          .eq('user_id', condition.column_value);
+    
+        if (error) {
+          console.log(error);
+        } else {
+          data.map((element: any) => (
+            arr.push(element)
+          ))
+          return arr;
+        }
+      }catch(error){
+        console.log("There was an error fetching the pdfs: " + error)
+      };
     }
 
-    onReload()
+    const constantinePdfList: any = await constantinePdfs()
+
+    const constantineUniqueArrayPdfList = constantinePdfList.filter(
+      (value: any, index: any, self: any) => self.indexOf(value) === index
+    );
+    console.log(constantineUniqueArrayPdfList);
+    setConstantinePdfList(constantineUniqueArrayPdfList)
+  }
+
+  useEffect(() => {
+    constantineOnReload()
     
   }, [])
 
@@ -436,6 +436,8 @@ const Chat = ({user2}: any) => {
             onReload = {onReload}
             pdfList = {pdfList}
             handleRemovePdf = {handleRemovePdf}
+            constantinePdfList = {constantinePdfList}
+            constantineOnReload = {constantineOnReload}
           />
           <Flex
             direction="column"
@@ -549,8 +551,7 @@ const Chat = ({user2}: any) => {
                   {pdf.book_name}
                 </Text>
               </Flex>
-              ))
-                
+              ))                
               }
 
               {/* <Flex

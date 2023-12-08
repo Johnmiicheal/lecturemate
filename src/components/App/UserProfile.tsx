@@ -52,6 +52,8 @@ type User = {
   onReload: () => Promise<void>;
   pdfList: any[];
   handleRemovePdf: (pdfId: any, pdfName: any, pdfListId: any) => Promise<void>
+  constantineOnReload: () => Promise<void>;
+  constantinePdfList: any[];
 };
 
 export default function UserProfile({
@@ -62,7 +64,9 @@ export default function UserProfile({
   onGlobal,
   onReload,
   pdfList,
-  handleRemovePdf
+  handleRemovePdf,
+  constantinePdfList,
+  constantineOnReload,
 }: User | any) {
   // const [pdfList, setPdfList] = useState<any[]>([]);
   // const [selectedPdf, setSelectedPdf] = useState<string | null>(null);
@@ -150,6 +154,10 @@ export default function UserProfile({
 
     onReload();
   }, []);
+
+  useEffect(() => {
+    constantineOnReload()
+  }, [])
 
   // Add this function to set the selected PDF when a Flex is clicked
   // const handlePdfClick = (pdf: string) => {
@@ -350,6 +358,35 @@ export default function UserProfile({
                   </Flex>
                 )
               )}
+
+              {constantinePdfList.map((pdf: any, index: any)=> (
+                <Flex
+                key={index}
+                h="50px"
+                mt={5}
+                gap={2}
+                justify="start"
+                align="center"
+                // Change the background color based on selectedPdf
+                // bg={pdf.book_name === selectedPdf ? "#53AF28" : ""}
+                color={"#53AF28"}
+                w="full"
+                border={"1px solid #53AF28"}
+                // _hover={pdf.book_name === selectedPdf ? {color: "white", bg: "#53AF28"} : { color: "#005103", bg: "#90E768" }}
+                // _active={{ color: "white", bg: "#53AF28" }}
+                pl={3}
+                borderRadius="md"
+                cursor="pointer"
+                // onClick={() => handlePdfClick(pdf)}
+              >
+                <Icon as={IoChatbubbleEllipsesOutline} w="5" h="5" />
+                <Text noOfLines={1} textOverflow="ellipsis" key={index}>
+                  {pdf.book_name}
+                </Text>
+              </Flex>
+              ))
+                
+              }
 
               <Flex
                 align="center"

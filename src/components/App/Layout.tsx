@@ -12,6 +12,8 @@ type User = {
   onReload: () => Promise<void>;
   pdfList: any[];
   handleRemovePdf: (pdfId: any, pdfName: any, pdfListId: any) => Promise<void>
+  constantineOnReload: () => Promise<void>;
+  constantinePdfList: any[];
 };
 
 export default function Layout({
@@ -22,7 +24,9 @@ export default function Layout({
   onGlobal,
   onReload,
   pdfList,
-  handleRemovePdf
+  handleRemovePdf,
+  constantinePdfList,
+  constantineOnReload,
 }: User | any) {
   const router = useRouter();
 
@@ -69,6 +73,8 @@ export default function Layout({
             onReload={onReload}
             pdfList={pdfList}
             handleRemovePdf = {handleRemovePdf}
+            constantinePdfList = {constantinePdfList}
+            constantineOnReload = {constantineOnReload}
           />
         </Flex>
       </Flex>
