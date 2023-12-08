@@ -54,6 +54,8 @@ type User = {
   handleRemovePdf: (pdfId: any, pdfName: any, pdfListId: any) => Promise<void>
   constantineOnReload: () => Promise<void>;
   constantinePdfList: any[];
+  isUploaded: boolean;
+  setIsUploaded: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export default function UserProfile({
@@ -67,6 +69,8 @@ export default function UserProfile({
   handleRemovePdf,
   constantinePdfList,
   constantineOnReload,
+  isUploaded,
+  setIsUploaded,
 }: User | any) {
   // const [pdfList, setPdfList] = useState<any[]>([]);
   // const [selectedPdf, setSelectedPdf] = useState<string | null>(null);
@@ -442,7 +446,10 @@ export default function UserProfile({
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody mb={7}>
-            <FileUpload user3={user4} />
+            <FileUpload user3={user4}
+            isUploaded = {isUploaded}
+            setIsUploaded = {setIsUploaded}
+            />
           </ModalBody>
         </ModalContent>
       </Modal>

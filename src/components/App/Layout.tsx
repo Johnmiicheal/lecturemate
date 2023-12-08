@@ -14,6 +14,8 @@ type User = {
   handleRemovePdf: (pdfId: any, pdfName: any, pdfListId: any) => Promise<void>
   constantineOnReload: () => Promise<void>;
   constantinePdfList: any[];
+  isUploaded: boolean;
+  setIsUploaded: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export default function Layout({
@@ -27,6 +29,8 @@ export default function Layout({
   handleRemovePdf,
   constantinePdfList,
   constantineOnReload,
+  isUploaded,
+  setIsUploaded,
 }: User | any) {
   const router = useRouter();
 
@@ -75,6 +79,8 @@ export default function Layout({
             handleRemovePdf = {handleRemovePdf}
             constantinePdfList = {constantinePdfList}
             constantineOnReload = {constantineOnReload}
+            isUploaded = {isUploaded}
+            setIsUploaded = {setIsUploaded}
           />
         </Flex>
       </Flex>

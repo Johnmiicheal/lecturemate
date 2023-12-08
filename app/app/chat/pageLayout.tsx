@@ -523,6 +523,8 @@ const Chat = ({user2}: any) => {
             handleRemovePdf = {handleRemovePdf}
             constantinePdfList = {constantinePdfList}
             constantineOnReload = {constantineOnReload}
+            isUploaded = {isUploaded}
+            setIsUploaded = {setIsUploaded}
           />
           <Flex
             direction="column"
