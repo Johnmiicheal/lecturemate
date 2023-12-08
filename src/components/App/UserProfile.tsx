@@ -212,74 +212,49 @@ export default function UserProfile({
               ))}
             </Flex> */}
             {/* <Divider mt={10} /> */}
-            <Flex mt="2" align="center" gap={5} direction="column-reverse">
-              <Flex
-                align="center"
-                gap="1"
-                cursor="pointer"
-                color="#008F06"
-                _hover={{ color: "#005103", fontWeight: 500 }}
-                role="group"
-                onClick={() => router.push("https://t.me/NEARCommunity")}
-                pos="fixed"
-                bottom={10}
-              >
-                <Icon
-                  as={FaTelegramPlane}
-                  bgColor="#008F06"
-                  color="#FFF"
-                  _groupHover={{ bg: "#005103" }}
-                  p={1}
+            <Flex mt="2" align="center" gap={5} direction="column">
+            {user4 && (
+                <Flex
+                  _hover={{ bg: "red.500", color: "white" }}
                   borderRadius="full"
-                  w="7"
-                  h="7"
-                />
-                <Text>Join our Community</Text>
-              </Flex>
+                  border="1px solid"
+                  color="red.500"
+                  borderColor="red.500"
+                  bg={{ base: "none", md: "none" }}
+                  w="full"
+                  h={12}
+                  cursor="pointer"
+                  justify="center"
+                  align="center"
+                >
+                  <form action="/auth/signout" method="post">
+                    <button type="submit">
+                      <Text fontWeight={600} fontSize="0.9em">
+                        Logout
+                      </Text>
+                    </button>
+                  </form>
+                </Flex>
+              )}              
 
-              {pdfList.map(
-                (
-                  pdf:
-                    | string
-                    | number
-                    | boolean
-                    | React.ReactElement<
-                        any,
-                        string | React.JSXElementConstructor<any>
-                      >
-                    | Iterable<React.ReactNode>
-                    | React.ReactPortal
-                    | React.PromiseLikeOfReactNode
-                    | null
-                    | undefined
-                    | any,
-                  index: React.Key | null | undefined
-                ) => (
-                  <Flex
-                    key={index}
-                    h="50px"
-                    mt={5}
-                    gap={2}
-                    justify="start"
-                    align="center"
-                    // Change the background color based on selectedPdf
-                    bg={pdf.book_name === selectedPdf ? "#53AF28" : ""}
-                    color={pdf.book_name === selectedPdf ? "white" : "#53AF28"}
-                    w="full"
-                    border={"1px solid #53AF28"}
-                    _hover={{ color: "#005103", bg: "#90E768" }}
-                    pl={3}
-                    borderRadius="md"
-                    cursor="pointer"
-                    onClick={() => handlePdfClick(pdf.book_name)}
-                  >
-                    <Icon as={IoChatbubbleEllipsesOutline} w="5" h="5" />
-                    <Text noOfLines={1} textOverflow="ellipsis" key={index}>
-                      {pdf.book_name}
-                    </Text>
-                  </Flex>
-                )
-              )}
+              <Flex
+                _hover={{ bg: "red.500", color: "white" }}
+                borderRadius="full"
+                border="1px solid"
+                color="red.500"
+                borderColor="red.500"
+                bg={{ base: "none", md: "none" }}
+                w="full"
+                h={12}
+                cursor="pointer"
+                justify="center"
+                align="center"
+                onClick={handleClearChats}
+              >
+                <Text fontWeight={600} fontSize="0.9em">
+                  Clear Chat
+                </Text>
+              </Flex>
 
               <Flex
                 w="full"
@@ -327,48 +302,73 @@ export default function UserProfile({
                 Global
               </Flex>
 
-              <Flex
-                _hover={{ bg: "red.500", color: "white" }}
-                borderRadius="full"
-                border="1px solid"
-                color="red.500"
-                borderColor="red.500"
-                bg={{ base: "none", md: "none" }}
-                w="full"
-                h={12}
-                cursor="pointer"
-                justify="center"
-                align="center"
-                onClick={handleClearChats}
-              >
-                <Text fontWeight={600} fontSize="0.9em">
-                  Clear Chat
-                </Text>
-              </Flex>
-
-              {user4 && (
-                <Flex
-                  _hover={{ bg: "red.500", color: "white" }}
-                  borderRadius="full"
-                  border="1px solid"
-                  color="red.500"
-                  borderColor="red.500"
-                  bg={{ base: "none", md: "none" }}
-                  w="full"
-                  h={12}
-                  cursor="pointer"
-                  justify="center"
-                  align="center"
-                >
-                  <form action="/auth/signout" method="post">
-                    <button type="submit">
-                      <Text fontWeight={600} fontSize="0.9em">
-                        Logout
-                      </Text>
-                    </button>
-                  </form>
-                </Flex>
+              {pdfList.map(
+                (
+                  pdf:
+                    | string
+                    | number
+                    | boolean
+                    | React.ReactElement<
+                        any,
+                        string | React.JSXElementConstructor<any>
+                      >
+                    | Iterable<React.ReactNode>
+                    | React.ReactPortal
+                    | React.PromiseLikeOfReactNode
+                    | null
+                    | undefined
+                    | any,
+                  index: React.Key | null | undefined
+                ) => (
+                  <Flex
+                    key={index}
+                    h="50px"
+                    mt={5}
+                    gap={2}
+                    justify="start"
+                    align="center"
+                    // Change the background color based on selectedPdf
+                    bg={pdf.book_name === selectedPdf ? "#53AF28" : ""}
+                    color={pdf.book_name === selectedPdf ? "white" : "#53AF28"}
+                    w="full"
+                    border={"1px solid #53AF28"}
+                    _hover={{ color: "#005103", bg: "#90E768" }}
+                    pl={3}
+                    borderRadius="md"
+                    cursor="pointer"
+                    onClick={() => handlePdfClick(pdf.book_name)}
+                  >
+                    <Icon as={IoChatbubbleEllipsesOutline} w="5" h="5" />
+                    <Text noOfLines={1} textOverflow="ellipsis" key={index}>
+                      {pdf.book_name}
+                    </Text>
+                  </Flex>
+                )
               )}
+
+              <Flex
+                align="center"
+                gap="1"
+                cursor="pointer"
+                color="#008F06"
+                _hover={{ color: "#005103", fontWeight: 500 }}
+                role="group"
+                onClick={() => router.push("https://t.me/NEARCommunity")}
+                pos="fixed"
+                bottom={10}
+              >
+                <Icon
+                  as={FaTelegramPlane}
+                  bgColor="#008F06"
+                  color="#FFF"
+                  _groupHover={{ bg: "#005103" }}
+                  p={1}
+                  borderRadius="full"
+                  w="7"
+                  h="7"
+                />
+                <Text>Join our Community</Text>
+              </Flex>
             </Flex>
           </DrawerBody>
 
