@@ -22,7 +22,7 @@ type Changes = {
   isUploaded: boolean
 }
 
-const FileUpload = ({ user3, isUploaded, setIsUplaoded }: Changes | any) => {
+const FileUpload = ({ user3, isUploaded, setIsUploaded }: Changes | any) => {
   const toast = useToast();
   const [token, setToken] = useState("");
   const [timer, setTimer] = useState(0);
@@ -154,7 +154,7 @@ const FileUpload = ({ user3, isUploaded, setIsUplaoded }: Changes | any) => {
             console.log(response)
       
             if(response.status === 200){
-              setIsUplaoded(!isUploaded)
+              setIsUploaded(!isUploaded)
               setTimer(0);
               setTextIndex(0);
               toast({
