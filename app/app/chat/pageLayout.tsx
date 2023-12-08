@@ -435,6 +435,7 @@ const Chat = ({user2}: any) => {
             handlePdfClick = {handlePdfClick}
             onReload = {onReload}
             pdfList = {pdfList}
+            handleRemovePdf = {handleRemovePdf}
           />
           <Flex
             direction="column"

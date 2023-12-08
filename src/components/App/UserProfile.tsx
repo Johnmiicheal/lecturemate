@@ -37,6 +37,7 @@ import {
   IoAdd,
   IoChatbubbleEllipsesOutline,
   IoGlobeOutline,
+  IoRemoveCircleOutline,
 } from "react-icons/io5";
 import FileUpload from "./FileUpload";
 import { useEffect, useState } from "react";
@@ -50,6 +51,7 @@ type User = {
   handlePdfClick: (pdf: string) => void;
   onReload: () => Promise<void>;
   pdfList: any[];
+  handleRemovePdf: (pdfId: any, pdfName: any, pdfListId: any) => Promise<void>
 };
 
 export default function UserProfile({
@@ -60,6 +62,7 @@ export default function UserProfile({
   onGlobal,
   onReload,
   pdfList,
+  handleRemovePdf
 }: User | any) {
   // const [pdfList, setPdfList] = useState<any[]>([]);
   // const [selectedPdf, setSelectedPdf] = useState<string | null>(null);
@@ -321,27 +324,29 @@ export default function UserProfile({
                   index: React.Key | null | undefined
                 ) => (
                   <Flex
-                    key={index}
-                    h="50px"
-                    mt={5}
-                    gap={2}
-                    justify="start"
-                    align="center"
-                    // Change the background color based on selectedPdf
-                    bg={pdf.book_name === selectedPdf ? "#53AF28" : ""}
-                    color={pdf.book_name === selectedPdf ? "white" : "#53AF28"}
-                    w="full"
-                    border={"1px solid #53AF28"}
-                    _hover={{ color: "#005103", bg: "#90E768" }}
-                    pl={3}
-                    borderRadius="md"
-                    cursor="pointer"
-                    onClick={() => handlePdfClick(pdf.book_name)}
+                  key={index}
+                  h="50px"
+                  mt={5}
+                  gap={2}
+                  justify="start"
+                  align="center"
+                  // Change the background color based on selectedPdf
+                  bg={pdf.book_name === selectedPdf ? "#53AF28" : ""}
+                  color={pdf.book_name === selectedPdf ? "white" : "#53AF28"}
+                  w="full"
+                  border={"1px solid #53AF28"}
+                  _hover={pdf.book_name === selectedPdf ? {color: "white", bg: "#53AF28"} : { color: "#005103", bg: "#90E768" }}
+                  _active={{ color: "white", bg: "#53AF28" }}
+                  pl={3}
+                  borderRadius="md"
+                  cursor="pointer"
+                  onClick={() => handlePdfClick(pdf.book_name)}
                   >
                     <Icon as={IoChatbubbleEllipsesOutline} w="5" h="5" />
                     <Text noOfLines={1} textOverflow="ellipsis" key={index}>
                       {pdf.book_name}
                     </Text>
+                    <Icon as={IoRemoveCircleOutline} onClick={() => handleRemovePdf(pdf.id, pdf.book_name, index)} ml={'10%'} mr={'3%'} _hover={pdf.book_name === selectedPdf ? {color: "white", bg: "#3C7C1C",  borderRadius: '100%'} : {color: "white", bg: "#53AF28",  borderRadius: '100%'}} w="5" h="5" />
                   </Flex>
                 )
               )}

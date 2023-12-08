@@ -11,6 +11,7 @@ type User = {
   handlePdfClick: (pdf: string) => void;
   onReload: () => Promise<void>;
   pdfList: any[];
+  handleRemovePdf: (pdfId: any, pdfName: any, pdfListId: any) => Promise<void>
 };
 
 export default function Layout({
@@ -21,6 +22,7 @@ export default function Layout({
   onGlobal,
   onReload,
   pdfList,
+  handleRemovePdf
 }: User | any) {
   const router = useRouter();
 
@@ -66,6 +68,7 @@ export default function Layout({
             handlePdfClick={handlePdfClick}
             onReload={onReload}
             pdfList={pdfList}
+            handleRemovePdf = {handleRemovePdf}
           />
         </Flex>
       </Flex>
