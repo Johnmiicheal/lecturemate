@@ -224,7 +224,58 @@ const Chat = ({user2}: any) => {
   useEffect(() => {
     onReload()
     
-  }, [])
+  }, [supabase])
+
+  // useEffect(() => {
+  //   // Fetch scheduler data from Supabase
+  //   // if(shouldRunEffect) {
+  //   const fetchSchedulers = async () => {
+  //     const { data, error } = await supabase
+  //       .from("schedulers")
+  //       .select("*")
+  //       .eq("user_id", userId);
+  //     if (error) {
+  //       console.error("Error fetching schedulers:", error.message);
+  //     } else {
+  //       setSchedulers(data);
+  //       console.log(
+  //         "These are the schedules why: " + JSON.stringify(schedulers, null, 2)
+  //       );
+  //     }
+  //   };
+
+  //   fetchSchedulers();
+
+  //   const channel = supabase
+  //     .channel("schedulers-realtime")
+  //     .on(
+  //       "postgres_changes",
+  //       {
+  //         event: "*",
+  //         schema: "public",
+  //         table: "schedulers",
+  //         filter: `user_id=eq.${userId}`
+  //       },
+  //       (payload) => {
+  //         console.log("This is the payload: " + JSON.stringify(payload));
+  //         if(Object.keys(payload.new).length !== 0){
+  //         setSchedulers(
+  //           (prevSchedulers) => [...prevSchedulers, payload.new] as Scheduler[]
+  //         );
+  //       }
+  //         console.log(
+  //           "These are the schedules why: " +
+  //             JSON.stringify(schedulers, null, 2)
+  //         );
+  //       }
+  //     )
+  //     .subscribe();
+
+  //   return () => {
+  //     supabase.removeChannel(channel);
+  //   };
+  // // }
+  // }, [supabase, shouldRunEffect]);
 
   const constantineOnReload = async () => {
     const constantinePdfs = async () => {
