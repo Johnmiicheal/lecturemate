@@ -71,7 +71,7 @@ export default function UserProfile({
   constantineOnReload,
   isUploaded,
   setIsUploaded,
-}: User | any) {
+}: User) {
   // const [pdfList, setPdfList] = useState<any[]>([]);
   // const [selectedPdf, setSelectedPdf] = useState<string | null>(null);
   let username:
@@ -320,8 +320,9 @@ export default function UserProfile({
               <Flex 
                 direction={"column"}
                 w={'full'} 
-                overflowY={"scroll"}
-                h={"40vh"}
+                overflowY={"auto"}
+                display={"block"}
+                h={"35vh"}
                 >
               {pdfList.map(
                 (

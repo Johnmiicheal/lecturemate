@@ -32,7 +32,21 @@ const App = () => {
         justify="space-between"
         overflowX="hidden"
       >
-        <Layout />
+        <Layout user3={undefined} handleClearChats={function (): Promise<void> {
+            throw new Error("Function not implemented.");
+          } } selectedPdf={""} onGlobal={function (): void {
+            throw new Error("Function not implemented.");
+          } } handlePdfClick={function (pdf: string): void {
+            throw new Error("Function not implemented.");
+          } } onReload={function (): Promise<void> {
+            throw new Error("Function not implemented.");
+          } } pdfList={[]} handleRemovePdf={function (pdfId: any, pdfName: any, pdfListId: any): Promise<void> {
+            throw new Error("Function not implemented.");
+          } } constantineOnReload={function (): Promise<void> {
+            throw new Error("Function not implemented.");
+          } } constantinePdfList={[]} isUploaded={false} setIsUploaded={function (value: React.SetStateAction<boolean>): void {
+            throw new Error("Function not implemented.");
+          } } />
         <Flex direction="column" w="full" align="center" px={2}>
           <Flex
             direction="column"
