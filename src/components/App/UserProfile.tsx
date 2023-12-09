@@ -227,7 +227,7 @@ export default function UserProfile({
               ))}
             </Flex> */}
             {/* <Divider mt={10} /> */}
-            <Flex mt="2" align="center" gap={5} direction="column" position={"relative"}>
+            <Flex mt="2" align="center" gap={3} direction="column" position={"relative"}>
             {user4 && (
                 <Flex
                   _hover={{ bg: "red.500", color: "white" }}
