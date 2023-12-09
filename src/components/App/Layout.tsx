@@ -6,7 +6,7 @@ import LeftNav from "./LeftNav";
 type User = {
   user3: any;
   handleClearChats: () => Promise<void>;
-  selectedPdf: string;
+  selectedPdf: string | any;
   onGlobal: () => void;
   handlePdfClick: (pdf: string) => void;
   onReload: () => Promise<void>;
