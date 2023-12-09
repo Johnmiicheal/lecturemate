@@ -31,7 +31,7 @@ export default function Layout({
   constantineOnReload,
   isUploaded,
   setIsUploaded,
-}: User) {
+}: User | any) {
   const router = useRouter();
 
   return (

@@ -71,7 +71,7 @@ export default function UserProfile({
   constantineOnReload,
   isUploaded,
   setIsUploaded,
-}: User) {
+}: User | any) {
   // const [pdfList, setPdfList] = useState<any[]>([]);
   // const [selectedPdf, setSelectedPdf] = useState<string | null>(null);
   let username:
