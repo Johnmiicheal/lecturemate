@@ -1061,7 +1061,7 @@ const Chat = ({user2}: any) => {
           <ModalBody mb={7}>
             <FileUpload user3 = {user2}
             isUploaded = {isUploaded}
-            setIsUplaoded = {setIsUploaded}
+            setIsUploaded = {setIsUploaded}
             />
           </ModalBody>
         </ModalContent>
