@@ -154,7 +154,9 @@ const FileUpload = ({ user3, isUploaded, setIsUploaded }: Changes | any) => {
             console.log(response)
       
             if(response.status === 200){
+              console.log("Here 1")
               setIsUploaded(!isUploaded)
+              console.log("Here 2")
               setTimer(0);
               setTextIndex(0);
               toast({
