@@ -130,7 +130,8 @@ const Chat = ({user2}: any) => {
 
   const extractQuestion = (content: any) => {
     const regexPattern1 = 
-       /s*\/Question:\/\/--(.*?)(?=(--\/\/))/
+    /""" Question:\/\/--([\s\S]*?)--\/\/ /
+      //  /s*\/Question:\/\/--(.*?)(?=(--\/\/))/
     // /\/Question:\/\/--(.*?)(?=(--\/\/))\//
     // /\s*Question\s*:\/\/--(.*?)--\/\//;
     // /Question:\/\/--(.*?)(?=(--\/\/))/;
