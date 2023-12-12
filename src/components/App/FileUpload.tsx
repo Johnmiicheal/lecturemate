@@ -20,9 +20,11 @@ type Changes = {
   user3: any,
   setIsUploaded: React.Dispatch<React.SetStateAction<boolean>>,
   isUploaded: boolean
+  newFile: boolean;
+  setNewFile: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const FileUpload = ({ user3, isUploaded, setIsUploaded }: Changes | any) => {
+const FileUpload = ({ user3, isUploaded, setIsUploaded, newFile, setNewFile}: Changes | any) => {
   const toast = useToast();
   const [token, setToken] = useState("");
   const [timer, setTimer] = useState(0);
@@ -156,6 +158,7 @@ const FileUpload = ({ user3, isUploaded, setIsUploaded }: Changes | any) => {
             if(response.status === 200){
               console.log("Here 1")
               setIsUploaded(!isUploaded)
+              localStorage.setItem("file", file)
               console.log("Here 2")
               setTimer(0);
               setTextIndex(0);
@@ -168,8 +171,8 @@ const FileUpload = ({ user3, isUploaded, setIsUploaded }: Changes | any) => {
                 duration: 5000,
                 isClosable: true,
               });
-              
-              localStorage.setItem("file", file)
+              setNewFile(!newFile)
+          
               setUploading(false);
             }
           } catch (error) {

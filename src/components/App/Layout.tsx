@@ -16,6 +16,8 @@ type User = {
   constantinePdfList: any[];
   isUploaded: boolean;
   setIsUploaded: React.Dispatch<React.SetStateAction<boolean>>;
+  newFile: boolean;
+  setNewFile: React.Dispatch<React.SetStateAction<boolean>>
 };
 
 export default function Layout({
@@ -31,6 +33,8 @@ export default function Layout({
   constantineOnReload,
   isUploaded,
   setIsUploaded,
+  newFile,
+  setNewFile
 }: User | any) {
   const router = useRouter();
 
@@ -81,6 +85,8 @@ export default function Layout({
             constantineOnReload = {constantineOnReload}
             isUploaded = {isUploaded}
             setIsUploaded = {setIsUploaded}
+            newFile = {newFile}
+            setNewFile = {setNewFile}
           />
         </Flex>
       </Flex>

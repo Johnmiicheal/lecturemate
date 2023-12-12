@@ -74,6 +74,7 @@ const Chat = ({user2}: any) => {
   const [selectedPdf, setSelectedPdf] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean | any>(false) 
   const [isUploaded, setIsUploaded] = useState<boolean>(true) 
+  const [newFile, setNewFile] = useState<boolean>(true) 
   const fileName = localStorage.getItem("file");
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
@@ -90,27 +91,11 @@ const Chat = ({user2}: any) => {
     }
   }, [responses]);
 
-  useEffect(() => {
-    // Load stored requests and responses from localStorage
-    const storedRequests = localStorage.getItem("requests");
-    const storedResponses = localStorage.getItem("responses");
-
-    if (storedRequests) {
-      setRequests(JSON.parse(storedRequests));
-    }
-
-    if (storedResponses) {
-      setResponses(JSON.parse(storedResponses));
-    }
-  }, []);
-
   const handleStoreRequest = (values: any[]) => {
     const questions = values.filter((element, index) => index % 2 == 0 || index === 0);
     console.log(questions);
 
     setRequests(questions)    
-    // setRequests((prevRequests) => [...prevRequests, values]);
-    // localStorage.setItem("requests", JSON.stringify([...requests, values]));
   };
 
   const handleStoreResponse = (response: any[]) => {
@@ -118,24 +103,11 @@ const Chat = ({user2}: any) => {
     console.log(assistantResponses);
 
     setResponses(assistantResponses)
-    // setResponses((prevResponses) => [...prevResponses, response]);
-    // localStorage.setItem("responses", JSON.stringify([...responses, response]));
   };
-
-  const separateQuestion = (content: any) => {
-    const regex = /^(.*?)(?=--\/\/)/;
-    const match = content?.match(regex);
-    return match ? match[1].trim() : content;
-  }
 
   const extractQuestion = (content: any) => {
     const regexPattern1 = 
     /Question:\/\/--([\s\S]*?)(?=(--\/\/))/
-    // /""" Question:\/\/--([\s\S]*?)--\/\/ /
-      //  /s*\/Question:\/\/--(.*?)(?=(--\/\/))/
-    // /\/Question:\/\/--(.*?)(?=(--\/\/))\//
-    // /\s*Question\s*:\/\/--(.*?)--\/\//;
-    // /Question:\/\/--(.*?)(?=(--\/\/))/;
     const matchResult1 = content.match(regexPattern1);
     const textBeforePattern1 = matchResult1 ? matchResult1[1].trim() : content;
 
@@ -163,7 +135,8 @@ const Chat = ({user2}: any) => {
         const { data, error } = await supabase
         .from('chats')
         .select()
-        .eq('user_id', condition.column_value);
+        .eq('user_id', condition.column_value)
+        .eq('pdf_name', localStorage.getItem("file"))
   
       if (error) {
         console.log(error);
@@ -188,7 +161,7 @@ const Chat = ({user2}: any) => {
 
     onReload()
     
-  }, [])
+  }, [newFile])
 
   const onReload = async () => {
     const listOfPdfs = async () => {
@@ -531,6 +504,8 @@ const Chat = ({user2}: any) => {
             constantineOnReload = {constantineOnReload}
             isUploaded = {isUploaded}
             setIsUploaded = {setIsUploaded}
+            newFile = {newFile}
+            setNewFile = {setNewFile}
           />
           <Flex
             direction="column"
@@ -1069,6 +1044,8 @@ const Chat = ({user2}: any) => {
             <FileUpload user3 = {user2}
             isUploaded = {isUploaded}
             setIsUploaded = {setIsUploaded}
+            newFile = {newFile}
+            setNewFile = {setNewFile}
             />
           </ModalBody>
         </ModalContent>
