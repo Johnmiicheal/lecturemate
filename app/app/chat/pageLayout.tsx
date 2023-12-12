@@ -129,7 +129,9 @@ const Chat = ({user2}: any) => {
   }
 
   const extractQuestion = (content: any) => {
-    const regexPattern1 = /Question:\/\/--(.*?)(?=(--\/\/))/;
+    const regexPattern1 = 
+    /\s*Question\s*:\/\/--(.*?)--\/\//;
+    // /Question:\/\/--(.*?)(?=(--\/\/))/;
     const matchResult1 = content.match(regexPattern1);
     const textBeforePattern1 = matchResult1 ? matchResult1[1].trim() : content;
 
