@@ -764,7 +764,8 @@ const Chat = ({user2}: any) => {
                       >
                         <Flex direction="column" justify="space-between">
                           {/* <Text>{query}</Text> */}
-                          <Text key={index}>{request.content}</Text>
+                          <div key={index} dangerouslySetInnerHTML={{ __html: request.content.replace(/\n/g, '<br>') }} />
+                          {/* <Text key={index}>{request.content}</Text> */}
                           <Text
                             fontSize={11}
                             mt={2}
