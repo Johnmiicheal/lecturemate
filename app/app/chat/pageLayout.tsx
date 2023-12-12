@@ -340,6 +340,7 @@ const Chat = ({user2}: any) => {
   const handlePdfClick = (pdf: string) => {
     localStorage.setItem("file", pdf)
     setSelectedPdf(pdf);
+    setNewFile(!newFile)
   }; 
 
   const handleRetry = async () => {
@@ -475,6 +476,7 @@ const Chat = ({user2}: any) => {
   const onGlobal = () => {
     localStorage.removeItem("file");
     setSelectedPdf("none")
+    setNewFile(!newFile)
   }
 
   // const sponsors = [
