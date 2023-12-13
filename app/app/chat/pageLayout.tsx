@@ -142,15 +142,12 @@ const Chat = ({user2}: any) => {
         console.log(error);
       } else {
         console.log("Get chat history success");
-        
-        if (data[0].chats) {
+  
           return data[0].chats;
-        } else {
-          return [];
-        }
       }
       } catch (err) {
        console.log(err)
+       return []
       }
     // });
   
