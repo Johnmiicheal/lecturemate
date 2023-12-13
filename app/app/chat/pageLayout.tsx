@@ -414,6 +414,7 @@ const Chat = ({user2}: any) => {
           .from("chats")
           .delete()
           .eq("user_id", user2.id)
+          .eq("pdf_name", localStorage.getItem("file"))
 
         if (error) {
           console.error("Error deleting scheduler:", error.message);
@@ -459,6 +460,7 @@ const Chat = ({user2}: any) => {
       if(error) {
         console.log("Error deleting pdf " + error)
       }else {
+        handleClearChats()
         const updatedArrayPdfList = pdfList.filter(
           (pdfs, index) => index !== pdfListId
         );
