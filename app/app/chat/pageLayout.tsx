@@ -460,7 +460,7 @@ const Chat = ({user2}: any) => {
       if(error) {
         console.log("Error deleting pdf " + error)
       }else {
-        handleClearChats()
+        await handleClearChats()
         const updatedArrayPdfList = pdfList.filter(
           (pdfs, index) => index !== pdfListId
         );
