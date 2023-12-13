@@ -480,7 +480,7 @@ const Chat = ({user2}: any) => {
   }
 
   const onGlobal = () => {
-    localStorage.removeItem("file");
+    localStorage.setItem("file", "global");
     setSelectedPdf("none")
     setNewFile(!newFile)
   }
