@@ -142,9 +142,8 @@ const Chat = ({user2}: any) => {
         console.log(error);
       } else {
         console.log("Get chat history success");
-        console.log("data: " + data)
-        console.log("data[0].chats: "+ data[0].chats)
-        if (data !== undefined) {
+        
+        if (data[0].chats) {
           return data[0].chats;
         } else {
           return [];
