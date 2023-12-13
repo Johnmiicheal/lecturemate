@@ -131,6 +131,8 @@ const Chat = ({user2}: any) => {
     // }
 
     // const data = await delay(5000).then(async () => {
+      console.log("This is the local file in the get chat history: " + localStorage.getItem("file"))
+
       try {
         const { data, error } = await supabase
         .from('chats')
