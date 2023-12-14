@@ -483,7 +483,7 @@ const Chat = ({user2}: any) => {
           localStorage.removeItem("file");
           resolve();
         });
-        setNewFile(!newFile)
+        // setNewFile(!newFile)
         setIsPdfClicked(true)
       }
       } catch (error) {
