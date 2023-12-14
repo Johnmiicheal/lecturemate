@@ -435,9 +435,11 @@ const Chat = ({user2}: any) => {
           return;
         }
 
+        if(pdfName === localStorage.getItem("file")){
         requestsWithQuestions = []
         handleStoreRequest([])
         handleStoreResponse([])
+      }
 
         toast({
           title: "Chat Cleared",
