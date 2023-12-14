@@ -22,9 +22,11 @@ type Changes = {
   isUploaded: boolean
   newFile: boolean;
   setNewFile: React.Dispatch<React.SetStateAction<boolean>>
+  // selectedPdf: string | null | undefined
+  setSelectedPdf: React.Dispatch<React.SetStateAction<string | null | undefined>>
 }
 
-const FileUpload = ({ user3, isUploaded, setIsUploaded, newFile, setNewFile}: Changes | any) => {
+const FileUpload = ({ user3, isUploaded, setIsUploaded, newFile, setNewFile, setSelectedPdf}: Changes | any) => {
   const toast = useToast();
   const [token, setToken] = useState("");
   const [timer, setTimer] = useState(0);
@@ -159,6 +161,7 @@ const FileUpload = ({ user3, isUploaded, setIsUploaded, newFile, setNewFile}: Ch
               console.log("Here 1")
               setIsUploaded(!isUploaded)
               localStorage.setItem("file", file)
+              setSelectedPdf(localStorage.setItem("file", file))
               console.log("Here 2")
               setTimer(0);
               setTextIndex(0);

@@ -58,6 +58,7 @@ type User = {
   setIsUploaded: React.Dispatch<React.SetStateAction<boolean>>;
   newFile: boolean;
   setNewFile: React.Dispatch<React.SetStateAction<boolean>>
+  setSelectedPdf: React.Dispatch<React.SetStateAction<string | null | undefined>>
 };
 
 export default function UserProfile({
@@ -74,7 +75,8 @@ export default function UserProfile({
   isUploaded,
   setIsUploaded,
   newFile,
-  setNewFile
+  setNewFile,
+  setSelectedPdf
 }: User | any) {
   // const [pdfList, setPdfList] = useState<any[]>([]);
   // const [selectedPdf, setSelectedPdf] = useState<string | null>(null);
@@ -463,6 +465,7 @@ export default function UserProfile({
             setIsUploaded = {setIsUploaded}
             newFile = {newFile}
             setNewFile = {setNewFile}
+            setSelectedPdf = {setSelectedPdf}
             />
           </ModalBody>
         </ModalContent>

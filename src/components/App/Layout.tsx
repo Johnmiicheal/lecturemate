@@ -18,6 +18,7 @@ type User = {
   setIsUploaded: React.Dispatch<React.SetStateAction<boolean>>;
   newFile: boolean;
   setNewFile: React.Dispatch<React.SetStateAction<boolean>>
+  setSelectedPdf: React.Dispatch<React.SetStateAction<string | null | undefined>>
 };
 
 export default function Layout({
@@ -34,7 +35,8 @@ export default function Layout({
   isUploaded,
   setIsUploaded,
   newFile,
-  setNewFile
+  setNewFile,
+  setSelectedPdf
 }: User | any) {
   const router = useRouter();
 
@@ -87,6 +89,7 @@ export default function Layout({
             setIsUploaded = {setIsUploaded}
             newFile = {newFile}
             setNewFile = {setNewFile}
+            setSelectedPdf = {setSelectedPdf}
           />
         </Flex>
       </Flex>

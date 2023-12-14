@@ -71,7 +71,7 @@ const Chat = ({user2}: any) => {
   const [responses, setResponses] = useState<any[]>([]);
   const [pdfList, setPdfList] = useState<any[]>([]);
   const [constantinePdfList, setConstantinePdfList] = useState<any[]>([]);
-  const [selectedPdf, setSelectedPdf] = useState<string | null>(null);
+  const [selectedPdf, setSelectedPdf] = useState<string | null>();
   const [isLoading, setIsLoading] = useState<boolean | any>(false) 
   const [isUploaded, setIsUploaded] = useState<boolean>(true) 
   const [newFile, setNewFile] = useState<boolean>(true) 
@@ -160,6 +160,7 @@ const Chat = ({user2}: any) => {
     const onReload = async () => {
       if(!localStorage.getItem("file") || localStorage.getItem("file") === undefined || localStorage.getItem("file") === null){
         localStorage.setItem("file", "global")
+        setSelectedPdf("global")
       }
       
       const history = await getChatHistory()
@@ -518,6 +519,7 @@ const Chat = ({user2}: any) => {
             setIsUploaded = {setIsUploaded}
             newFile = {newFile}
             setNewFile = {setNewFile}
+            setSlectedPdf = {setSelectedPdf}
           />
           <Flex
             direction="column"
@@ -1058,6 +1060,7 @@ const Chat = ({user2}: any) => {
             setIsUploaded = {setIsUploaded}
             newFile = {newFile}
             setNewFile = {setNewFile}
+            setSelectedPdf = {setSelectedPdf}
             />
           </ModalBody>
         </ModalContent>
