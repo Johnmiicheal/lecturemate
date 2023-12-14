@@ -528,7 +528,7 @@ const Chat = ({user2}: any) => {
             setIsUploaded = {setIsUploaded}
             newFile = {newFile}
             setNewFile = {setNewFile}
-            setSlectedPdf = {setSelectedPdf}
+            setSelectedPdf = {setSelectedPdf}
           />
           <Flex
             direction="column"
