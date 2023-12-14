@@ -160,7 +160,7 @@ const Chat = ({user2}: any) => {
     const onReload = async () => {
       if(!localStorage.getItem("file") || localStorage.getItem("file") === undefined || localStorage.getItem("file") === null){
         localStorage.setItem("file", "global")
-        setSelectedPdf("global")
+        setSelectedPdf("none")
       }
       
       const history = await getChatHistory()
