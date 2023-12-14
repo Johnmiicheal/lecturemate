@@ -158,7 +158,10 @@ const Chat = ({user2}: any) => {
 
   useEffect(() => {
     const onReload = async () => {
+      console.log("Newfile set")
+
       if(!localStorage.getItem("file") || localStorage.getItem("file") === undefined || localStorage.getItem("file") === null){
+        console.log("There was no local storage file")
         localStorage.setItem("file", "global")
         setSelectedPdf("none")
       }
@@ -246,7 +249,7 @@ const Chat = ({user2}: any) => {
 
   useEffect(() => {
     realtimeReload()
-  }, [supabase, isUploaded])
+  }, [supabase, isUploaded, newFile])
 
   // useEffect(() => {
   //   // Fetch scheduler data from Supabase
