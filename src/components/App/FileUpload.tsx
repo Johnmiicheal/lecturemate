@@ -173,7 +173,9 @@ const FileUpload = ({ user3, isUploaded, setIsUploaded, newFile, setNewFile, set
                 duration: 5000,
                 isClosable: true,
               });
-              setSelectedPdf(localStorage.getItem("file"))
+              const latestFile = localStorage.getItem("file")
+              console.log(latestFile)
+              setSelectedPdf(latestFile)
               setNewFile(!newFile)
           
               setUploading(false);
