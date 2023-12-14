@@ -161,7 +161,7 @@ const FileUpload = ({ user3, isUploaded, setIsUploaded, newFile, setNewFile, set
               console.log("Here 1")
               setIsUploaded(!isUploaded)
               localStorage.setItem("file", file)
-              setSelectedPdf(localStorage.setItem("file", file))
+              setSelectedPdf(localStorage.getItem("file"))
               console.log("Here 2")
               setTimer(0);
               setTextIndex(0);
