@@ -157,7 +157,11 @@ const Chat = ({user2}: any) => {
     }
 
   useEffect(() => {
-    const onReload = async () => {  
+    const onReload = async () => {
+      if(!localStorage.getItem("file") || localStorage.getItem("file") === undefined || localStorage.getItem("file") === null){
+        localStorage.setItem("file", "global")
+      }
+      
       const history = await getChatHistory()
       handleStoreRequest(history)
       handleStoreResponse(history) 
