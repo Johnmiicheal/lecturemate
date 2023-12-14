@@ -353,11 +353,11 @@ const Chat = ({user2}: any) => {
 
   // Add this function to set the selected PDF when a Flex is clicked
   const handlePdfClick = (pdf: string) => {
-    if(isPdfClicked){
+    // if(isPdfClicked){
     localStorage.setItem("file", pdf)
     setSelectedPdf(pdf);
     setNewFile(!newFile)
-  }
+  // }
   }; 
 
   const handleRetry = async () => {
@@ -455,7 +455,7 @@ const Chat = ({user2}: any) => {
   }
 
   const handleRemovePdf = async (pdfId: any, pdfName: any, pdfListId: any) => {
-    setIsPdfClicked(false)
+    // setIsPdfClicked(false)
     try {
       const { data, error } = await supabase
     .from('booklist')
@@ -483,8 +483,8 @@ const Chat = ({user2}: any) => {
           localStorage.removeItem("file");
           resolve();
         });
-        // setNewFile(!newFile)
-        setIsPdfClicked(true)
+        setNewFile(!newFile)
+        // setIsPdfClicked(true)
       }
       } catch (error) {
         console.log(error)
