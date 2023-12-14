@@ -164,6 +164,8 @@ const Chat = ({user2}: any) => {
         console.log("There was no local storage file")
         localStorage.setItem("file", "global")
         setSelectedPdf("none")
+      }else {
+        setSelectedPdf(localStorage.getItem("file")) 
       }
       
       const history = await getChatHistory()
