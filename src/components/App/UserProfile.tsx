@@ -197,7 +197,7 @@ export default function UserProfile({
         justify="center"
         align="center"
         display={{ base: "none", lg: "flex" }}
-        onClick={handleClearChats}
+        onClick={() => handleClearChats(localStorage.getItem("file"))}
       >
         <Text fontWeight={600} fontSize="0.9em">
           Clear Chat
@@ -270,7 +270,7 @@ export default function UserProfile({
                 cursor="pointer"
                 justify="center"
                 align="center"
-                onClick={handleClearChats}
+                onClick={() => {handleClearChats(localStorage.getItem("file"))}}
               >
                 <Text fontWeight={600} fontSize="0.9em">
                   Clear Chat

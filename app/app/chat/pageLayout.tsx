@@ -421,14 +421,14 @@ const Chat = ({user2}: any) => {
       }   
   }
 
-  const handleClearChats = async () => {
+  const handleClearChats = async (pdfName: any) => {
       try {       
         // Delete the scheduler from Supabase
         const { data, error } = await supabase
           .from("chats")
           .delete()
           .eq("user_id", user2.id)
-          .eq("pdf_name", localStorage.getItem("file"))
+          .eq("pdf_name", pdfName)
 
         if (error) {
           console.error("Error deleting scheduler:", error.message);
@@ -475,7 +475,7 @@ const Chat = ({user2}: any) => {
       if(error) {
         console.log("Error deleting pdf " + error)
       }else {
-        await handleClearChats()
+        await handleClearChats(pdfName)
         const updatedArrayPdfList = pdfList.filter(
           (pdfs, index) => index !== pdfListId
         );
