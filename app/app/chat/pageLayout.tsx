@@ -74,6 +74,7 @@ const Chat = ({user2}: any) => {
   const [selectedPdf, setSelectedPdf] = useState<string | null>();
   const [isLoading, setIsLoading] = useState<boolean | any>(false) 
   const [isUploaded, setIsUploaded] = useState<boolean>(true) 
+  const [isPdfClicked, setIsPdfClicked] = useState<boolean>(true) 
   const [newFile, setNewFile] = useState<boolean>(true) 
   const fileName = localStorage.getItem("file");
 
@@ -352,9 +353,11 @@ const Chat = ({user2}: any) => {
 
   // Add this function to set the selected PDF when a Flex is clicked
   const handlePdfClick = (pdf: string) => {
+    if(isPdfClicked){
     localStorage.setItem("file", pdf)
     setSelectedPdf(pdf);
     setNewFile(!newFile)
+  }
   }; 
 
   const handleRetry = async () => {
@@ -452,6 +455,7 @@ const Chat = ({user2}: any) => {
   }
 
   const handleRemovePdf = async (pdfId: any, pdfName: any, pdfListId: any) => {
+    setIsPdfClicked(false)
     try {
       const { data, error } = await supabase
     .from('booklist')
@@ -479,7 +483,8 @@ const Chat = ({user2}: any) => {
           localStorage.removeItem("file");
           resolve();
         });
-        // setNewFile(!newFile)
+        setNewFile(!newFile)
+        setIsPdfClicked(true)
       }
       } catch (error) {
         console.log(error)
@@ -612,7 +617,7 @@ const Chat = ({user2}: any) => {
                 <Text noOfLines={1} w='70%' textOverflow="ellipsis" key={index}>
                   {pdf.book_name}
                 </Text>
-                <Icon as={IoRemoveCircleOutline} onClick={() => handleRemovePdf(pdf.id, pdf.book_name, index)} position={"absolute"} top={"50%"} right={3} transform={"translateY(-50%)"} _hover={pdf.book_name === selectedPdf ? {color: "white", bg: "#3C7C1C",  borderRadius: '100%'} : {color: "white", bg: "#53AF28",  borderRadius: '100%'}} w="5" h="5" />
+                <Icon as={IoRemoveCircleOutline} onClick={() => handleRemovePdf(pdf.id, pdf.book_name, index)} position={"absolute"} zIndex={"20"} top={"50%"} right={3} transform={"translateY(-50%)"} _hover={pdf.book_name === selectedPdf ? {color: "white", bg: "#3C7C1C",  borderRadius: '100%'} : {color: "white", bg: "#53AF28",  borderRadius: '100%'}} w="5" h="5" />
               </Flex>
               ))
                 
