@@ -479,7 +479,7 @@ const Chat = ({user2}: any) => {
           localStorage.removeItem("file");
           resolve();
         });
-        setNewFile(!newFile)
+        // setNewFile(!newFile)
       }
       } catch (error) {
         console.log(error)
