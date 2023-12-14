@@ -480,8 +480,10 @@ const Chat = ({user2}: any) => {
           (pdfs, index) => index !== pdfListId
         );
         setPdfList(updatedArrayPdfList)
-        localStorage.removeItem("file");
-        setNewFile(!newFile)
+        if(localStorage.getItem("file") === pdfName) {
+          localStorage.removeItem("file");
+          setNewFile(!newFile)
+        }
         // setIsPdfClicked(true)
       }
       } catch (error) {
