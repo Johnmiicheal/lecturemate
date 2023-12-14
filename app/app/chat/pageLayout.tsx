@@ -471,6 +471,7 @@ const Chat = ({user2}: any) => {
         );
         setPdfList(updatedArrayPdfList)
         localStorage.removeItem("file")
+        setNewFile(!newFile)
       }
       } catch (error) {
         console.log(error)
