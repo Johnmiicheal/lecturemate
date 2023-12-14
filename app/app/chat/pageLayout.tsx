@@ -400,7 +400,8 @@ const Chat = ({user2}: any) => {
           }
           handleStoreRequest(history);
           handleStoreResponse(history);
-           
+
+          setNewFile(!newFile)           
         setIsLoading(false)
       }catch(error) {
         setIsLoading(false)
@@ -415,9 +416,6 @@ const Chat = ({user2}: any) => {
           duration: 5000,
           isClosable: true,
         });   
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);    
       }   
   }
 
