@@ -475,7 +475,7 @@ const Chat = ({user2}: any) => {
           (pdfs, index) => index !== pdfListId
         );
         setPdfList(updatedArrayPdfList)
-        localStorage.removeItem("file")
+        await localStorage.removeItem("file")
         setNewFile(!newFile)
       }
       } catch (error) {
