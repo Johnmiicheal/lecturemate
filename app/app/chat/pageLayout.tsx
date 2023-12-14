@@ -354,6 +354,7 @@ const Chat = ({user2}: any) => {
   // Add this function to set the selected PDF when a Flex is clicked
   const handlePdfClick = (pdf: string) => {
     // if(isPdfClicked){
+    console.log("Pdf was clicked")
     localStorage.setItem("file", pdf)
     setSelectedPdf(pdf);
     setNewFile(!newFile)
@@ -479,10 +480,7 @@ const Chat = ({user2}: any) => {
           (pdfs, index) => index !== pdfListId
         );
         setPdfList(updatedArrayPdfList)
-        await new Promise<void>((resolve) => {
-          localStorage.removeItem("file");
-          resolve();
-        });
+        localStorage.removeItem("file");
         setNewFile(!newFile)
         // setIsPdfClicked(true)
       }
