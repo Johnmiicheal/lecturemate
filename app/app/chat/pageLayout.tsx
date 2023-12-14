@@ -475,7 +475,10 @@ const Chat = ({user2}: any) => {
           (pdfs, index) => index !== pdfListId
         );
         setPdfList(updatedArrayPdfList)
-        await localStorage.removeItem("file")
+        await new Promise<void>((resolve) => {
+          localStorage.removeItem("file");
+          resolve();
+        });
         setNewFile(!newFile)
       }
       } catch (error) {
