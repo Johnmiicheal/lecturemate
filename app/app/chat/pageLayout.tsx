@@ -237,7 +237,7 @@ const Chat = ({user2}: any) => {
     const onReload = async () => {
       console.log("Newfile set")
 
-      if(!localStorage.getItem("file") || localStorage.getItem("file") === undefined || localStorage.getItem("file") === null || localStorage.getItem("file") === "global" || !pdfList.every(pdf => pdf.book_name === localStorage.getItem("file"))){
+      if(!localStorage.getItem("file") || localStorage.getItem("file") === undefined || localStorage.getItem("file") === null || localStorage.getItem("file") === "global" || pdfList.every(pdf => pdf.book_name !== localStorage.getItem("file"))){
         console.log("There was no local storage file")
         localStorage.setItem("file", "global")
         setSelectedPdf("none")
