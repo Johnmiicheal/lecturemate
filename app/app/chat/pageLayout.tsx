@@ -41,6 +41,8 @@ import {
   IoChatbubbleEllipsesOutline,
   IoChevronForward,
   IoPaperPlane,
+  IoRemoveCircleOutline,
+  IoGlobeOutline,
 } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import { Field, Form, Formik } from "formik";
@@ -69,8 +71,11 @@ const Chat = ({user2}: any) => {
   const [responses, setResponses] = useState<any[]>([]);
   const [pdfList, setPdfList] = useState<any[]>([]);
   const [constantinePdfList, setConstantinePdfList] = useState<any[]>([]);
-  const [selectedPdf, setSelectedPdf] = useState<string | null>(null);
+  const [selectedPdf, setSelectedPdf] = useState<string | null>();
   const [isLoading, setIsLoading] = useState<boolean | any>(false) 
+  const [isUploaded, setIsUploaded] = useState<boolean>(true) 
+  const [isPdfClicked, setIsPdfClicked] = useState<boolean>(true) 
+  const [newFile, setNewFile] = useState<boolean>(true) 
   const fileName = localStorage.getItem("file");
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
@@ -87,27 +92,11 @@ const Chat = ({user2}: any) => {
     }
   }, [responses]);
 
-  useEffect(() => {
-    // Load stored requests and responses from localStorage
-    const storedRequests = localStorage.getItem("requests");
-    const storedResponses = localStorage.getItem("responses");
-
-    if (storedRequests) {
-      setRequests(JSON.parse(storedRequests));
-    }
-
-    if (storedResponses) {
-      setResponses(JSON.parse(storedResponses));
-    }
-  }, []);
-
   const handleStoreRequest = (values: any[]) => {
     const questions = values.filter((element, index) => index % 2 == 0 || index === 0);
     console.log(questions);
 
     setRequests(questions)    
-    // setRequests((prevRequests) => [...prevRequests, values]);
-    // localStorage.setItem("requests", JSON.stringify([...requests, values]));
   };
 
   const handleStoreResponse = (response: any[]) => {
@@ -115,18 +104,23 @@ const Chat = ({user2}: any) => {
     console.log(assistantResponses);
 
     setResponses(assistantResponses)
-    // setResponses((prevResponses) => [...prevResponses, response]);
-    // localStorage.setItem("responses", JSON.stringify([...responses, response]));
   };
 
   const extractQuestion = (content: any) => {
-    const regex = /Question:\/\/--(.*?)--\/\//;
-    const match = content?.match(regex);
-    return match ? match[1].trim() : content;
+    const regexPattern1 = 
+    /Question:\/\/--([\s\S]*?)(?=(--\/\/))/
+    const matchResult1 = content.match(regexPattern1);
+    const textBeforePattern1 = matchResult1 ? matchResult1[1].trim() : content;
+
+    const regexPattern2 = /^(.*?)(?=--\/\/)/;
+    const matchResult2 = textBeforePattern1.match(regexPattern2);
+    const finalText = matchResult2 ? matchResult2[1].trim() : textBeforePattern1;
+
+    return finalText;
   };
 
   // Map requests to extract questions
-  const requestsWithQuestions = requests.map((request) => {
+  let requestsWithQuestions = requests.map((request) => {
     return { content: extractQuestion(request.content) };
   });
 
@@ -138,20 +132,25 @@ const Chat = ({user2}: any) => {
     // }
 
     // const data = await delay(5000).then(async () => {
+      console.log("This is the local file in the get chat history: " + localStorage.getItem("file"))
+
       try {
         const { data, error } = await supabase
         .from('chats')
         .select()
-        .eq('user_id', condition.column_value);
+        .eq('user_id', condition.column_value)
+        .eq('pdf_name', localStorage.getItem("file"))
   
       if (error) {
         console.log(error);
       } else {
         console.log("Get chat history success");
-        return data[0].chats;
+  
+          return data[0].chats;
       }
       } catch (err) {
        console.log(err)
+       return []
       }
     // });
   
@@ -159,7 +158,17 @@ const Chat = ({user2}: any) => {
     }
 
   useEffect(() => {
-    const onReload = async () => {  
+    const onReload = async () => {
+      console.log("Newfile set")
+
+      if(!localStorage.getItem("file") || localStorage.getItem("file") === undefined || localStorage.getItem("file") === null || localStorage.getItem("file") === "global"){
+        console.log("There was no local storage file")
+        localStorage.setItem("file", "global")
+        setSelectedPdf("none")
+      }else {
+        setSelectedPdf(localStorage.getItem("file")) 
+      }
+      
       const history = await getChatHistory()
       handleStoreRequest(history)
       handleStoreResponse(history) 
@@ -167,90 +176,174 @@ const Chat = ({user2}: any) => {
 
     onReload()
     
-  }, [])
+  }, [newFile])
 
-  useEffect(() => {
-    const onReload = async () => {
-      const listOfPdfs = async () => {
-        const condition = { column_value: user2.id }; // Replace with your own condition
-        const arr: any[] = []
+  const onReload = async () => {
+    const listOfPdfs = async () => {
+      const condition = { column_value: user2.id }; // Replace with your own condition
+      const arr: any[] = []
 
-        // function delay(ms: number | undefined) {
-        //   return new Promise(resolve => setTimeout(resolve, ms));
-        // }
-  
-        try{
-          const { data, error } = await supabase
-            .from('booklist')
-            .select('*')
-            .eq('user_id', condition.column_value);
-      
-          if (error) {
-            console.log(error);
-          } else {
-            data.map((element: any) => (
-              arr.push(element.book_name)
-            ))
-            return arr;
-          }
-
-        }catch(error){
-          console.log("There was an error fetching the pdfs: " + error)
-        }
+      function delay(ms: number | undefined) {
+        return new Promise(resolve => setTimeout(resolve, ms));
       }
-  
-      const pdfList: any = await listOfPdfs()
 
-      const uniqueArrayPdfList = pdfList.filter(
-        (value: any, index: any, self: any) => self.indexOf(value) === index
-      );
-      console.log(uniqueArrayPdfList);
-      setPdfList(uniqueArrayPdfList)
-    }
-
-    onReload()
+      try{
+        const { data, error } = await supabase
+          .from('booklist')
+          .select('*')
+          .eq('user_id', condition.column_value);
     
-  }, [])
+        if (error) {
+          console.log(error);
+        } else {
+          data.map((element: any) => (
+            arr.push(element)
+          ))
+          return arr;
+        }
 
-  useEffect(() => {
-    const onReload = async () => {
-      const constantinePdfs = async () => {
-        const condition = { column_value: "constantine" }; // Replace with your own condition
-        const arr: any[] = []
-
-        // function delay(ms: number | undefined) {
-        //   return new Promise(resolve => setTimeout(resolve, ms));
-        // }
-  
-        try{
-          const { data, error } = await supabase
-            .from('booklist')
-            .select('*')
-            .eq('user_id', condition.column_value);
-      
-          if (error) {
-            console.log(error);
-          } else {
-            data.map((element: any) => (
-              arr.push(element.book_name)
-            ))
-            return arr;
-          }
-        }catch(error){
-          console.log("There was an error fetching the pdfs: " + error)
-        };
+      }catch(error){
+        console.log("There was an error fetching the pdfs: " + error)
       }
-  
-      const constantinePdfList: any = await constantinePdfs()
-
-      const constantineUniqueArrayPdfList = constantinePdfList.filter(
-        (value: any, index: any, self: any) => self.indexOf(value) === index
-      );
-      console.log(constantineUniqueArrayPdfList);
-      setConstantinePdfList(constantineUniqueArrayPdfList)
     }
 
+    const pdfList: any = await listOfPdfs()
+
+    const uniqueArrayPdfList = pdfList.filter(
+      (value: any, index: any, self: any) => self.indexOf(value) === index
+    );
+    console.log(uniqueArrayPdfList);
+    setPdfList(uniqueArrayPdfList)
+  }
+
+  const realtimeReload = () => {
     onReload()
+
+    const channel = supabase
+      .channel("pdfList-realtime")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "booklist",
+          filter: `user_id=eq.${user2.id}`
+        },
+        (payload) => {
+          console.log("This is the payload: " + JSON.stringify(payload));
+          if(Object.keys(payload.new).length !== 0){
+            onReload()
+          // setPdfList(
+          //   (prevPdfList) => [...prevPdfList, payload.new] as any[]
+          // );
+        }
+          console.log(
+            "These are the schedules why: " +
+              JSON.stringify(pdfList, null, 2)
+          );
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }
+
+  useEffect(() => {
+    realtimeReload()
+  }, [supabase, isUploaded, newFile])
+
+  // useEffect(() => {
+  //   // Fetch scheduler data from Supabase
+  //   // if(shouldRunEffect) {
+  //   const fetchSchedulers = async () => {
+  //     const { data, error } = await supabase
+  //       .from("schedulers")
+  //       .select("*")
+  //       .eq("user_id", userId);
+  //     if (error) {
+  //       console.error("Error fetching schedulers:", error.message);
+  //     } else {
+  //       setSchedulers(data);
+  //       console.log(
+  //         "These are the schedules why: " + JSON.stringify(schedulers, null, 2)
+  //       );
+  //     }
+  //   };
+
+  //   fetchSchedulers();
+
+  //   const channel = supabase
+  //     .channel("schedulers-realtime")
+  //     .on(
+  //       "postgres_changes",
+  //       {
+  //         event: "*",
+  //         schema: "public",
+  //         table: "schedulers",
+  //         filter: `user_id=eq.${userId}`
+  //       },
+  //       (payload) => {
+  //         console.log("This is the payload: " + JSON.stringify(payload));
+  //         if(Object.keys(payload.new).length !== 0){
+  //         setSchedulers(
+  //           (prevSchedulers) => [...prevSchedulers, payload.new] as Scheduler[]
+  //         );
+  //       }
+  //         console.log(
+  //           "These are the schedules why: " +
+  //             JSON.stringify(schedulers, null, 2)
+  //         );
+  //       }
+  //     )
+  //     .subscribe();
+
+  //   return () => {
+  //     supabase.removeChannel(channel);
+  //   };
+  // // }
+  // }, [supabase, shouldRunEffect]);
+
+  const constantineOnReload = async () => {
+    const constantinePdfs = async () => {
+      const condition = { column_value: "constantine" }; // Replace with your own condition
+      const arr: any[] = []
+
+      // function delay(ms: number | undefined) {
+      //   return new Promise(resolve => setTimeout(resolve, ms));
+      // }
+
+      try{
+        const { data, error } = await supabase
+          .from('booklist')
+          .select('*')
+          .eq('user_id', condition.column_value);
+    
+        if (error) {
+          console.log(error);
+        } else {
+          data.map((element: any) => (
+            arr.push(element)
+          ))
+          return arr;
+        }
+      }catch(error){
+        console.log("There was an error fetching the pdfs: " + error)
+      };
+    }
+
+    const constantinePdfList: any = await constantinePdfs()
+
+    const constantineUniqueArrayPdfList = constantinePdfList.filter(
+      (value: any, index: any, self: any) => self.indexOf(value) === index
+    );
+    console.log(constantineUniqueArrayPdfList);
+    setConstantinePdfList(constantineUniqueArrayPdfList)
+  }
+
+  useEffect(() => {
+    constantineOnReload()
     
   }, [])
 
@@ -260,8 +353,12 @@ const Chat = ({user2}: any) => {
 
   // Add this function to set the selected PDF when a Flex is clicked
   const handlePdfClick = (pdf: string) => {
+    // if(isPdfClicked){
+    console.log("Pdf was clicked")
     localStorage.setItem("file", pdf)
     setSelectedPdf(pdf);
+    setNewFile(!newFile)
+  // }
   }; 
 
   const handleRetry = async () => {
@@ -303,7 +400,8 @@ const Chat = ({user2}: any) => {
           }
           handleStoreRequest(history);
           handleStoreResponse(history);
-          router.push('https://lecturemate.org/app/chat') 
+
+          setNewFile(!newFile)           
         setIsLoading(false)
       }catch(error) {
         setIsLoading(false)
@@ -318,8 +416,92 @@ const Chat = ({user2}: any) => {
           duration: 5000,
           isClosable: true,
         });   
-        router.push('https://lecturemate.org/app/chat')     
       }   
+  }
+
+  const handleClearChats = async (pdfName: any) => {
+      try {       
+        // Delete the scheduler from Supabase
+        const { data, error } = await supabase
+          .from("chats")
+          .delete()
+          .eq("user_id", user2.id)
+          .eq("pdf_name", pdfName)
+
+        if (error) {
+          console.error("Error deleting scheduler:", error.message);
+          return;
+        }
+
+        if(pdfName === localStorage.getItem("file")){
+        requestsWithQuestions = []
+        handleStoreRequest([])
+        handleStoreResponse([])
+      }
+
+        toast({
+          title: "Chat Cleared",
+          position: "top-right",
+          description: "You have cleared the chat",
+          status: "success",
+          variant: "left-accent",
+          duration: 5000,
+          isClosable: true,
+        });
+
+        // Call the onDelete callback to update the local state
+      } catch (error) {
+        console.error("Error handling scheduler deletion:", error);
+      }
+  }
+
+  const handleRemovePdf = async (pdfId: any, pdfName: any, pdfListId: any) => {
+    // setIsPdfClicked(false)
+    try {
+      const { data, error } = await supabase
+    .from('booklist')
+    .delete()
+    .eq("user_id", user2.id)
+    .eq('id', pdfId)
+
+    if(!error){
+      try {
+        const { data, error } = await supabase
+      .from('pdfs')
+      .delete()
+      .eq("user_id", user2.id)
+      .eq('pdf_name', pdfName)
+
+      if(error) {
+        console.log("Error deleting pdf " + error)
+      }else {
+        await handleClearChats(pdfName)
+        const updatedArrayPdfList = pdfList.filter(
+          (pdfs, index) => index !== pdfListId
+        );
+        setPdfList(updatedArrayPdfList)
+        if(localStorage.getItem("file") === pdfName) {
+          localStorage.removeItem("file");
+          setNewFile(!newFile)
+        }
+        // setIsPdfClicked(true)
+      }
+      } catch (error) {
+        console.log(error)
+      }
+
+    }else {
+      console.log("Error deleting pdf name " + error)
+    }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const onGlobal = () => {
+    localStorage.setItem("file", "global");
+    setSelectedPdf("none")
+    setNewFile(!newFile)
   }
 
   // const sponsors = [
@@ -337,7 +519,22 @@ const Chat = ({user2}: any) => {
     <Suspense fallback={<Loading />}>
       <Flex bg="#F8FCF7">
         <Flex w="full" direction="column" justify="space-between">
-          <Layout user3 = {user2}/>
+          <Layout user3 = {user2} 
+            handleClearChats = {handleClearChats}
+            selectedPdf = {selectedPdf}
+            onGlobal= {onGlobal}
+            handlePdfClick = {handlePdfClick}
+            onReload = {onReload}
+            pdfList = {pdfList}
+            handleRemovePdf = {handleRemovePdf}
+            constantinePdfList = {constantinePdfList}
+            constantineOnReload = {constantineOnReload}
+            isUploaded = {isUploaded}
+            setIsUploaded = {setIsUploaded}
+            newFile = {newFile}
+            setNewFile = {setNewFile}
+            setSelectedPdf = {setSelectedPdf}
+          />
           <Flex
             direction="column"
             w="full"
@@ -373,30 +570,54 @@ const Chat = ({user2}: any) => {
                 Upload Note
               </Flex>
 
+              <Flex
+                w="full"
+                h="20px"
+                mt={5}
+                mb={13}
+                align="center"
+                justify="start"
+                bg={"none" === selectedPdf ? "#53AF28" : ""}
+                color={"none" === selectedPdf ? "white" : "#53AF28"}
+                border="1px solid #53AF28"
+                _hover={"none" === selectedPdf ? {color: "white", bg: "#53AF28"} : { color: "#005103", bg: "#90E768" }}
+                _active={{ color: "white", bg: "#53AF28" }}
+                py={5}
+                pl={3}
+                borderRadius="md"
+                cursor="pointer"
+                onClick={onGlobal}
+              >
+                <Icon as={IoGlobeOutline} w="5" h="5" mr={"1"}/>
+                Global
+              </Flex>
+
               {pdfList.map((pdf, index)=> (
                 <Flex
                 key={index}
+                position={"relative"}
                 h="50px"
                 mt={5}
                 gap={2}
                 justify="start"
                 align="center"
                 // Change the background color based on selectedPdf
-                bg={pdf === selectedPdf ? "#53AF28" : ""}
-                color={pdf === selectedPdf ? "white" : "#53AF28"}
+                bg={pdf.book_name === selectedPdf ? "#53AF28" : ""}
+                color={pdf.book_name === selectedPdf ? "white" : "#53AF28"}
                 w="full"
                 border={"1px solid #53AF28"}
-                _hover={pdf === selectedPdf ? {color: "white", bg: "#53AF28"} : { color: "#005103", bg: "#90E768" }}
+                _hover={pdf.book_name === selectedPdf ? {color: "white", bg: "#53AF28"} : { color: "#005103", bg: "#90E768" }}
                 _active={{ color: "white", bg: "#53AF28" }}
                 pl={3}
                 borderRadius="md"
                 cursor="pointer"
-                onClick={() => handlePdfClick(pdf)}
+                onClick={() => handlePdfClick(pdf.book_name)}
               >
-                <Icon as={IoChatbubbleEllipsesOutline} w="5" h="5" />
-                <Text noOfLines={1} textOverflow="ellipsis" key={index}>
-                  {pdf}
+                <Icon as={IoChatbubbleEllipsesOutline} w="5" h="5"/>
+                <Text noOfLines={1} w='70%' textOverflow="ellipsis" key={index}>
+                  {pdf.book_name}
                 </Text>
+                <Icon as={IoRemoveCircleOutline} onClick={(e) =>{e.stopPropagation(); handleRemovePdf(pdf.id, pdf.book_name, index)}} position={"absolute"} zIndex={"20"} top={"50%"} right={3} transform={"translateY(-50%)"} _hover={pdf.book_name === selectedPdf ? {color: "white", bg: "#3C7C1C",  borderRadius: '100%'} : {color: "white", bg: "#53AF28",  borderRadius: '100%'}} w="5" h="5" />
               </Flex>
               ))
                 
@@ -411,24 +632,23 @@ const Chat = ({user2}: any) => {
                 justify="start"
                 align="center"
                 // Change the background color based on selectedPdf
-                bg={pdf === selectedPdf ? "#53AF28" : ""}
-                color={pdf === selectedPdf ? "white" : "#53AF28"}
+                bg={pdf.book_name === selectedPdf ? "#53AF28" : ""}
+                color={pdf.book_name === selectedPdf ? "white" : "#53AF28"}
                 w="full"
                 border={"1px solid #53AF28"}
-                _hover={pdf === selectedPdf ? {color: "white", bg: "#53AF28"} : { color: "#005103", bg: "#90E768" }}
+                _hover={pdf.book_name === selectedPdf ? {color: "white", bg: "#53AF28"} : { color: "#005103", bg: "#90E768" }}
                 _active={{ color: "white", bg: "#53AF28" }}
                 pl={3}
                 borderRadius="md"
                 cursor="pointer"
-                onClick={() => handlePdfClick(pdf)}
+                onClick={() => handlePdfClick(pdf.book_name)}
               >
                 <Icon as={IoChatbubbleEllipsesOutline} w="5" h="5" />
                 <Text noOfLines={1} textOverflow="ellipsis" key={index}>
-                  {pdf}
+                  {pdf.book_name}
                 </Text>
               </Flex>
-              ))
-                
+              ))                
               }
 
               {/* <Flex
@@ -548,7 +768,8 @@ const Chat = ({user2}: any) => {
                       >
                         <Flex direction="column" justify="space-between">
                           {/* <Text>{query}</Text> */}
-                          <Text key={index}>{request.content}</Text>
+                          <div key={index} dangerouslySetInnerHTML={{ __html: request.content.replace(/\n/g, '<br>') }} />
+                          {/* <Text key={index}>{request.content}</Text> */}
                           <Text
                             fontSize={11}
                             mt={2}
@@ -608,7 +829,8 @@ const Chat = ({user2}: any) => {
                         display={responses.length <= 0 ? "none" : "block"}
                       >
                           <Flex direction="column" justify="space-between">
-                            <Text key={index}>{responses[index].content}</Text>
+                            {/* <Text key={index}>{responses[index].content}</Text> */}
+                            <div dangerouslySetInnerHTML={{ __html: responses[index].content.replace(/\n/g, '<br>') }} />
                             <Text fontSize={11} mt={3} fontWeight="bold">
                               Lecture Mate
                             </Text>                            
@@ -847,7 +1069,13 @@ const Chat = ({user2}: any) => {
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody mb={7}>
-            <FileUpload user3 = {user2} />
+            <FileUpload user3 = {user2}
+            isUploaded = {isUploaded}
+            setIsUploaded = {setIsUploaded}
+            newFile = {newFile}
+            setNewFile = {setNewFile}
+            setSelectedPdf = {setSelectedPdf}
+            />
           </ModalBody>
         </ModalContent>
       </Modal>

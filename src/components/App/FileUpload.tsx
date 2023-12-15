@@ -16,7 +16,17 @@ interface FormValues {
   file: File | null;
 }
 
-const FileUpload = ({ user3 }: any) => {
+type Changes = {
+  user3: any,
+  setIsUploaded: React.Dispatch<React.SetStateAction<boolean>>,
+  isUploaded: boolean
+  newFile: boolean;
+  setNewFile: React.Dispatch<React.SetStateAction<boolean>>
+  // selectedPdf: string | null | undefined
+  setSelectedPdf: React.Dispatch<React.SetStateAction<string | null | undefined>>
+}
+
+const FileUpload = ({ user3, isUploaded, setIsUploaded, newFile, setNewFile, setSelectedPdf}: Changes | any) => {
   const toast = useToast();
   const [token, setToken] = useState("");
   const [timer, setTimer] = useState(0);
@@ -90,7 +100,7 @@ const FileUpload = ({ user3 }: any) => {
               .from(bucketName + "/" + user3.id)
               .upload(values.file.name, values.file);          
   
-            if (error) {
+            if (error && error.message !== "The resource already exists") {
               // alert(values.file.name);
               setUploading(false);
               toast({
@@ -148,6 +158,10 @@ const FileUpload = ({ user3 }: any) => {
             console.log(response)
       
             if(response.status === 200){
+              console.log("Here 1")
+              setIsUploaded(!isUploaded)
+              localStorage.setItem("file", file)
+              console.log("Here 2")
               setTimer(0);
               setTextIndex(0);
               toast({
@@ -159,7 +173,11 @@ const FileUpload = ({ user3 }: any) => {
                 duration: 5000,
                 isClosable: true,
               });
-              localStorage.setItem("file", file)
+              const latestFile = localStorage.getItem("file")
+              console.log(latestFile)
+              setSelectedPdf(latestFile)
+              setNewFile(!newFile)
+          
               setUploading(false);
             }
           } catch (error) {

@@ -10,7 +10,7 @@ const Feedback = () => {
       justify="space-between"
       overflowX="hidden"
     >
-      <Layout />
+      {/* <Layout /> */}
       <Flex direction="column" w="full" h="100vh" bg="white" align="center">
         <iframe
           width="100%"

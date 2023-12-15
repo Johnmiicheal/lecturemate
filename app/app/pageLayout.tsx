@@ -32,7 +32,7 @@ const App = () => {
         justify="space-between"
         overflowX="hidden"
       >
-        <Layout />
+        {/* <Layout /> */}
         <Flex direction="column" w="full" align="center" px={2}>
           <Flex
             direction="column"
