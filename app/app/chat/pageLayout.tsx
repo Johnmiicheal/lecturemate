@@ -85,6 +85,10 @@ const Chat = ({user2}: any) => {
     onClose: onDrawerClose,
   } = useDisclosure();
 
+  if(!user2){
+    router.push("/signin")
+  }
+
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop =
@@ -768,7 +772,8 @@ const Chat = ({user2}: any) => {
                       >
                         <Flex direction="column" justify="space-between">
                           {/* <Text>{query}</Text> */}
-                          <div key={index} dangerouslySetInnerHTML={{ __html: request.content.replace(/\n/g, '<br>') }} />
+                          <div key={index} dangerouslySetInnerHTML={{ __html: request.content.replace(/\\n|\n/g, '<br>') }} />
+                        
                           {/* <Text key={index}>{request.content}</Text> */}
                           <Text
                             fontSize={11}
@@ -830,7 +835,8 @@ const Chat = ({user2}: any) => {
                       >
                           <Flex direction="column" justify="space-between">
                             {/* <Text key={index}>{responses[index].content}</Text> */}
-                            <div dangerouslySetInnerHTML={{ __html: responses[index].content.replace(/\n/g, '<br>') }} />
+                            <div dangerouslySetInnerHTML={{ __html: responses[index].content.replace(/\\n|\n/g, '<br>')}} />
+                         
                             <Text fontSize={11} mt={3} fontWeight="bold">
                               Lecture Mate
                             </Text>                            
