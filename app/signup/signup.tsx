@@ -145,7 +145,7 @@ export default function Signup({ user }: any) {
             Create your account
           </Text>
 
-          <Flex
+{/*           <Flex
             mt={5}
             p="2"
             w="100%"
@@ -160,7 +160,7 @@ export default function Signup({ user }: any) {
           >
             <Icon as={IoLogoGoogle} />
             <Text>Continue with Google</Text>
-          </Flex>
+          </Flex> */}
           <WIPAlert isOpen={isOpen} onClose={onClose} />
           <Flex direction="column" mt={10}>
             <Formik
