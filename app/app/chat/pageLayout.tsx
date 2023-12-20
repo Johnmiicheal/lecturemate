@@ -129,7 +129,7 @@ const Chat = ({user2}: any) => {
   });
 
   const getChatHistory = async () => {
-    const condition = { column_value: user2.id }; // Replace with your own condition
+    const condition = { column_value: user2?.id }; // Replace with your own condition
 
     // function delay(ms) {
     //   return new Promise(resolve => setTimeout(resolve, ms));
@@ -163,7 +163,7 @@ const Chat = ({user2}: any) => {
 
   const onReload = async () => {
     const listOfPdfs = async () => {
-      const condition = { column_value: user2.id }; // Replace with your own condition
+      const condition = { column_value: user2?.id }; // Replace with your own condition
       const arr: any[] = []
 
       function delay(ms: number | undefined) {
@@ -210,7 +210,7 @@ const Chat = ({user2}: any) => {
           event: "*",
           schema: "public",
           table: "booklist",
-          filter: `user_id=eq.${user2.id}`
+          filter: `user_id=eq.${user2?.id}`
         },
         (payload) => {
           console.log("This is the payload: " + JSON.stringify(payload));
@@ -429,7 +429,7 @@ const Chat = ({user2}: any) => {
         const { data, error } = await supabase
           .from("chats")
           .delete()
-          .eq("user_id", user2.id)
+          .eq("user_id", user2?.id)
           .eq("pdf_name", pdfName)
 
         if (error) {
@@ -465,7 +465,7 @@ const Chat = ({user2}: any) => {
       const { data, error } = await supabase
     .from('booklist')
     .delete()
-    .eq("user_id", user2.id)
+    .eq("user_id", user2?.id)
     .eq('id', pdfId)
 
     if(!error){
@@ -473,7 +473,7 @@ const Chat = ({user2}: any) => {
         const { data, error } = await supabase
       .from('pdfs')
       .delete()
-      .eq("user_id", user2.id)
+      .eq("user_id", user2?.id)
       .eq('pdf_name', pdfName)
 
       if(error) {
