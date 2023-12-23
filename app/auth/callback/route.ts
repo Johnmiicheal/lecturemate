@@ -18,7 +18,7 @@ export async function GET(request: Request) {
   }
 
   // URL to redirect to after sign in process completes
-  return NextResponse.redirect("https://lecturemate.org/app/chat")
+  return NextResponse.redirect("https://lecturemate-beta.vercel.app/app/chat")
 }
 // requestUrl.origin
 // "http://localhost:3000/username"
