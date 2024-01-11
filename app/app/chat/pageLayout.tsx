@@ -860,7 +860,7 @@ const Chat = ({ user2 }: any) => {
                     <Text
                       textAlign={"center"}
                       w="100%"
-                      fontSize={"24px"}
+                      fontSize={"16px"}
                       fontWeight={"bold"}
                     >
                       If note was just uploaded please wait...
