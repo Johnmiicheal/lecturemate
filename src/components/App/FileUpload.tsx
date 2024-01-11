@@ -282,7 +282,7 @@ const FileUpload = ({
       </Box>
       <Button
         type="submit"
-        mt={8}
+        mt={12}
         // onClick={handleFormSubmit}
         onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
           event.preventDefault(); // Prevent the default form submission behavior
