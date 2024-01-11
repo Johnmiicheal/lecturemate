@@ -242,7 +242,7 @@ const FileUpload = ({
   });
 
   return (
-    <Flex direction="column">
+    <Flex direction="column" gap={2}>
       {uploading && <TopBarProgress />}
       <Box
         p={4}
@@ -278,7 +278,7 @@ const FileUpload = ({
             </Text>
           </Flex>
         )}
-        {uploading && <Text w="100%" display={"block"} textAlign={"center"}>Please wait...</Text>}
+        {uploading && <Text w="100%" display={"block"} fontStyle={"bold"} textAlign={"center"}>Please wait...</Text>}
       </Box>
       <Button
         type="submit"
