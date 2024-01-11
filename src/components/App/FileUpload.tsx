@@ -278,7 +278,7 @@ const FileUpload = ({
             </Text>
           </Flex>
         )}
-        {uploading && <Text w="100%" textAlign={"center"}>Please wait...</Text>}
+        {uploading && <Text w="100%" display={"block"} textAlign={"center"}>Please wait...</Text>}
       </Box>
       <Button
         type="submit"

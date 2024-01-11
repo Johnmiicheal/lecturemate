@@ -823,11 +823,14 @@ const Chat = ({ user2 }: any) => {
                     src="/dancingbook.json"
                     className={styles.lottie}
                   />
+                  {localStorage.getItem("file") === "global" ? 
+                  <>
                   <Text>
-                    Upload a note to get started or just ask any question <br />
-                    Don't forget to <strong>copy your token</strong> after
-                    uploading your note😊
-                  </Text>
+                  Upload a note to get started or just ask any question <br />
+                  Don't forget to <strong>copy your token</strong> after
+                  uploading your note😊
+                </Text>
+
                   <Flex
                     w="full"
                     h="20px"
@@ -847,6 +850,10 @@ const Chat = ({ user2 }: any) => {
                     <Icon as={IoAdd} w="5" h="5" />
                     Upload Note
                   </Flex>
+                  </>
+                  :
+                  <Text textAlign={"center"} w="100%" fontSize={"24px"} fontWeight={"bold"}>Please wait while we get everything ready...</Text>
+                }
                 </Flex>
               </Flex>
             )}
