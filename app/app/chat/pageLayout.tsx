@@ -66,7 +66,7 @@ const Chat = ({ user2 }: any) => {
   const [showChat, setShowChat] = useState(false);
   //   const [query, setQuery] = useState("");
   //   const [result, setResult] = useState("");
-  // const [tokenKey, setTokenKey] = useState("");
+  const [clearChat, setClearChat] = useState<any>("");
   const [requests, setRequests] = useState<any[]>([]);
   const [responses, setResponses] = useState<any[]>([]);
   const [pdfList, setPdfList] = useState<any[]>([]);
@@ -86,8 +86,8 @@ const Chat = ({ user2 }: any) => {
     onClose: onDrawerClose,
   } = useDisclosure();
 
-  if(!user2){
-    router.push("/signin")
+  if (!user2) {
+    router.push("/signin");
   }
 
   useEffect(() => {
@@ -98,6 +98,9 @@ const Chat = ({ user2 }: any) => {
   }, [responses]);
 
   const handleStoreRequest = (values: any[]) => {
+    if(clearChat === localStorage.getItem("file")) {
+      setClearChat("")
+    }
     const questions = values.filter(
       (element, index) => index % 2 == 0 || index === 0
     );
@@ -180,7 +183,7 @@ const Chat = ({ user2 }: any) => {
   const onReload = async () => {
     const listOfPdfs = async () => {
       const condition = { column_value: user2?.id }; // Replace with your own condition
-      const arr: any[] = []
+      const arr: any[] = [];
 
       function delay(ms: number | undefined) {
         return new Promise((resolve) => setTimeout(resolve, ms));
@@ -223,7 +226,7 @@ const Chat = ({ user2 }: any) => {
           event: "*",
           schema: "public",
           table: "booklist",
-          filter: `user_id=eq.${user2?.id}`
+          filter: `user_id=eq.${user2?.id}`,
         },
         (payload) => {
           console.log("This is the payload: " + JSON.stringify(payload));
@@ -257,7 +260,7 @@ const Chat = ({ user2 }: any) => {
         !localStorage.getItem("file") ||
         localStorage.getItem("file") === undefined ||
         localStorage.getItem("file") === null ||
-        localStorage.getItem("file") === "global" 
+        localStorage.getItem("file") === "global"
         // ||
         // pdfList.every((pdf) => pdf.book_name !== localStorage.getItem("file"))
       ) {
@@ -437,13 +440,13 @@ const Chat = ({ user2 }: any) => {
   };
 
   const handleClearChats = async (pdfName: any) => {
-      try {       
-        // Delete the scheduler from Supabase
-        const { data, error } = await supabase
-          .from("chats")
-          .delete()
-          .eq("user_id", user2?.id)
-          .eq("pdf_name", pdfName);
+    try {
+      // Delete the scheduler from Supabase
+      const { data, error } = await supabase
+        .from("chats")
+        .delete()
+        .eq("user_id", user2?.id)
+        .eq("pdf_name", pdfName);
 
       if (error) {
         console.error("Error deleting scheduler:", error.message);
@@ -451,6 +454,7 @@ const Chat = ({ user2 }: any) => {
       }
 
       if (pdfName === localStorage.getItem("file")) {
+        setClearChat(localStorage.getItem("file"))
         requestsWithQuestions = [];
         handleStoreRequest([]);
         handleStoreResponse([]);
@@ -476,40 +480,39 @@ const Chat = ({ user2 }: any) => {
     // setIsPdfClicked(false)
     try {
       const { data, error } = await supabase
-    .from('booklist')
-    .delete()
-    .eq("user_id", user2?.id)
-    .eq('id', pdfId)
+        .from("booklist")
+        .delete()
+        .eq("user_id", user2?.id)
+        .eq("id", pdfId);
 
-    if(!error){
-      try {
-        const { data, error } = await supabase
-      .from('pdfs')
-      .delete()
-      .eq("user_id", user2?.id)
-      .eq('pdf_name', pdfName)
+      if (!error) {
+        try {
+          const { data, error } = await supabase
+            .from("pdfs")
+            .delete()
+            .eq("user_id", user2?.id)
+            .eq("pdf_name", pdfName);
 
-      if(error) {
-        console.log("Error deleting pdf " + error)
-      }else {
-        await handleClearChats(pdfName)
-        const updatedArrayPdfList = pdfList.filter(
-          (pdfs, index) => index !== pdfListId
-        );
-        setPdfList(updatedArrayPdfList)
-        if(localStorage.getItem("file") === pdfName) {
-          localStorage.removeItem("file");
-          setNewFile(!newFile)
+          if (error) {
+            console.log("Error deleting pdf " + error);
+          } else {
+            await handleClearChats(pdfName);
+            const updatedArrayPdfList = pdfList.filter(
+              (pdfs, index) => index !== pdfListId
+            );
+            setPdfList(updatedArrayPdfList);
+            if (localStorage.getItem("file") === pdfName) {
+              localStorage.removeItem("file");
+              setNewFile(!newFile);
+            }
+            // setIsPdfClicked(true)
+          }
+        } catch (error) {
+          console.log(error);
         }
-        // setIsPdfClicked(true)
+      } else {
+        console.log("Error deleting pdf name " + error);
       }
-      } catch (error) {
-        console.log(error)
-      }
-
-    }else {
-      console.log("Error deleting pdf name " + error)
-    }
     } catch (error) {
       console.log(error);
     }
@@ -560,7 +563,7 @@ const Chat = ({ user2 }: any) => {
     if (fileUpload) {
       onFileUpload();
     }
-    setFileUpload(false)
+    setFileUpload(false);
   }, [fileUpload]);
 
   // const sponsors = [
@@ -823,37 +826,54 @@ const Chat = ({ user2 }: any) => {
                     src="/dancingbook.json"
                     className={styles.lottie}
                   />
-                  {localStorage.getItem("file") === "global" ? 
-                  <>
-                  <Text>
-                  Upload a note to get started or just ask any question <br />
-                  Don't forget to <strong>copy your token</strong> after
-                  uploading your note😊
-                </Text>
+                  {localStorage.getItem("file") === "global" ? (
+                    <>
+                      <Text>
+                        Upload a note to get started or just ask any question{" "}
+                        <br />
+                        Don't forget to <strong>copy your token</strong> after
+                        uploading your note😊
+                      </Text>
 
-                  <Flex
-                    w="full"
-                    h="20px"
-                    mt={2}
-                    align="center"
-                    justify="center"
-                    bg="#53AF28"
-                    color="white"
-                    border="1px solid #53AF28"
-                    _hover={{ color: "#005103", bg: "#90E768" }}
-                    py={5}
-                    pl={3}
-                    borderRadius="md"
-                    cursor="pointer"
-                    onClick={onOpen}
-                  >
-                    <Icon as={IoAdd} w="5" h="5" />
-                    Upload Note
-                  </Flex>
-                  </>
-                  :
-                  <Text textAlign={"center"} w="100%" fontSize={"24px"} fontWeight={"bold"}>Please wait while we get everything ready...</Text>
-                }
+                      <Flex
+                        w="full"
+                        h="20px"
+                        mt={2}
+                        align="center"
+                        justify="center"
+                        bg="#53AF28"
+                        color="white"
+                        border="1px solid #53AF28"
+                        _hover={{ color: "#005103", bg: "#90E768" }}
+                        py={5}
+                        pl={3}
+                        borderRadius="md"
+                        cursor="pointer"
+                        onClick={onOpen}
+                      >
+                        <Icon as={IoAdd} w="5" h="5" />
+                        Upload Note
+                      </Flex>
+                    </>
+                  ) : clearChat === localStorage.getItem("file") ? (
+                    <Text
+                      textAlign={"center"}
+                      w="100%"
+                      fontSize={"24px"}
+                      fontWeight={"bold"}
+                    >
+                      Start chatting
+                    </Text>
+                  ): (
+                    <Text
+                      textAlign={"center"}
+                      w="100%"
+                      fontSize={"24px"}
+                      fontWeight={"bold"}
+                    >
+                      Please wait while we get everything ready...
+                    </Text>
+                  )}
                 </Flex>
               </Flex>
             )}
@@ -899,7 +919,15 @@ const Chat = ({ user2 }: any) => {
                       >
                         <Flex direction="column" justify="space-between">
                           {/* <Text>{query}</Text> */}
-                          <div key={index} dangerouslySetInnerHTML={{ __html: request.content.replace(/\\n|\n/g, '<br>') }} />
+                          <div
+                            key={index}
+                            dangerouslySetInnerHTML={{
+                              __html: request.content.replace(
+                                /\\n|\n/g,
+                                "<br>"
+                              ),
+                            }}
+                          />
                           {/* <Text key={index}>{request.content}</Text> */}
                           <Text
                             fontSize={11}
@@ -968,8 +996,15 @@ const Chat = ({ user2 }: any) => {
                         >
                           <Flex direction="column" justify="space-between">
                             {/* <Text key={index}>{responses[index].content}</Text> */}
-                            <div dangerouslySetInnerHTML={{ __html: responses[index].content.replace(/\\n|\n/g, '<br>')}} />
-                           <Text fontSize={11} mt={3} fontWeight="bold">
+                            <div
+                              dangerouslySetInnerHTML={{
+                                __html: responses[index].content.replace(
+                                  /\\n|\n/g,
+                                  "<br>"
+                                ),
+                              }}
+                            />
+                            <Text fontSize={11} mt={3} fontWeight="bold">
                               Lecture Mate
                             </Text>
                           </Flex>
