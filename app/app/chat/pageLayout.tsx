@@ -66,7 +66,7 @@ const Chat = ({ user2 }: any) => {
   const [showChat, setShowChat] = useState(false);
   //   const [query, setQuery] = useState("");
   //   const [result, setResult] = useState("");
-  const [clearChat, setClearChat] = useState<any>("");
+  const [clearChat, setClearChat] = useState<any[]>([""]);
   const [requests, setRequests] = useState<any[]>([]);
   const [responses, setResponses] = useState<any[]>([]);
   const [pdfList, setPdfList] = useState<any[]>([]);
@@ -98,9 +98,9 @@ const Chat = ({ user2 }: any) => {
   }, [responses]);
 
   const handleStoreRequest = (values: any[]) => {
-    if(clearChat === localStorage.getItem("file")) {
-      setClearChat("")
-    }
+    // if(clearChat === localStorage.getItem("file")) {
+    //   setClearChat("")
+    // }
     const questions = values.filter(
       (element, index) => index % 2 == 0 || index === 0
     );
@@ -454,7 +454,8 @@ const Chat = ({ user2 }: any) => {
       }
 
       if (pdfName === localStorage.getItem("file")) {
-        setClearChat(localStorage.getItem("file"))
+        // setClearChat(localStorage.getItem("file"))
+        // setClearChat[prev, ...]
         requestsWithQuestions = [];
         handleStoreRequest([]);
         handleStoreResponse([]);
@@ -855,23 +856,18 @@ const Chat = ({ user2 }: any) => {
                         Upload Note
                       </Flex>
                     </>
-                  ) : clearChat === localStorage.getItem("file") ? (
+                  ) : (
                     <Text
                       textAlign={"center"}
                       w="100%"
                       fontSize={"24px"}
                       fontWeight={"bold"}
                     >
-                      Start chatting
-                    </Text>
-                  ): (
-                    <Text
-                      textAlign={"center"}
-                      w="100%"
-                      fontSize={"24px"}
-                      fontWeight={"bold"}
-                    >
-                      Please wait while we get everything ready...
+                      If note was just uploaded please wait...
+                      <br/>
+                      else,
+                      <br/>
+                      If chat was cleared, start chatting!
                     </Text>
                   )}
                 </Flex>
