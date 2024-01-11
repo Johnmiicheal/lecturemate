@@ -11,14 +11,18 @@ type User = {
   handlePdfClick: (pdf: string) => void;
   onReload: () => Promise<void>;
   pdfList: any[];
-  handleRemovePdf: (pdfId: any, pdfName: any, pdfListId: any) => Promise<void>
+  handleRemovePdf: (pdfId: any, pdfName: any, pdfListId: any) => Promise<void>;
   constantineOnReload: () => Promise<void>;
   constantinePdfList: any[];
   isUploaded: boolean;
   setIsUploaded: React.Dispatch<React.SetStateAction<boolean>>;
   newFile: boolean;
-  setNewFile: React.Dispatch<React.SetStateAction<boolean>>
-  setSelectedPdf: React.Dispatch<React.SetStateAction<string | null | undefined>>
+  setNewFile: React.Dispatch<React.SetStateAction<boolean>>;
+  setSelectedPdf: React.Dispatch<
+    React.SetStateAction<string | null | undefined>
+  >;
+  fileUpload: boolean
+  setFileUpload: React.Dispatch<React.SetStateAction<boolean>>
 };
 
 export default function Layout({
@@ -36,7 +40,9 @@ export default function Layout({
   setIsUploaded,
   newFile,
   setNewFile,
-  setSelectedPdf
+  setSelectedPdf,
+  fileUpload,
+  setFileUpload
 }: User | any) {
   const router = useRouter();
 
@@ -82,14 +88,16 @@ export default function Layout({
             handlePdfClick={handlePdfClick}
             onReload={onReload}
             pdfList={pdfList}
-            handleRemovePdf = {handleRemovePdf}
-            constantinePdfList = {constantinePdfList}
-            constantineOnReload = {constantineOnReload}
-            isUploaded = {isUploaded}
-            setIsUploaded = {setIsUploaded}
-            newFile = {newFile}
-            setNewFile = {setNewFile}
-            setSelectedPdf = {setSelectedPdf}
+            handleRemovePdf={handleRemovePdf}
+            constantinePdfList={constantinePdfList}
+            constantineOnReload={constantineOnReload}
+            isUploaded={isUploaded}
+            setIsUploaded={setIsUploaded}
+            newFile={newFile}
+            setNewFile={setNewFile}
+            setSelectedPdf={setSelectedPdf}
+            fileUpload={fileUpload}
+            setFileUpload={setFileUpload}
           />
         </Flex>
       </Flex>
