@@ -86,6 +86,10 @@ const Chat = ({ user2 }: any) => {
     onClose: onDrawerClose,
   } = useDisclosure();
 
+  if(!user2){
+    router.push("/signin")
+  }
+
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop =
@@ -138,7 +142,7 @@ const Chat = ({ user2 }: any) => {
   });
 
   const getChatHistory = async () => {
-    const condition = { column_value: user2.id }; // Replace with your own condition
+    const condition = { column_value: user2?.id }; // Replace with your own condition
 
     // function delay(ms) {
     //   return new Promise(resolve => setTimeout(resolve, ms));
@@ -175,8 +179,8 @@ const Chat = ({ user2 }: any) => {
 
   const onReload = async () => {
     const listOfPdfs = async () => {
-      const condition = { column_value: user2.id }; // Replace with your own condition
-      const arr: any[] = [];
+      const condition = { column_value: user2?.id }; // Replace with your own condition
+      const arr: any[] = []
 
       function delay(ms: number | undefined) {
         return new Promise((resolve) => setTimeout(resolve, ms));
@@ -219,7 +223,7 @@ const Chat = ({ user2 }: any) => {
           event: "*",
           schema: "public",
           table: "booklist",
-          filter: `user_id=eq.${user2.id}`,
+          filter: `user_id=eq.${user2?.id}`
         },
         (payload) => {
           console.log("This is the payload: " + JSON.stringify(payload));
@@ -432,13 +436,13 @@ const Chat = ({ user2 }: any) => {
   };
 
   const handleClearChats = async (pdfName: any) => {
-    try {
-      // Delete the scheduler from Supabase
-      const { data, error } = await supabase
-        .from("chats")
-        .delete()
-        .eq("user_id", user2.id)
-        .eq("pdf_name", pdfName);
+      try {       
+        // Delete the scheduler from Supabase
+        const { data, error } = await supabase
+          .from("chats")
+          .delete()
+          .eq("user_id", user2?.id)
+          .eq("pdf_name", pdfName);
 
       if (error) {
         console.error("Error deleting scheduler:", error.message);
@@ -471,39 +475,40 @@ const Chat = ({ user2 }: any) => {
     // setIsPdfClicked(false)
     try {
       const { data, error } = await supabase
-        .from("booklist")
-        .delete()
-        .eq("user_id", user2.id)
-        .eq("id", pdfId);
+    .from('booklist')
+    .delete()
+    .eq("user_id", user2?.id)
+    .eq('id', pdfId)
 
-      if (!error) {
-        try {
-          const { data, error } = await supabase
-            .from("pdfs")
-            .delete()
-            .eq("user_id", user2.id)
-            .eq("pdf_name", pdfName);
+    if(!error){
+      try {
+        const { data, error } = await supabase
+      .from('pdfs')
+      .delete()
+      .eq("user_id", user2?.id)
+      .eq('pdf_name', pdfName)
 
-          if (error) {
-            console.log("Error deleting pdf " + error);
-          } else {
-            await handleClearChats(pdfName);
-            const updatedArrayPdfList = pdfList.filter(
-              (pdfs, index) => index !== pdfListId
-            );
-            setPdfList(updatedArrayPdfList);
-            if (localStorage.getItem("file") === pdfName) {
-              localStorage.removeItem("file");
-              setNewFile(!newFile);
-            }
-            // setIsPdfClicked(true)
-          }
-        } catch (error) {
-          console.log(error);
+      if(error) {
+        console.log("Error deleting pdf " + error)
+      }else {
+        await handleClearChats(pdfName)
+        const updatedArrayPdfList = pdfList.filter(
+          (pdfs, index) => index !== pdfListId
+        );
+        setPdfList(updatedArrayPdfList)
+        if(localStorage.getItem("file") === pdfName) {
+          localStorage.removeItem("file");
+          setNewFile(!newFile)
         }
-      } else {
-        console.log("Error deleting pdf name " + error);
+        // setIsPdfClicked(true)
       }
+      } catch (error) {
+        console.log(error)
+      }
+
+    }else {
+      console.log("Error deleting pdf name " + error)
+    }
     } catch (error) {
       console.log(error);
     }
@@ -886,12 +891,7 @@ const Chat = ({ user2 }: any) => {
                       >
                         <Flex direction="column" justify="space-between">
                           {/* <Text>{query}</Text> */}
-                          <div
-                            key={index}
-                            dangerouslySetInnerHTML={{
-                              __html: request.content.replace(/\n/g, "<br>"),
-                            }}
-                          />
+                          <div key={index} dangerouslySetInnerHTML={{ __html: request.content.replace(/\\n|\n/g, '<br>') }} />
                           {/* <Text key={index}>{request.content}</Text> */}
                           <Text
                             fontSize={11}
@@ -960,15 +960,8 @@ const Chat = ({ user2 }: any) => {
                         >
                           <Flex direction="column" justify="space-between">
                             {/* <Text key={index}>{responses[index].content}</Text> */}
-                            <div
-                              dangerouslySetInnerHTML={{
-                                __html: responses[index].content.replace(
-                                  /\n/g,
-                                  "<br>"
-                                ),
-                              }}
-                            />
-                            <Text fontSize={11} mt={3} fontWeight="bold">
+                            <div dangerouslySetInnerHTML={{ __html: responses[index].content.replace(/\\n|\n/g, '<br>')}} />
+                           <Text fontSize={11} mt={3} fontWeight="bold">
                               Lecture Mate
                             </Text>
                           </Flex>
