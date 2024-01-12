@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import {
   IconButton,
@@ -27,22 +27,76 @@ import {
   Image,
   useToast,
 } from "@chakra-ui/react";
-import Link from 'next/link'
+import Link from "next/link";
 import React from "react";
 import { useRouter } from "next/navigation";
 import { FaTelegramPlane } from "react-icons/fa";
-import { IoMenu, IoChevronForward, IoAdd, IoChatbubbleEllipsesOutline } from "react-icons/io5";
+import {
+  IoMenu,
+  IoChevronForward,
+  IoAdd,
+  IoChatbubbleEllipsesOutline,
+  IoGlobeOutline,
+  IoRemoveCircleOutline,
+} from "react-icons/io5";
 import FileUpload from "./FileUpload";
-import { useEffect, useState } from 'react';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { useEffect, useState } from "react";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
-export default function UserProfile({user4}: any) {
-  const [pdfList, setPdfList] = useState<any[]>([]);
-  const [selectedPdf, setSelectedPdf] = useState<string | null>(null); 
-  let username: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined;
+type User = {
+  user4: any;
+  handleClearChats: () => Promise<void>;
+  selectedPdf: string;
+  onGlobal: () => void;
+  handlePdfClick: (pdf: string) => void;
+  onReload: () => Promise<void>;
+  pdfList: any[];
+  handleRemovePdf: (pdfId: any, pdfName: any, pdfListId: any) => Promise<void>
+  constantineOnReload: () => Promise<void>;
+  constantinePdfList: any[];
+  isUploaded: boolean;
+  setIsUploaded: React.Dispatch<React.SetStateAction<boolean>>;
+  newFile: boolean;
+  setNewFile: React.Dispatch<React.SetStateAction<boolean>>
+  setSelectedPdf: React.Dispatch<React.SetStateAction<string | null | undefined>>
+  fileUpload: boolean
+  setFileUpload: React.Dispatch<React.SetStateAction<boolean>>
+};
+
+export default function UserProfile({
+  user4,
+  handleClearChats,
+  selectedPdf,
+  handlePdfClick,
+  onGlobal,
+  onReload,
+  pdfList,
+  handleRemovePdf,
+  constantinePdfList,
+  constantineOnReload,
+  isUploaded,
+  setIsUploaded,
+  newFile,
+  setNewFile,
+  setSelectedPdf,
+  fileUpload,
+  setFileUpload
+}: User | any) {
+  // const [pdfList, setPdfList] = useState<any[]>([]);
+  // const [selectedPdf, setSelectedPdf] = useState<string | null>(null);
+  let username:
+    | string
+    | number
+    | boolean
+    | React.ReactElement<any, string | React.JSXElementConstructor<any>>
+    | Iterable<React.ReactNode>
+    | React.ReactPortal
+    | React.PromiseLikeOfReactNode
+    | null
+    | undefined;
   const supabase = createClientComponentClient();
 
-  if(user4){
+  if (user4) {
     username = user4.user_metadata.username;
   }
 
@@ -54,82 +108,85 @@ export default function UserProfile({user4}: any) {
     onClose: onDrawerClose,
   } = useDisclosure();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const fileName = localStorage.getItem("file");
-  const handleChat = () => {
-    localStorage.removeItem("responses");
-    localStorage.removeItem("requests");
-    toast({
-      title: "Chat Cleared",
-      position: "top-right",
-      description: "You have cleared the chat",
-      status: "success",
-      variant: "left-accent",
-      duration: 5000,
-      isClosable: true,
-    });
-    setTimeout(() => {
-      window.location.reload();
-    }, 1000);
-  };
+  // const fileName = localStorage.getItem("file");
+  // const handleChat = () => {
+  //   localStorage.removeItem("responses");
+  //   localStorage.removeItem("requests");
+  //   toast({
+  //     title: "Chat Cleared",
+  //     position: "top-right",
+  //     description: "You have cleared the chat",
+  //     status: "success",
+  //     variant: "left-accent",
+  //     duration: 5000,
+  //     isClosable: true,
+  //   });
+  //   setTimeout(() => {
+  //     window.location.reload();
+  //   }, 1000);
+  // };
 
   useEffect(() => {
-    const onReload = async () => {
-      const listOfPdfs = async () => {
-        const condition = { column_value: user4.id }; // Replace with your own condition
-        const arr: any[] = []
+    // const onReload = async () => {
+    //   const listOfPdfs = async () => {
+    //     const condition = { column_value: user4.id }; // Replace with your own condition
+    //     const arr: any[] = []
 
-        function delay(ms: number | undefined) {
-          return new Promise(resolve => setTimeout(resolve, ms));
-        }
-  
-        const data: any[] | any = await delay(5000).then(async () => {
-          const { data, error } = await supabase
-            .from('booklist')
-            .select('*')
-            .eq('user_id', condition.column_value);
-      
-          if (error) {
-            console.log(error);
-          } else {
-            console.log("This is the list of books: " + JSON.stringify(data));
-            return data;
-          }
-        });
-    
-        console.log(data)
-        data.map((element: any) => (
-          arr.push(element.book_name)
-        ))
-        return arr;
-      }
-  
-      const pdfList: any = await listOfPdfs()
+    //     function delay(ms: number | undefined) {
+    //       return new Promise(resolve => setTimeout(resolve, ms));
+    //     }
 
-      const uniqueArrayPdfList = pdfList.filter(
-        (value: any, index: any, self: any) => self.indexOf(value) === index
-      );
-      console.log(uniqueArrayPdfList);
-      setPdfList(uniqueArrayPdfList)
-    }
+    //     const data: any[] | any = await delay(5000).then(async () => {
+    //       const { data, error } = await supabase
+    //         .from('booklist')
+    //         .select('*')
+    //         .eq('user_id', condition.column_value);
 
-    onReload()
-    
+    //       if (error) {
+    //         console.log(error);
+    //       } else {
+    //         console.log("This is the list of books: " + JSON.stringify(data));
+    //         return data;
+    //       }
+    //     });
+
+    //     console.log(data)
+    //     data.map((element: any) => (
+    //       arr.push(element.book_name)
+    //     ))
+    //     return arr;
+    //   }
+
+    //   const pdfList: any = await listOfPdfs()
+
+    //   const uniqueArrayPdfList = pdfList.filter(
+    //     (value: any, index: any, self: any) => self.indexOf(value) === index
+    //   );
+    //   console.log(uniqueArrayPdfList);
+    //   setPdfList(uniqueArrayPdfList)
+    // }
+
+    onReload();
+  }, []);
+
+  useEffect(() => {
+    constantineOnReload()
   }, [])
 
   // Add this function to set the selected PDF when a Flex is clicked
-  const handlePdfClick = (pdf: string) => {
-    localStorage.setItem("file", pdf)
-    setSelectedPdf(pdf);
-  };
+  // const handlePdfClick = (pdf: string) => {
+  //   localStorage.setItem("file", pdf)
+  //   setSelectedPdf(pdf);
+  // };
 
   return (
     <HStack ml={1}>
       {user4 && (
-      <>
-      <Text zIndex={2} ml={5}>
-        Hi, {username}
-      </Text>    
-      </>
+        <>
+          <Text zIndex={2} ml={5}>
+            Hi, {username}
+          </Text>
+        </>
       )}
       <Flex
         _hover={{ bg: "red.500", color: "white" }}
@@ -144,16 +201,16 @@ export default function UserProfile({user4}: any) {
         justify="center"
         align="center"
         display={{ base: "none", lg: "flex" }}
-        onClick={handleChat}
+        onClick={() => handleClearChats(localStorage.getItem("file"))}
       >
-          <Text fontWeight={600} fontSize="0.9em">
-            Clear Chat
-          </Text>
+        <Text fontWeight={600} fontSize="0.9em">
+          Clear Chat
+        </Text>
       </Flex>
       <Text zIndex={2} mr={{ base: -10, md: 0 }} ml={5}>
         25
       </Text>
-      <Flex mr={{ base: -7, md: 0}} ml={{ base: 0, md: -10 }}>
+      <Flex mr={{ base: -7, md: 0 }} ml={{ base: 0, md: -10 }}>
         <Image src="/star.gif" w="100px" zIndex={-1} />
       </Flex>
       <Flex justify="end" display={{ base: "flex", lg: "none" }}>
@@ -180,7 +237,180 @@ export default function UserProfile({user4}: any) {
               ))}
             </Flex> */}
             {/* <Divider mt={10} /> */}
-            <Flex mt="2" align="center" gap={5} direction="column-reverse">
+            <Flex mt="2" align="center" gap={3} direction="column" position={"relative"}>
+            {user4 && (
+                <Flex
+                  _hover={{ bg: "red.500", color: "white" }}
+                  borderRadius="full"
+                  border="1px solid"
+                  color="red.500"
+                  borderColor="red.500"
+                  bg={{ base: "none", md: "none" }}
+                  w="full"
+                  h={12}
+                  cursor="pointer"
+                  justify="center"
+                  align="center"
+                >
+                  <form action="/auth/signout" method="post">
+                    <button type="submit">
+                      <Text fontWeight={600} fontSize="0.9em">
+                        Logout
+                      </Text>
+                    </button>
+                  </form>
+                </Flex>
+              )}              
+
+              <Flex
+                _hover={{ bg: "red.500", color: "white" }}
+                borderRadius="full"
+                border="1px solid"
+                color="red.500"
+                borderColor="red.500"
+                bg={{ base: "none", md: "none" }}
+                w="full"
+                h={12}
+                cursor="pointer"
+                justify="center"
+                align="center"
+                onClick={() => {handleClearChats(localStorage.getItem("file"))}}
+              >
+                <Text fontWeight={600} fontSize="0.9em">
+                  Clear Chat
+                </Text>
+              </Flex>
+
+              <Flex
+                w="full"
+                h="20px"
+                mt={2}
+                align="center"
+                justify="center"
+                bg="#53AF28"
+                color="white"
+                border="1px solid #53AF28"
+                _hover={{ color: "#005103", bg: "#90E768" }}
+                py={5}
+                pl={3}
+                borderRadius="md"
+                cursor="pointer"
+                onClick={onOpen}
+              >
+                <Icon as={IoAdd} w="5" h="5" />
+                Upload Note
+              </Flex>
+
+              <Flex
+                w="full"
+                h="20px"
+                mt={2}
+                mb={13}
+                align="center"
+                justify="start"
+                bg={"none" === selectedPdf ? "#53AF28" : ""}
+                color={"none" === selectedPdf ? "white" : "#53AF28"}
+                border="1px solid #53AF28"
+                _hover={
+                  "none" === selectedPdf
+                    ? { color: "white", bg: "#53AF28" }
+                    : { color: "#005103", bg: "#90E768" }
+                }
+                _active={{ color: "white", bg: "#53AF28" }}
+                py={5}
+                pl={3}
+                borderRadius="md"
+                cursor="pointer"
+                onClick={onGlobal}
+              >
+                <Icon as={IoGlobeOutline} w="5" h="5" mr={"1"} />
+                Global
+              </Flex>
+
+              <Flex 
+                direction={"column"}
+                w={'full'} 
+                overflowY={"auto"}
+                display={"block"}
+                h={"35vh"}
+                >
+              {pdfList.map(
+                (
+                  pdf:
+                    | string
+                    | number
+                    | boolean
+                    | React.ReactElement<
+                        any,
+                        string | React.JSXElementConstructor<any>
+                      >
+                    | Iterable<React.ReactNode>
+                    | React.ReactPortal
+                    | React.PromiseLikeOfReactNode
+                    | null
+                    | undefined
+                    | any,
+                  index: React.Key | null | undefined
+                ) => (
+                  <Flex
+                  key={index}
+                  position={"relative"}
+                  h="50px"
+                  mt={5}
+                  gap={2}
+                  justify="start"
+                  align="center"
+                  // Change the background color based on selectedPdf
+                  bg={pdf.book_name === selectedPdf ? "#53AF28" : ""}
+                  color={pdf.book_name === selectedPdf ? "white" : "#53AF28"}
+                  w="full"
+                  border={"1px solid #53AF28"}
+                  _hover={pdf.book_name === selectedPdf ? {color: "white", bg: "#53AF28"} : { color: "#005103", bg: "#90E768" }}
+                  _active={{ color: "white", bg: "#53AF28" }}
+                  pl={3}
+                  borderRadius="md"
+                  cursor="pointer"
+                  onClick={() => handlePdfClick(pdf.book_name)}
+                  >
+                    <Icon as={IoChatbubbleEllipsesOutline} w="5" h="5" />
+                    <Text noOfLines={1} textOverflow="ellipsis" key={index} w={"70%"}>
+                      {pdf.book_name}
+                    </Text>
+                    <Icon as={IoRemoveCircleOutline} onClick={(e) =>{e.stopPropagation(); handleRemovePdf(pdf.id, pdf.book_name, index)}} position={"absolute"} top={"50%"} right={3} transform={"translateY(-50%)"} _hover={pdf.book_name === selectedPdf ? {color: "white", bg: "#3C7C1C",  borderRadius: '100%'} : {color: "white", bg: "#53AF28",  borderRadius: '100%'}} w="5" h="5" />
+                  </Flex>
+                )
+              )}
+
+              {constantinePdfList.map((pdf: any, index: any)=> (
+                <Flex
+                key={index}
+                h="50px"
+                mt={5}
+                gap={2}
+                justify="start"
+                align="center"
+                // Change the background color based on selectedPdf
+                // bg={pdf.book_name === selectedPdf ? "#53AF28" : ""}
+                color={"#53AF28"}
+                w="full"
+                border={"1px solid #53AF28"}
+                // _hover={pdf.book_name === selectedPdf ? {color: "white", bg: "#53AF28"} : { color: "#005103", bg: "#90E768" }}
+                // _active={{ color: "white", bg: "#53AF28" }}
+                pl={3}
+                borderRadius="md"
+                cursor="pointer"
+                // onClick={() => handlePdfClick(pdf)}
+              >
+                <Icon as={IoChatbubbleEllipsesOutline} w="5" h="5" />
+                <Text noOfLines={1} textOverflow="ellipsis" key={index}>
+                  {pdf.book_name}
+                </Text>
+              </Flex>
+              ))
+                
+              }
+              </Flex>
+
               <Flex
                 align="center"
                 gap="1"
@@ -204,99 +434,6 @@ export default function UserProfile({user4}: any) {
                 />
                 <Text>Join our Community</Text>
               </Flex>
-
-              {pdfList.map((pdf, index)=> (
-                <Flex
-                key={index}
-                h="50px"
-                mt={5}
-                gap={2}
-                justify="start"
-                align="center"
-                // Change the background color based on selectedPdf
-                bg={pdf === selectedPdf ? "#53AF28" : ""}
-                color={pdf === selectedPdf ? "white" : "#53AF28"}
-                w="full"
-                border={"1px solid #53AF28"}
-                _hover={{ color: "#005103", bg: "#90E768" }}
-                pl={3}
-                borderRadius="md"
-                cursor="pointer"
-                onClick={() => handlePdfClick(pdf)}
-              >
-                <Icon as={IoChatbubbleEllipsesOutline} w="5" h="5" />
-                <Text noOfLines={1} textOverflow="ellipsis" key={index}>
-                  {pdf}
-                </Text>
-              </Flex>
-              ))
-                
-              }
-
-              <Flex
-                w="full"
-                h="20px"
-                mt={2}
-                align="center"
-                justify="center"
-                bg="#53AF28"
-                color="white"
-                border="1px solid #53AF28"
-                _hover={{ color: "#005103", bg: "#90E768" }}
-                py={5}
-                pl={3}
-                borderRadius="md"
-                cursor="pointer"
-                onClick={onOpen}
-              >
-                <Icon as={IoAdd} w="5" h="5" />
-                Upload Note
-              </Flex>
-
-              <Flex
-                _hover={{ bg: "red.500", color: "white" }}
-                borderRadius="full"
-                border="1px solid"
-                color="red.500"
-                borderColor="red.500"
-                bg={{ base: "none", md: "none" }}
-                w="full"
-                h={12}
-                cursor="pointer"
-                justify="center"
-                align="center"
-                onClick={handleChat}
-              >
-                <Text fontWeight={600} fontSize="0.9em">
-                  Clear Chat
-                </Text>
-              </Flex>
-              
-              {user4 && (
-              <Flex
-               _hover={{ bg: "red.500", color: "white" }}
-                borderRadius="full"
-                border="1px solid"
-                color="red.500"
-                borderColor="red.500"
-                bg={{ base: "none", md: "none" }}
-                w="full"
-                h={12}
-                cursor="pointer"
-                justify="center"
-                align="center"
-              >
-                <form action="/auth/signout" method="post">
-                  <button
-                    type="submit"
-                  >
-                    <Text fontWeight={600} fontSize="0.9em">
-                      Logout
-                    </Text>
-                  </button>
-                </form>
-              </Flex>
-              )}
             </Flex>
           </DrawerBody>
 
@@ -327,7 +464,15 @@ export default function UserProfile({user4}: any) {
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody mb={7}>
-            <FileUpload user3 = {user4}/>
+            <FileUpload user3={user4}
+            isUploaded = {isUploaded}
+            setIsUploaded = {setIsUploaded}
+            newFile = {newFile}
+            setNewFile = {setNewFile}
+            setSelectedPdf = {setSelectedPdf}
+            fileUpload={fileUpload}
+            setFileUpload={setFileUpload}
+            />
           </ModalBody>
         </ModalContent>
       </Modal>

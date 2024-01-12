@@ -16,7 +16,30 @@ interface FormValues {
   file: File | null;
 }
 
-const FileUpload = ({ user3 }: any) => {
+type Changes = {
+  user3: any;
+  setIsUploaded: React.Dispatch<React.SetStateAction<boolean>>;
+  isUploaded: boolean;
+  newFile: boolean;
+  setNewFile: React.Dispatch<React.SetStateAction<boolean>>;
+  // selectedPdf: string | null | undefined
+  setSelectedPdf: React.Dispatch<
+    React.SetStateAction<string | null | undefined>
+  >;
+  fileUpload: boolean;
+  setFileUpload: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const FileUpload = ({
+  user3,
+  isUploaded,
+  setIsUploaded,
+  newFile,
+  setNewFile,
+  setSelectedPdf,
+  fileUpload,
+  setFileUpload,
+}: Changes | any) => {
   const toast = useToast();
   const [token, setToken] = useState("");
   const [timer, setTimer] = useState(0);
@@ -51,8 +74,6 @@ const FileUpload = ({ user3 }: any) => {
     }
   }, [timer]);
 
-  
-
   useEffect(() => {
     // Create a WebSocket connection when the component mounts.
     socketRef.current = new WebSocket("ws://localhost:4000");
@@ -84,29 +105,29 @@ const FileUpload = ({ user3 }: any) => {
         try {
           const uploadToBucket = async (values: any) => {
             setUploading(true);
-            
-            try{
+
+            try {
               const { data, error } = await supabase.storage
-              .from(bucketName + "/" + user3.id)
-              .upload(values.file.name, values.file);          
-  
-            if (error) {
-              // alert(values.file.name);
-              setUploading(false);
-              toast({
-                title: "Upload Error",
-                position: "top",
-                description: error.message,
-                status: "error",
-                variant: "left-accent",
-                duration: 5000,
-                isClosable: true,
-              });
-              //   setTimeout(() => {
-              //     router.reload();
-              //   }, 1000);
-            }
-            }catch(error){
+                .from(bucketName + "/" + user3.id)
+                .upload(values.file.name, values.file);
+
+              if (error && error.message !== "The resource already exists") {
+                // alert(values.file.name);
+                setUploading(false);
+                toast({
+                  title: "Upload Error",
+                  position: "top",
+                  description: error.message,
+                  status: "error",
+                  variant: "left-accent",
+                  duration: 5000,
+                  isClosable: true,
+                });
+                //   setTimeout(() => {
+                //     router.reload();
+                //   }, 1000);
+              }
+            } catch (error) {
               if (error) {
                 setUploading(false);
                 setTimer(0);
@@ -122,69 +143,77 @@ const FileUpload = ({ user3 }: any) => {
                 });
               }
               console.error("Upload error:", error);
-            }            
-        }
+            }
+          };
 
-        const getFileURL = async (file: any) => {
-          try {
-            const { data } = supabase
-                             .storage
-                             .from(bucketName)
-                             .getPublicUrl(user3.id + "/" + file)
-            
-            console.log(data.publicUrl)
-            const fileURL = data.publicUrl
-      
-            const response = await axios.post(
-              "https://lm-backend.eastus.cloudapp.azure.com/api/upload",
-              // "http://localhost:4000/api/upload/",
-              // "https://api.greynote.app/lecture/api/upload",
-              {
-                "url": fileURL, 
-                "fileName": file,
-                "userId": user3?.id,
-              }       
-              )
-            console.log(response)
-      
-            if(response.status === 200){
-              setTimer(0);
-              setTextIndex(0);
+          const getFileURL = async (file: any) => {
+            try {
+              const { data } = supabase.storage
+                .from(bucketName)
+                .getPublicUrl(user3.id + "/" + file);
+
+              console.log(data.publicUrl);
+              const fileURL = data.publicUrl;
+
+              const response = await axios.post(
+                "https://lm-backend.eastus.cloudapp.azure.com/api/upload",
+                // "http://localhost:4000/api/upload/",
+                // "https://api.greynote.app/lecture/api/upload",
+                {
+                  url: fileURL,
+                  fileName: file,
+                  userId: user3?.id,
+                }
+              );
+              console.log(response);
+
+              if (response.status === 200) {
+                console.log("Here 1");
+                setIsUploaded(!isUploaded);
+                localStorage.setItem("file", file);
+                console.log("Here 2");
+                setTimer(0);
+                setTextIndex(0);
+                toast({
+                  title: "Notes Uploaded",
+                  position: "top-right",
+                  description: "We've successfully uploaded your notes🎉🎉",
+                  status: "success",
+                  variant: "left-accent",
+                  duration: 5000,
+                  isClosable: true,
+                });
+                const latestFile = localStorage.getItem("file");
+                console.log(latestFile);
+                setSelectedPdf(latestFile);
+                setNewFile(!newFile);
+                setFileUpload(true);
+
+                setUploading(false);
+              }
+            } catch (error) {
+              console.log("Error retrieving: " + error);
               toast({
-                title: "Notes Uploaded",
-                position: "top-right",
-                description: "We've successfully uploaded your notes🎉🎉",
-                status: "success",
+                title: "Upload Error",
+                position: "top",
+                description: "We could not upload your note😭",
+                status: "error",
                 variant: "left-accent",
                 duration: 5000,
                 isClosable: true,
               });
-              localStorage.setItem("file", file)
-              setUploading(false);
             }
-          } catch (error) {
-            console.log("Error retrieving: " + error)
-            toast({
-              title: "Upload Error",
-              position: "top",
-              description: "We could not upload your note😭",
-              status: "error",
-              variant: "left-accent",
-              duration: 5000,
-              isClosable: true,
-            });
-          }
-        }
+          };
 
-        //This is are the main functions carrying out job
-        /////////////////////////////////////////////////
-        uploadToBucket(values).then(() => { 
-          if(values.file){
-            getFileURL(values.file.name);
-          }})
-        /////////////////////////////////////////////////
-        /////////////////////////////////////////////////
-        
+          //This is are the main functions carrying out job
+          /////////////////////////////////////////////////
+          uploadToBucket(values).then(() => {
+            if (values.file) {
+              getFileURL(values.file.name);
+            }
+          });
+          /////////////////////////////////////////////////
+          /////////////////////////////////////////////////
         } catch (error) {
           if (error) {
             setUploading(false);
@@ -213,11 +242,12 @@ const FileUpload = ({ user3 }: any) => {
   });
 
   return (
-    <Flex direction="column">
+    <Flex direction="column" gap={2}>
       {uploading && <TopBarProgress />}
       <Box
         p={4}
         h="17vh"
+        w="100%"
         border="2px dotted"
         borderColor={isDragActive ? "green.500" : "gray.300"}
         borderRadius="md"
@@ -248,19 +278,11 @@ const FileUpload = ({ user3 }: any) => {
             </Text>
           </Flex>
         )}
+        {uploading && <Text w="100%" display={"block"} fontStyle={"bold"} textAlign={"center"}>Please wait...</Text>}
       </Box>
-      <div>
-      {/* Your existing JSX code */}
-      {progress !== null && (
-        <div>
-          <p>Processing progress: {progress}%</p>
-          {/* Add your progress indicator UI here, e.g., a loading bar */}
-        </div>
-      )}
-    </div>
       <Button
         type="submit"
-        mt={4}
+        mt={12}
         // onClick={handleFormSubmit}
         onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
           event.preventDefault(); // Prevent the default form submission behavior
@@ -270,8 +292,8 @@ const FileUpload = ({ user3 }: any) => {
         border="1px solid #53AF28"
         _hover={{ bg: "#53AF28", color: "white" }}
         variant="outline"
-        disabled={!formik.values.file}
-        isLoading={formik.isSubmitting}
+        disabled={uploading}
+        isLoading={uploading}
       >
         Upload
       </Button>

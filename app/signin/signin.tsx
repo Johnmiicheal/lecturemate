@@ -71,6 +71,36 @@ export default function Signin({ user }: any) {
     }
   };
 
+  const handleGoogleSignin = async () => {
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
+        },
+      })
+  
+      if (data) {
+        // Sign-in was successful, navigate to the home page or any other desired route.
+        router.push("/app/chat");
+        // Alternatively, you can use router.push('/') again to refresh the page.
+      }
+      
+      if (error) {
+        console.log(error)
+      }
+    } catch (error) {
+      console.log("An error occured with error statement: " + error);
+    }
+    
+  }
+
+  // Google clientID = 92841343693-lvfk4t6qh9qhud6rten4lp0d17vuf1lv.apps.googleusercontent.com
+  // Google client Secret = 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
+
   const toast = useToast();
   const pathname = usePathname();
   const [show, setShow] = useState(false);
@@ -123,7 +153,7 @@ export default function Signin({ user }: any) {
             Sign in to your account
           </Text>
 
-          <Flex
+{/*           <Flex
             mt={5}
             p="2"
             w="100%"
@@ -134,10 +164,11 @@ export default function Signin({ user }: any) {
             align="center"
             gap={2}
             borderRadius="6px"
+            onClick={handleGoogleSignin}
           >
             <Icon as={IoLogoGoogle} />
             <Text>Continue with Google</Text>
-          </Flex>
+          </Flex> */}
           <Flex direction="column" mt={10}>
             <Formik
               initialValues={{ email: "", password: "" }}

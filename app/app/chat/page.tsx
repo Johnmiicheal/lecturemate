@@ -15,5 +15,14 @@ export default async function UserData() {
 
 
 
-  return <Signup user ={user} />
+  return (
+    // {
+    //   user.id ?
+      <Signup user ={user} />
+    //   :
+    // <>
+    //   <a href="/signin">Click to Login</a>
+    // </>
+    // }
+  )
 }
