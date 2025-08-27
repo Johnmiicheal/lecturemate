@@ -1,6 +1,6 @@
 <div align="center">
   <img src="./public/logo.png" alt="lecture mate logo" width="60px" />
-  <h1>Lecture Mate</h1>
+  <h1>Your Lecture Mate</h1>
 </div>
 
 > Lecture Mate is an open source student productivity platform that helps students by acting as a companion they can chat with based on various lecture notes. We are unlocking the power of knowledge with Lecture Mate.
