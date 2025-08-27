@@ -14,6 +14,7 @@ const Loading = () => {
           >
             <Image src="/biglogo.png" alt="lecturemate logo" w="20%" mb={10} />
             <BarLoader color="#53AF28" width="150px" />
+            <Text>Loading...</Text>
           </Flex>
         </Box>
       </Flex>

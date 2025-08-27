@@ -13,7 +13,7 @@ components: {
 textStyles: {
   h1: {
     // you can also use responsive styles
-    fontSize: '3rem',
+    fontSize: '2.5rem',
     fontWeight: 'bold',
     lineHeight: '110%',
     letterSpacing: '-2%',
@@ -25,7 +25,7 @@ textStyles: {
   h2: {
     fontSize: ['36px', '48px'],
     fontWeight: 'semibold',
-    lineHeight: '110%',
+    lineHeight: '120%',
     letterSpacing: '-1%',
     _selection:{
       background: '#474747',
