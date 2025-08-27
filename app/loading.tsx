@@ -13,7 +13,7 @@ const Loading = () => {
             minW={{ base: "full", lg: "650px" }}
           >
             <Image src="/biglogo.png" alt="lecturemate logo" w="20%" mb={10} />
-            <BarLoader color="#53AF28" width="150px" />
+            <BarLoader color="#53AF2890" width="150px" />
           </Flex>
         </Box>
       </Flex>

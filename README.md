@@ -5,7 +5,7 @@
 
 > Lecture Mate is an open source student productivity platform that helps students by acting as a companion they can chat with based on various lecture notes. We are unlocking the power of knowledge with Lecture Mate.
 
-![Noodle Preview](https://github.com/johnmiicheal/lecturemate/blob/main/public/mock.png?raw=true)
+![Your Lecture Mate Preview](https://github.com/johnmiicheal/lecturemate/blob/main/public/mock.png?raw=true)
 
 **Lecture Mate is now in early beta and is available for use [Try it out!](https://lecturemate.vercel.app). <br/>
 Feedback is appreciated: [Fill the form](https://forms.office.com/r/xw8mcYPXLp)😘.**

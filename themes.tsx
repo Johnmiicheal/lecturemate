@@ -23,7 +23,7 @@ textStyles: {
     }
   },
   h2: {
-    fontSize: ['36px', '48px'],
+    fontSize: ['38px', '48px'],
     fontWeight: 'semibold',
     lineHeight: '110%',
     letterSpacing: '-1%',
@@ -42,7 +42,7 @@ textStyles: {
 
 
 defaultProps: {
-  focusBorderColor: '#F4B95F',
+  focusBorderColor: '#53AF28',
 },
 
 });
