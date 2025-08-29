@@ -36,7 +36,7 @@ export async function POST(request: Request) {
 
   const json = await request.json()
   // const nameOfFile = localStorage.getItem("file");
-  const userId = "1111"
+  const userId = "1111" //we should get this from the user
   // json.userId
   // console.log("This is the json: ", nameOfFile)
   

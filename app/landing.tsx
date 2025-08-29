@@ -208,14 +208,14 @@ export default function Landing() {
           <Text
             fontSize={{ base: "xl", md: "4xl", lg: "4xl" }}
             fontWeight={"extrabold"}
-            w={{ base: "20rem", md: "30rem", lg: "35rem" }}
+            w={{ base: "20rem", md: "28rem", lg: "34rem" }}
             textAlign="center"
           >
-            Creating a new learning experience for Students
+            Creating a new learning experience for Students in Africa
           </Text>
 
           <SimpleGrid>
-            <Flex mt={10} mb={10} gap={3} direction={{ base: "column", lg: "row" }}>
+            <Flex mt={15} mb={10} gap={3} direction={{ base: "column", lg: "row" }}>
               <Flex direction="column" align="center" justify={{ base: "center", lg: "start"}} gap={3}>
                 <VStack
                   p={6}

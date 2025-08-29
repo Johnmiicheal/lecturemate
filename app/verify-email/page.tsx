@@ -26,7 +26,7 @@ function MyApp({user}: any) {
       return null;
     }
     if (typeof window === "undefined") {
-      return <></>;
+      return <>not null</>;
     } else {
       return (
         <ThemeProvider theme={theme}>
