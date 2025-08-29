@@ -26,13 +26,13 @@ function MyApp({user}: any) {
       return null;
     }
     if (typeof window === "undefined") {
-      return <></>;
+      return <>Undefined</>;
     } else {
       return (
         <ThemeProvider theme={theme}>
           <Head>
             <link rel="shortcut icon" href="/logo.png" />
-            <title>Lecture Mate</title>
+            <title>Your Lecture Mate</title>
           </Head>
             <ChakraProvider theme={theme}>
               {progress && <TopBarProgress />}

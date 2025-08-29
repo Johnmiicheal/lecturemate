@@ -1,14 +1,6 @@
-// import { Configuration, OpenAIApi } from "openai";
 import OpenAI from 'openai';
 import { createClient } from "@supabase/supabase-js";
-import { NextRequest, NextResponse } from "next/server"
-import { delay } from 'framer-motion';
-
-// Initialize Openai
-// const configuration = new Configuration({
-//   apiKey: process.env.OPENAI_API_KEY,
-// });
-// const openai = new OpenAIApi(configuration);
+import { NextResponse } from "next/server"
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY, // defaults to process.env["OPENAI_API_KEY"]
@@ -16,13 +8,13 @@ const openai = new OpenAI({
 
 if (!openai.apiKey) {
   console.log("Error");
-  // return;
+  throw new Error("OpenAI API key not properly configured");
 } else {
   console.log("It's working");
 }
 
 // Declare constants
-const COMPLETIONS_MODEL = "text-davinci-003";
+const COMPLETIONS_MODEL = "text-davinci-003"; // RELICS OF THE PAST (:
 const EMBEDDING_MODEL = "text-embedding-ada-002";
 const supaUrl: any = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supaKey: any = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -84,8 +76,6 @@ export async function POST(request: Request) {
       for (let i = 0; i < vector1.length; i++) {
         dotProduct += vector1[i] * vector2[i];
       }
-    
-      console.log("It's me Ifiok2")
 
       return dotProduct;
     }    
@@ -128,54 +118,6 @@ export async function POST(request: Request) {
           Question: ${query}.
           Answer:
         `;
-    //   try {
-    //     // const model = new OpenAI({});
-    //     // const memory = new BufferMemory();
-    //     const response = await openai.createCompletion({
-    //       model: COMPLETIONS_MODEL,
-    //       prompt: finalPrompt,
-    //       max_tokens: 2048,
-    //     });
-    
-    //     // const chain = new ConversationChain({ llm: model, memory: memory });
-    //     // const completion = await chain.call({ input: finalPrompt });
-    
-    //     const completion: string | undefined = response.data.choices[0].text;
-    //     console.log(completion);
-    //     console.log(query);
-    
-    //     const result = {
-    //       query: query,
-    //       completion: completion
-    //     }
-
-    //     console.log("Funny how this will work: " + result)
-        
-    //     return result
-    //   } catch (error: any) {
-    //     if (error.response) {
-    //       console.error(error.response.status, error.response.data);
-    //       return (new NextResponse(error.response.data, {
-    //         status: error.response.status,
-    //         headers: { "Content-Type": "application/json" },
-    //       }))
-    //       // res.status().json();
-    //     } else {
-    //       console.error(`Error with request: ${error.message}`);
-    
-    //       return (new NextResponse("An error occurred during your request.", {
-    //         status: 500,
-    //         headers: { "Content-Type": "application/json" },
-    //       }))
-    //     }
-    // }
-  }
-  
-  // if(pdfData !== null && pdfData.length === 0){
-      // const finalPrompt = `
-      //     Question: ${query}.
-      //     Answer:
-      //   `;
         const deleteLastQuestion = async () => {
           console.log("Delete question")
           try{
@@ -419,17 +361,5 @@ export async function POST(request: Request) {
         }
         console.log("There was no result 2")
       }
-  // }else{
-  //   const xq: any = "Ifiok"
-  //   const result = await calculateSimilarityScores(xq, pdfData)
-  
-  //   return (
-  //     new NextResponse(JSON.stringify(result), {
-  //       status: 200,
-  //       headers: { "Content-Type": "application/json" },
-  //     })
-  //   )
-  // }
-}  
-
-
+    }
+  }

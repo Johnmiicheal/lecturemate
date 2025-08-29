@@ -21,10 +21,8 @@ import { Flex, Icon, Text, Image } from "@chakra-ui/react";
 import Header from "../src/components/Web/Header";
 import Footer from "../src/components/Web/Footer";
 import { motion } from "framer-motion";
-import { IoArrowForward, IoStar } from "react-icons/io5";
+import { IoStar } from "react-icons/io5";
 import {
-  PiArrowUpRight,
-  PiArrowRight,
   PiArrowRightBold,
   PiArrowUpRightBold,
 } from "react-icons/pi";
@@ -52,7 +50,7 @@ export default function Landing() {
   return (
     <Suspense fallback={<Loading />}>
       {loading && <TopBarProgress />}
-      <Center flexDirection="column" bg="#1C1D1E" overflow="hidden" pb={20} px={2}>
+      <Center flexDirection="column" bg="#1C1D1E" overflow="hidden" pb={22} px={2}>
         <Flex
           direction="column"
           w="full"
@@ -134,7 +132,7 @@ export default function Landing() {
                   fontWeight="extrabold"
                   display="inline"
                 >
-                  Lecture Mate
+                  Your Lecture Mate
                 </Text>
                 <Image
                   src="/mate.png"
