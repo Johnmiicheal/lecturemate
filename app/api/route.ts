@@ -1,435 +1,186 @@
-// import { Configuration, OpenAIApi } from "openai";
-import OpenAI from 'openai';
+import OpenAI from "openai";
 import { createClient } from "@supabase/supabase-js";
-import { NextRequest, NextResponse } from "next/server"
-import { delay } from 'framer-motion';
+import { NextRequest, NextResponse } from "next/server";
 
-// Initialize Openai
-// const configuration = new Configuration({
-//   apiKey: process.env.OPENAI_API_KEY,
-// });
-// const openai = new OpenAIApi(configuration);
+/**
+ * Cleaned up API route for chat using Supabase to persist chat history
+ * and OpenAI to generate assistant responses.
+ *
+ * Notes:
+ * - This version removes commented / dead code, flattens nested functions,
+ *   and centralizes Supabase operations with clearer control flow.
+ * - Replace the placeholder userId with real user identification (session / token).
+ * - Adjust OpenAI usage to match your installed SDK version if necessary.
+ */
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY, // defaults to process.env["OPENAI_API_KEY"]
-});
+/* Config & clients */
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const SUPA_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const SUPA_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-if (!openai.apiKey) {
-  console.log("Error");
-  // return;
-} else {
-  console.log("It's working");
+if (!OPENAI_API_KEY) {
+  console.error("Missing OPENAI_API_KEY in environment");
+}
+if (!SUPA_URL || !SUPA_KEY) {
+  console.error("Missing Supabase environment variables");
 }
 
-// Declare constants
-const COMPLETIONS_MODEL = "text-davinci-003";
-const EMBEDDING_MODEL = "text-embedding-ada-002";
-const supaUrl: any = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supaKey: any = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-const supabase = createClient(supaUrl, supaKey);
+const openai = new OpenAI({ apiKey: OPENAI_API_KEY || "" });
+const supabase = createClient(SUPA_URL || "", SUPA_KEY || "");
 
-export async function POST(request: Request) {
-  type History = {
-    role: string;
-    content: string;
-  };
+const CHAT_MODEL = "gpt-3.5-turbo";
 
-  const json = await request.json()
-  // const nameOfFile = localStorage.getItem("file");
-  const userId = "1111" //we should get this from the user
-  // json.userId
-  // console.log("This is the json: ", nameOfFile)
-  
-  // const { data: pdfData } = await supabase.from('pdfs').select('*').eq('pdf_name', nameOfFile).eq('user_id', userId);
+type ChatMessage = { role: "user" | "assistant" | "system"; content: string };
+type ChatRow = { user_id: string; chats: ChatMessage[] };
 
-  // console.log("extracted: ", JSON.stringify(pdfData)) 
+/* Helper utilities */
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-  // if(pdfData !== null){
-  //   console.log("length of file: ", pdfData.length)
-  // }
+async function getChatRow(userId: string): Promise<ChatRow | null> {
+  const { data, error } = await supabase
+    .from("chats")
+    .select("user_id,chats")
+    .eq("user_id", userId)
+    .limit(1)
+    .maybeSingle();
 
+  if (error) {
+    console.error("Supabase select error:", error);
+    throw error;
+  }
+  return data as ChatRow | null;
+}
 
-  if (!openai.apiKey) {
-    return (new NextResponse("OpenAI API key not properly configured", {
+async function createChatRow(userId: string, firstMessage: ChatMessage) {
+  const { data, error } = await supabase
+    .from("chats")
+    .insert([{ user_id: userId, chats: [firstMessage] }])
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Supabase insert error:", error);
+    throw error;
+  }
+  return data;
+}
+
+async function updateChatRow(userId: string, chats: ChatMessage[]) {
+  const { data, error } = await supabase
+    .from("chats")
+    .update({ chats })
+    .eq("user_id", userId)
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Supabase update error:", error);
+    throw error;
+  }
+  return data;
+}
+
+/* Remove last message (used for rollback on failure) */
+async function removeLastMessageIfOdd(userId: string) {
+  const row = await getChatRow(userId);
+  if (!row) return;
+  const chats = Array.isArray(row.chats) ? [...row.chats] : [];
+  if (chats.length === 0) return;
+  // If number of messages is odd (user asked but assistant didn't reply),
+  // remove the last user message.
+  if (chats.length % 2 !== 0) {
+    chats.pop();
+    await updateChatRow(userId, chats);
+  }
+}
+
+/* Main handler */
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json().catch(() => ({}));
+    const query: string = (body?.query || "").toString().trim();
+
+    // NOTE: Replace this with actual authenticated user identification
+    const userId = (body?.userId || "1111").toString();
+
+    if (!OPENAI_API_KEY) {
+      return new NextResponse(
+        JSON.stringify({ error: "OpenAI API key not configured" }),
+        { status: 500, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    if (!query) {
+      return new NextResponse(
+        JSON.stringify({ error: "Please provide a non-empty query" }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    // Ensure chat row exists and append user's message
+    const userMessage: ChatMessage = { role: "user", content: query };
+    const existingRow = await getChatRow(userId);
+
+    if (!existingRow) {
+      await createChatRow(userId, userMessage);
+    } else {
+      const updatedChats = [...existingRow.chats, userMessage];
+      await updateChatRow(userId, updatedChats);
+    }
+
+    // Small delay to avoid eventual-consistency surprises with Supabase (if needed)
+    await sleep(500);
+
+    // Read the latest chat history
+    const chatRow = await getChatRow(userId);
+    const messages: ChatMessage[] = chatRow?.chats ?? [userMessage];
+
+    // Call OpenAI Chat Completion
+    // Note: This call shape matches openai.chat.completions.create used previously.
+    // If you use a different version of the OpenAI SDK, adapt the call accordingly.
+    const completion = await openai.chat.completions.create({
+      model: CHAT_MODEL,
+      messages: messages.map((m) => ({ role: m.role, content: m.content })),
+    });
+
+    const assistantContent =
+      completion?.choices?.[0]?.message?.content?.toString() ?? "";
+
+    // Append assistant response to DB
+    const assistantMessage: ChatMessage = {
+      role: "assistant",
+      content: assistantContent,
+    };
+
+    const finalRow = await getChatRow(userId);
+    const finalChats = finalRow ? [...finalRow.chats, assistantMessage] : [userMessage, assistantMessage];
+    await updateChatRow(userId, finalChats);
+
+    const result = {
+      query,
+      completion: assistantContent,
+      chats: finalChats,
+    };
+
+    return new NextResponse(JSON.stringify(result), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch (err: any) {
+    console.error("API error:", err);
+
+    // Attempt to rollback last user message if assistant failed to respond
+    try {
+      const body = await request.json().catch(() => ({}));
+      const userId = (body?.userId || "1111").toString();
+      await removeLastMessageIfOdd(userId);
+    } catch (rollbackErr) {
+      console.error("Rollback error:", rollbackErr);
+    }
+
+    return new NextResponse(JSON.stringify({ error: "Internal server error" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
-    }))  
+    });
   }
-
-  const query = json.query || "";
-
-  if (query.trim().length === 0) {
-    return (new NextResponse("Please enter a question", {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    })) 
-  }
-
-  // const queryEmbedding = await openai.createEmbedding({
-  //   model: EMBEDDING_MODEL,
-  //   input: query,
-  // });
-  // console.log("openai point:", query);
-
-  // const xq = queryEmbedding.data.data[0].embedding;
-
-  // console.log("embedding: "+ xq)  
-
-  function calculateDotProductSimilarity(vector1: number[], vector2: number[] | any): number {
-      if (vector1.length !== vector2.length) {
-        throw new Error('Vector dimensions do not match');
-      }
-    
-      let dotProduct = 0;
-      for (let i = 0; i < vector1.length; i++) {
-        dotProduct += vector1[i] * vector2[i];
-      }
-    
-      console.log("It's me Ifiok2")
-
-      return dotProduct;
-    }    
-  
-    async function calculateSimilarityScores(userQueryEmbedding: number[], pdfData: any[] | any) {
-      const similarityScores: { pageData: any; similarity: number; }[] = [];
-    
-      pdfData.forEach((row: { vector_data: any[]; }) => {
-        const pageEmbedding = row.vector_data;
-        const similarity = calculateDotProductSimilarity(userQueryEmbedding, pageEmbedding);
-    
-        similarityScores.push({
-          pageData: row,
-          similarity: similarity,
-        });
-      });
-    
-      // Sort by similarity in descending order
-      similarityScores.sort((a, b) => b.similarity - a.similarity);
-    
-      // Select the top 5 pages
-      const top5SimilarPages = similarityScores.slice(0, 5);
-      console.log(top5SimilarPages)
-
-      //To get the results
-    
-      const mostSimilar = top5SimilarPages[0].pageData.page_text
-      const inputText = mostSimilar
-
-      const plainText = inputText.replace(/[+\n]/g, '');
-
-      console.log(plainText);
-
-
-      // let info = "";
-  
-      console.log("Query Info:", plainText);
-      const finalPrompt = `
-          Info: Using this info: ${plainText} make the answer as explanatory as possible. With points and examples
-          Question: ${query}.
-          Answer:
-        `;
-    //   try {
-    //     // const model = new OpenAI({});
-    //     // const memory = new BufferMemory();
-    //     const response = await openai.createCompletion({
-    //       model: COMPLETIONS_MODEL,
-    //       prompt: finalPrompt,
-    //       max_tokens: 2048,
-    //     });
-    
-    //     // const chain = new ConversationChain({ llm: model, memory: memory });
-    //     // const completion = await chain.call({ input: finalPrompt });
-    
-    //     const completion: string | undefined = response.data.choices[0].text;
-    //     console.log(completion);
-    //     console.log(query);
-    
-    //     const result = {
-    //       query: query,
-    //       completion: completion
-    //     }
-
-    //     console.log("Funny how this will work: " + result)
-        
-    //     return result
-    //   } catch (error: any) {
-    //     if (error.response) {
-    //       console.error(error.response.status, error.response.data);
-    //       return (new NextResponse(error.response.data, {
-    //         status: error.response.status,
-    //         headers: { "Content-Type": "application/json" },
-    //       }))
-    //       // res.status().json();
-    //     } else {
-    //       console.error(`Error with request: ${error.message}`);
-    
-    //       return (new NextResponse("An error occurred during your request.", {
-    //         status: 500,
-    //         headers: { "Content-Type": "application/json" },
-    //       }))
-    //     }
-    // }
-  }
-  
-  // if(pdfData !== null && pdfData.length === 0){
-      // const finalPrompt = `
-      //     Question: ${query}.
-      //     Answer:
-      //   `;
-        const deleteLastQuestion = async () => {
-          console.log("Delete question")
-          try{
-            const { data: rowData, error } = await supabase
-            .from('chats')
-            .select('chats')
-            .eq('user_id', userId);
-        
-            if (rowData && rowData.length > 0) {
-              const newArray = rowData[0].chats;
-              const revertedArray = newArray.pop();
-        
-              if (revertedArray) {
-                try {
-                  const { data: revertedData, error: revertError } = await supabase
-                  .from('chats')
-                  .update({ chats: revertedArray })
-                  .eq('user_id', userId);
-              
-                if (revertError) {
-                  // Handle the update error.
-                  console.log(revertError)
-                } else {
-                  // Handle the successful update.
-                  console.log(revertedData)
-                }          
-                } catch (err) {
-                  console.log(err)
-                }
-              }
-            }
-          }catch(err){
-            console.log(err)
-          }    
-        }
-
-        const getChatHistory = async () => {
-          const condition = { column_value: userId }; // Replace with your own condition
-
-          function delay(ms: number | undefined) {
-            return new Promise(resolve => setTimeout(resolve, ms));
-          }
-
-          const data = await delay(5000).then(async () => {
-            const { data, error } = await supabase
-              .from('chats')
-              .select()
-              .eq('user_id', condition.column_value);
-        
-            if (error) {
-              console.log(error);
-              if(history.length % 2 !== 0 && history.length !== 0){
-              deleteLastQuestion()
-            } 
-            } else {
-              console.log("This is the get chat history: " + JSON.stringify(data[0].chats));
-              return data[0].chats;
-            }
-          });
-        
-          return data;
-        }              
-
-      try {
-        const createUser = async () => {
-          const { data, error } = await supabase
-          .from('chats')
-          .insert([{ user_id: userId,  chats: [{role: 'user', content: query}]}])
-          .select()
-
-          console.log(data)
-        }
-        
-        const upsertAssistant = async (response: string | null) => {
-          const { data: rowData, error } = await supabase
-          .from('chats')
-          .select('chats')
-          .eq('user_id', userId);
-
-          if (rowData && rowData.length > 0) {
-            const currentArray = rowData[0].chats;
-            const newValue = {role: 'assistant', content: response};
-            
-            const updatedArray = [...currentArray, newValue];           
-            // You can also perform other modifications as needed.
-
-            if (updatedArray) {
-              const { data: updatedData, error: updateError } = await supabase
-                .from('chats')
-                .update({ chats: updatedArray })
-                .eq('user_id', userId);
-            
-              if (updateError) {
-                // Handle the update error.
-                console.log(updateError)
-              } else {
-                // Handle the successful update.
-                console.log(updatedData)
-              }
-            }
-          }
-        }
-
-        const upsertUser = async () => {
-          const { data: rowData, error } = await supabase
-          .from('chats')
-          .select('chats')
-          .eq('user_id', userId);
-
-          if (rowData && rowData.length > 0) {
-            const currentArray = rowData[0].chats;
-            const newValue = {role: 'user', content: query};
-            
-            const updatedArray = [...currentArray, newValue];           
-            // You can also perform other modifications as needed.
-
-            if (updatedArray) {
-              const { data: updatedData, error: updateError } = await supabase
-                .from('chats')
-                .update({ chats: updatedArray })
-                .eq('user_id', userId);
-            
-              if (updateError) {
-                // Handle the update error.
-                console.log(updateError)
-              } else {
-                // Handle the successful update.
-                console.log(updatedData)
-              }
-            }
-          }
-        }
-
-        const checkIfRowExists = async () => {
-          const condition = { column_value: userId }; // Replace with your own condition
-
-          const { data, error } = await supabase
-          .from('chats')
-          .select()
-          .eq('user_id', condition.column_value);
-
-          if (data && data.length > 0) {
-            upsertUser()
-          } else {
-            createUser()
-          }
-        }
-        
-        const processAnswers = async () => {
-
-          
-            function delay(ms: number | undefined) {
-              return new Promise(resolve => setTimeout(resolve, ms));
-            }
-            try{
-              const result = delay(7000).then(async () => {
-              const history: any = await getChatHistory()
-              console.log("This is the history: " + history)
-              console.log("This is the history: " + JSON.stringify(history))
-  
-              
-                const chatCompletion = await openai.chat.completions.create({
-                  messages: history,
-                  model: 'gpt-3.5-turbo',
-                });
-  
-                console.log("This is the chat completion: " + JSON.stringify(chatCompletion))
-              
-                console.log("This is the chat completion.choices " + JSON.stringify(chatCompletion.choices));
-                
-                const chatResponse = chatCompletion.choices[0].message.content
-  
-                console.log("This is the chat response: " + chatResponse)
-                
-                upsertAssistant(chatResponse)
-  
-                const history2: any = await getChatHistory()
-  
-                const result: any = {
-                  query: history2,
-                  completion: chatResponse
-                }
-  
-                return result 
-            })
-            return result
-          }catch(err){
-            console.log("Finally this is the error: " + err)
-            const history: any = await getChatHistory()
-            if(history.length % 2 !== 0 && history.length !== 0){
-              deleteLastQuestion()
-            }            
-          }          
-        }
-
-        await checkIfRowExists()
-        const result = await processAnswers()
-
-        if(!result) {
-          console.log("There was no result")
-        }
-        
-        // const model = new OpenAI({});
-        // const memory = new BufferMemory();
-        // const response = await openai.createCompletion({
-        //   model: COMPLETIONS_MODEL,
-        //   prompt: finalPrompt,
-        //   max_tokens: 2048,
-        // });
-        // const messages = []        
-        
-        // messages.push({
-        //   role: 'user',
-        //   content: query
-        // })
-      
-        // const chain = new ConversationChain({ llm: model, memory: memory });
-        // const completion = await chain.call({ input: finalPrompt });
-    
-        // const completion: string | undefined = response.data.choices[0].text;
-        // console.log(completion);
-        // console.log(query);
-    
-        // const result = {
-        //   query: query,
-        //   completion: completion
-        // }
-
-        // console.log("Funny how this will work: " + result)
-        return (
-          new NextResponse(JSON.stringify(result), {
-            status: 200,
-            headers: { "Content-Type": "application/json" },
-          })
-        )
-      }catch(err){
-        console.log("This was the error"+ err)
-        const history: any = await getChatHistory()
-        if(history.length % 2 !== 0 && history.length !== 0){
-          deleteLastQuestion()
-        }
-        console.log("There was no result 2")
-      }
-  // }else{
-  //   const xq: any = "Ifiok"
-  //   const result = await calculateSimilarityScores(xq, pdfData)
-  
-  //   return (
-  //     new NextResponse(JSON.stringify(result), {
-  //       status: 200,
-  //       headers: { "Content-Type": "application/json" },
-  //     })
-  //   )
-  // }
-}  
-
-
+}
