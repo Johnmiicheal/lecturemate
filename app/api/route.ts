@@ -3,12 +3,11 @@ import { createClient } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
 
 /**
- * Cleaned up API route for chat using Supabase to persist chat history
- * and OpenAI to generate assistant responses.
+ * API route for chat using Supabase to persist chat history
+ * and OpenAI to generate assistant responses, with optional RAG from PDF data.
  *
  * Notes:
- * - This version removes commented / dead code, flattens nested functions,
- *   and centralizes Supabase operations with clearer control flow.
+ * - Integrates retrieval-augmented generation using embeddings and similarity search.
  * - Replace the placeholder userId with real user identification (session / token).
  * - Adjust OpenAI usage to match your installed SDK version if necessary.
  */
@@ -29,6 +28,7 @@ const openai = new OpenAI({ apiKey: OPENAI_API_KEY || "" });
 const supabase = createClient(SUPA_URL || "", SUPA_KEY || "");
 
 const CHAT_MODEL = "gpt-3.5-turbo";
+const EMBEDDING_MODEL = "text-embedding-ada-002";
 
 type ChatMessage = { role: "user" | "assistant" | "system"; content: string };
 type ChatRow = { user_id: string; chats: ChatMessage[] };
@@ -94,6 +94,47 @@ async function removeLastMessageIfOdd(userId: string) {
   }
 }
 
+/* Embedding and similarity helpers */
+function calculateDotProductSimilarity(vector1: number[], vector2: number[]): number {
+  if (vector1.length !== vector2.length) {
+    throw new Error('Vector dimensions do not match');
+  }
+
+  let dotProduct = 0;
+  for (let i = 0; i < vector1.length; i++) {
+    dotProduct += vector1[i] * vector2[i];
+  }
+
+  return dotProduct;
+}
+
+async function calculateSimilarityScores(userQueryEmbedding: number[], pdfData: any[]) {
+  const similarityScores: { pageData: any; similarity: number; }[] = [];
+
+  pdfData.forEach((row: { vector_data: number[]; page_text: string }) => {
+    const pageEmbedding = row.vector_data;
+    const similarity = calculateDotProductSimilarity(userQueryEmbedding, pageEmbedding);
+
+    similarityScores.push({
+      pageData: row,
+      similarity: similarity,
+    });
+  });
+
+  // Sort by similarity in descending order
+  similarityScores.sort((a, b) => b.similarity - a.similarity);
+
+  // Select the top 5 pages
+  const top5SimilarPages = similarityScores.slice(0, 5);
+
+  if (top5SimilarPages.length > 0) {
+    const mostSimilar = top5SimilarPages[0].pageData.page_text;
+    const plainText = mostSimilar.replace(/[+\n]/g, '');
+    return plainText;
+  }
+  return "";
+}
+
 /* Main handler */
 export async function POST(request: NextRequest) {
   try {
@@ -135,12 +176,36 @@ export async function POST(request: NextRequest) {
     const chatRow = await getChatRow(userId);
     const messages: ChatMessage[] = chatRow?.chats ?? [userMessage];
 
+    // Optional: Retrieve relevant PDF data for RAG
+    let contextText = "";
+    const nameOfFile = body?.fileName; // Assuming fileName is passed in body
+    if (nameOfFile) {
+      const { data: pdfData } = await supabase
+        .from('pdfs')
+        .select('*')
+        .eq('pdf_name', nameOfFile)
+        .eq('user_id', userId);
+
+      if (pdfData && pdfData.length > 0) {
+        const queryEmbedding = await openai.embeddings.create({
+          model: EMBEDDING_MODEL,
+          input: query,
+        });
+        const xq = queryEmbedding.data[0].embedding;
+        contextText = await calculateSimilarityScores(xq, pdfData);
+      }
+    }
+
+    // Prepare messages with context if available
+    const systemMessage: ChatMessage = contextText
+      ? { role: "system", content: `Using this info: ${contextText} make the answer as explanatory as possible. With points and examples.` }
+      : { role: "system", content: "You are a helpful assistant." };
+    const fullMessages = [systemMessage, ...messages];
+
     // Call OpenAI Chat Completion
-    // Note: This call shape matches openai.chat.completions.create used previously.
-    // If you use a different version of the OpenAI SDK, adapt the call accordingly.
     const completion = await openai.chat.completions.create({
       model: CHAT_MODEL,
-      messages: messages.map((m) => ({ role: m.role, content: m.content })),
+      messages: fullMessages.map((m) => ({ role: m.role, content: m.content })),
     });
 
     const assistantContent =
